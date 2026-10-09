@@ -136,7 +136,9 @@ Points at other content items, picked in a dialog.
 **Use when** the target has its own identity and lifecycle. **Don't use when**
 the content only exists inside this item; embed a Component. **Gotcha:** mark
 fields that a listing page filters on as filterable, and set the maximum
-deliberately: going from one to many changes the API shape.
+deliberately: going from one to many changes the API shape. A required
+reference also needs a minimum of 1; Prepr rejects a required reference with a
+maximum but no minimum (`validator.error.max.gte`).
 
 ## Tags
 

@@ -99,3 +99,12 @@ Prompt: `Create a draft article "Hello Prepr", schedule it to unpublish next Fri
 | 2026-10-09 | 0.1.0 | Smoke: `npx skills add <local> -a cursor codex -y` | Pass | 5 skills installed to `.agents/skills/`; all synced references present; 0 broken relative links |
 | 2026-10-09 | 0.1.0 | Smoke: Claude Code plugin install + `/mcp` | Not run | Needs the maintainer's Claude Code config (replaces the `prepr` marketplace from prepr-plugins) |
 | 2026-10-09 | 0.1.0 | Scenarios 1–7 | Not run | Need an authorized Prepr Scratch environment |
+| 2026-10-09 | 0.1.0 | 1 connect-prepr | Pass | Live in Acme Lease (Kevin); `.mcp.json` correct, `get_initial_context` + `list_schema` read back |
+| 2026-10-09 | 0.1.0 | 2 Codex token route | Pass | `bearer_token_env_var` written, `github` server untouched, no token anywhere |
+| 2026-10-09 | 0.1.0 | 3 brief to schema | Pass | create-schema directly (concrete brief); plan named env, no write before yes; required reference with max 1 failed (`validator.error.max.gte`), agent stopped and reported applied/failed, retry with min 1 succeeded; read-back matched |
+| 2026-10-09 | 0.1.0 | 4 enum option | Pass | Re-read immediately before write; merged NEWS, GUIDE, OPINION |
+| 2026-10-09 | 0.1.0 | 5 field delete | Pass | Counted 1 affected item, preview, `confirm` + `confirmToken` after yes, read-back |
+| 2026-10-09 | 0.1.0 | 6 review-schema | Pass | 29 entities read, report format followed, zero writes; item sampling added afterwards |
+| 2026-10-09 | 0.1.0 | 7 manage-content | Pass (partial) | Asked locale and date, `validateOnly` before each create, draft kept, stopped when unpublish schedule on a never-published item returned `{"success":false}`. Asset upload skipped: no MCP tool deletes assets, so it can't be cleaned up |
+| 2026-10-09 | 0.1.0 | Cleanup | Pass | All SkillsTest items, models and enum deleted with two-step confirms; verified 29 entities, 0 SkillsTest items |
+

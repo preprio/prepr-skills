@@ -51,7 +51,7 @@ RULES.push(
            'list_schema', 'get_schema_entity', 'connect-prepr', 'environment', 'one call', 'AI', 'naming', 'design-schema'],
     mustNot: ['../', 'prepr/schema/', 'validator', 'sync-schema', 'JSON file', 'schema-spec', 'RemoteSource'] },
   { file: 'skills/create-schema/references/field-types.md',
-    must: ['use when', "don't use when", 'Stack', 'Component', 'Content reference', 'Enum'],
+    must: ['use when', "don't use when", 'Stack', 'Component', 'Content reference', 'Enum', 'minimum of 1'],
     mustNot: ['"type":', 'prepr/schema/', 'importer', 'schema_version'] },
 );
 
