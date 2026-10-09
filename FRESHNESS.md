@@ -15,6 +15,7 @@ the client rows when a client changes its MCP config format.
 | Per-environment MCP permissions | Settings → Integrations → MCP Server; stricter of role and MCP permission applies | authorization, safety-limitations | 2026-10-09 |
 | Schema read tools | `list_schema`, `get_schema_entity` (replace `get_schema`) | release-notes (2026-10-06) | 2026-10-09 |
 | Schema tools status | Beta; no dry-run or validate-only | release-notes (2026-10-06); live tool schemas | 2026-10-09 |
+| Environment AI context | Returned by `get_initial_context`; set by users under Settings → General → AI context (no write tool) | maintainer confirmation; https://docs.prepr.io/project-setup/setting-up-environments | 2026-10-09 |
 | Environment lookup | `get_initial_context` returns environment name, domain and id; no top-level environment parameter on write tools | live tool schemas | 2026-10-09 |
 | `create_item` validation | `validateOnly` boolean validates without creating | live tool schemas | 2026-10-09 |
 | Entity create | Creates no fields; one call per field | live scenario run (create-schema) | 2026-10-09 |

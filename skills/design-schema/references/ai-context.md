@@ -47,9 +47,9 @@ server reads it to interpret requests. It describes the brand, audience and
 purpose of the whole environment. Users set it in the Prepr UI; there is no
 tool to write it, so draft the text for the user to paste.
 
-If `get_initial_context` returns the environment's AI context, use it as
-background and say whether it looks empty or outdated. If it doesn't, ask the
-user whether one is set.
+`get_initial_context` returns the environment's AI context. Read it before
+designing or reviewing, use it as background, and say if it is empty or no
+longer matches what the user describes.
 
 Draft it in this shape, filled from what you know about the project:
 

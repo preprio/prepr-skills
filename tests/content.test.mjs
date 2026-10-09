@@ -179,6 +179,13 @@ RULES.push(
   { file: 'skills/connect-prepr/SKILL.md', must: ['references/ai-context.md#environment-ai-context'] },
 );
 
+// get_initial_context returns the environment AI context
+RULES.push(
+  { file: 'shared/ai-context.md', must: ['`get_initial_context` returns'], mustNot: ["if it doesn't, ask"] },
+  { file: 'skills/connect-prepr/SKILL.md', mustNot: ["if you\ncan't tell, skip this step", "can't tell, skip"] },
+  { file: 'FRESHNESS.md', must: ['Environment AI context'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;

@@ -111,10 +111,9 @@ wildcard: every write must keep asking.
 
 ## Step 7: Mention the environment AI context
 
-If `get_initial_context` shows the environment AI context is empty, say once
-that filling it helps every AI request, and offer to draft it (see
-[ai-context.md](references/ai-context.md#environment-ai-context)). If you
-can't tell, skip this step.
+`get_initial_context` also returns the environment AI context. If it is
+empty, say once that filling it helps every AI request, and offer to draft it
+(see [ai-context.md](references/ai-context.md#environment-ai-context)).
 
 ## Step 8: Recommend a safety setting
 
