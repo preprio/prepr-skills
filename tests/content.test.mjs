@@ -52,6 +52,13 @@ RULES.push(
     mustNot: ['"type":', 'prepr/schema/', 'importer', 'schema_version'] },
 );
 
+RULES.push({
+  file: 'skills/review-schema/SKILL.md',
+  must: ['name: review-schema', 'list_schema', 'get_schema_entity', 'read-only', 'create-schema', 'connect-prepr',
+         'references/schema-design-principles.md', 'Fix before content exists', 'Fix any time', "What's good", 'environment'],
+  mustNot: ['../', 'prepr/schema/', 'validator', 'Blocks import', 'CI guardrail', 'sync-schema', 'scripts/'],
+});
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     assert.ok(existsSync(r.file), `${r.file} missing`);
