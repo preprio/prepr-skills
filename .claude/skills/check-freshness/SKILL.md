@@ -68,7 +68,7 @@ drift. It never changes a skill without the maintainer's go-ahead.
 - Never update a skill without its `FRESHNESS.md` row, or the row without the
   skill. A half-updated pair is worse than a stale one.
 - Facts come from the fetched source, never from memory or from this file.
-- Some schema-tool rules were read from the private `preprio/prepr-mcp`
-  repository. If you can't reach it, check them against the public release
-  notes and say which rows you could not confirm.
+- Rows whose source says "server implementation" are not in the public docs.
+  Confirm them from the live tool schemas or with a scenario run, and say
+  which rows you could not confirm.
 - Never push, tag or publish; that is the maintainer's call.

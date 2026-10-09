@@ -2,19 +2,17 @@
 
 ## Unreleased
 
-- Codex and ChatGPT plugin: portable `plugin.json` and `mcp.json`, repo marketplace in `.agents/plugins/marketplace.json`, connect-prepr as the onboarding skill.
-- connect-prepr recommends a Scratch environment for a first try and offers to allow the read-only Prepr tools.
-- mcp-limits: known Prepr errors and their fixes.
-- README: Codex install and example prompts.
-- scripts/eval-routing.mjs and scripts/scenario.mjs for release testing.
-
-- field-types: a required reference needs a minimum of 1.
-
-- Find the target environment with `get_initial_context`.
-- review-schema samples up to 3 items per model before reporting on actual use.
-- FRESHNESS.md: schema-tool facts confirmed against the live tool schemas.
-
 ## 0.1.0
 
-- First release: connect-prepr, design-schema, create-schema, review-schema
-  and manage-content, working through the Prepr MCP server.
+First release.
+
+- Skills: connect-prepr, design-schema, create-schema, review-schema and
+  manage-content, working through the Prepr MCP server.
+- Installs as a Claude Code plugin, a Codex and ChatGPT plugin, and through
+  `npx skills` for Cursor, VS Code, GitHub Copilot, OpenCode and others.
+- Every write is planned, confirmed, applied and read back; deletes use the
+  server's two-step confirmation.
+- connect-prepr sets up OAuth or token access per client, recommends a Scratch
+  environment, and offers to allow the read-only Prepr tools.
+- Release tooling: repo checks, routing eval, headless scenario runner and a
+  version-bump script.

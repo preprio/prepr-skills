@@ -159,6 +159,15 @@ RULES.push(
     must: ['plugin.json', 'mcp.json', '.agents/plugins/marketplace.json', 'eval-routing', 'scenario.mjs'] },
 );
 
+// Public-repo hygiene
+const INTERNAL = ['kevin', 'preprio/prepr-mcp', 'prepr-mcp develop'];
+RULES.push(
+  { file: 'docs/scenarios.md', mustNot: INTERNAL },
+  { file: 'FRESHNESS.md', mustNot: INTERNAL },
+  { file: '.claude/skills/check-freshness/SKILL.md', mustNot: INTERNAL },
+  { file: 'CHANGELOG.md', mustNot: ['## Unreleased\n\n-'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;

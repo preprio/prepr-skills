@@ -109,7 +109,7 @@ Prompt: `Create a draft article "Hello Prepr", schedule it to unpublish next Fri
 | 2026-10-09 | 0.1.0 | Smoke: `npx skills add <local> -a cursor codex -y` | Pass | 5 skills installed to `.agents/skills/`; all synced references present; 0 broken relative links |
 | 2026-10-09 | 0.1.0 | Smoke: Claude Code plugin install + `/mcp` | Not run | Needs the maintainer's Claude Code config (replaces the `prepr` marketplace from prepr-plugins) |
 | 2026-10-09 | 0.1.0 | Scenarios 1–7 | Not run | Need an authorized Prepr Scratch environment |
-| 2026-10-09 | 0.1.0 | 1 connect-prepr | Pass | Live in Acme Lease (Kevin); `.mcp.json` correct, `get_initial_context` + `list_schema` read back |
+| 2026-10-09 | 0.1.0 | 1 connect-prepr | Pass | Live in a Prepr test environment; `.mcp.json` correct, `get_initial_context` + `list_schema` read back |
 | 2026-10-09 | 0.1.0 | 2 Codex token route | Pass | `bearer_token_env_var` written, `github` server untouched, no token anywhere |
 | 2026-10-09 | 0.1.0 | 3 brief to schema | Pass | create-schema directly (concrete brief); plan named env, no write before yes; required reference with max 1 failed (`validator.error.max.gte`), agent stopped and reported applied/failed, retry with min 1 succeeded; read-back matched |
 | 2026-10-09 | 0.1.0 | 4 enum option | Pass | Re-read immediately before write; merged NEWS, GUIDE, OPINION |
