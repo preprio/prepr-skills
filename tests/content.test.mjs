@@ -19,6 +19,13 @@ RULES.push(
     mustNot: ['../', 'prepr/schema/', 'sync-schema', 'plan-project', 'setup-project'] },
 );
 
+RULES.push({
+  file: 'skills/connect-prepr/references/clients.md',
+  must: ['## Claude Code', '## Cursor', '## VS Code', '## Codex', '## OpenCode', '## GitHub Copilot CLI', '## Claude Desktop', '## ChatGPT',
+         'PREPR_MCP_TOKEN', 'bearer_token_env_var', 'Source:', 'https://mcp.prepr.io'],
+  mustNot: ['mcp.prepr.io/mcp', 'YOUR_ACCESS_TOKEN'],
+});
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     assert.ok(existsSync(r.file), `${r.file} missing`);
