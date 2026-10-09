@@ -66,6 +66,17 @@ RULES.push({
   mustNot: ['../', 'Mutation API', 'upload_asset`', 'migrate-content', 'manage-environments'],
 });
 
+RULES.push(
+  { file: 'README.md',
+    must: ['claude plugin marketplace add preprio/prepr-skills', 'claude plugin install prepr@prepr', 'npx skills add preprio/prepr-skills',
+           'connect-prepr', 'design-schema', 'create-schema', 'review-schema', 'manage-content', 'https://mcp.prepr.io', 'shared/', 'sync-shared'] },
+  { file: 'FRESHNESS.md',
+    must: ['https://mcp.prepr.io', 'list_schema', 'get_schema_entity', 'confirmToken', 'bearer_token_env_var',
+           'Settings → Integrations → MCP Server', 'release-notes', 'Last verified'] },
+  { file: 'docs/scenarios.md',
+    must: ['Scratch', 'connect-prepr', 'PREPR_MCP_TOKEN', 'enum', 'confirmToken', 'review-schema', 'unpublish'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     assert.ok(existsSync(r.file), `${r.file} missing`);

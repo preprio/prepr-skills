@@ -83,3 +83,9 @@ test('client header must match plugin version', () => {
   write(root, '.claude-plugin/plugin.json', JSON.stringify({ name: 'prepr', version: '0.2.0' }));
   assert.ok(checkRepo(root).some((e) => e.includes('X-Prepr-Client')));
 });
+
+import { fileURLToPath } from 'node:url';
+test('the real repo passes checkRepo', () => {
+  const root = fileURLToPath(new URL('..', import.meta.url));
+  assert.deepEqual(checkRepo(root), []);
+});
