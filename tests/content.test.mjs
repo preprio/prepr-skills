@@ -42,6 +42,16 @@ RULES.push({
             'RemoteSource', 'project-plan.md', 'validator'],
 });
 
+RULES.push(
+  { file: 'skills/create-schema/SKILL.md',
+    must: ['name: create-schema', 'references/write-safety.md', 'references/field-types.md', 'references/mcp-limits.md',
+           'list_schema', 'get_schema_entity', 'connect-prepr', 'environment', 'one call', 'AI', 'naming', 'design-schema'],
+    mustNot: ['../', 'prepr/schema/', 'validator', 'sync-schema', 'JSON file', 'schema-spec', 'RemoteSource'] },
+  { file: 'skills/create-schema/references/field-types.md',
+    must: ['use when', "don't use when", 'Stack', 'Component', 'Content reference', 'Enum'],
+    mustNot: ['"type":', 'prepr/schema/', 'importer', 'schema_version'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     assert.ok(existsSync(r.file), `${r.file} missing`);
