@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Codex and ChatGPT plugin: portable `plugin.json` and `mcp.json`, repo marketplace in `.agents/plugins/marketplace.json`, connect-prepr as the onboarding skill.
+- connect-prepr recommends a Scratch environment for a first try and offers to allow the read-only Prepr tools.
+- mcp-limits: known Prepr errors and their fixes.
+- README: Codex install and example prompts.
+- scripts/eval-routing.mjs and scripts/scenario.mjs for release testing.
+
 - field-types: a required reference needs a minimum of 1.
 
 - Find the target environment with `get_initial_context`.

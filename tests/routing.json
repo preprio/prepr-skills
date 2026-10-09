@@ -1,0 +1,20 @@
+[
+  { "prompt": "Connect this project to Prepr.", "skill": "connect-prepr" },
+  { "prompt": "Our Prepr MCP tools are missing, can you set them up?", "skill": "connect-prepr" },
+  { "prompt": "How do I use Prepr from Cursor with a token?", "skill": "connect-prepr" },
+  { "prompt": "We're building a marketing site for a dental clinic. How should we model the content in Prepr?", "skill": "design-schema" },
+  { "prompt": "I'm not sure whether testimonials should be a model or a component in Prepr.", "skill": "design-schema" },
+  { "prompt": "Plan the content model for our new blog in Prepr.", "skill": "design-schema" },
+  { "prompt": "Add a subtitle field to the Article model in Prepr.", "skill": "create-schema" },
+  { "prompt": "Create an Event model in Prepr with a date, a location and a signup link.", "skill": "create-schema" },
+  { "prompt": "Add an Opinion option to the Topic enum in Prepr.", "skill": "create-schema" },
+  { "prompt": "Remove the legacy_id field from the Product model in Prepr.", "skill": "create-schema" },
+  { "prompt": "Is our Prepr schema any good?", "skill": "review-schema" },
+  { "prompt": "Audit the content model in our Prepr environment and tell me what to fix.", "skill": "review-schema" },
+  { "prompt": "I inherited this Prepr environment. Can you review its schema?", "skill": "review-schema" },
+  { "prompt": "Create a draft blog post in Prepr titled 'Hello world'.", "skill": "manage-content" },
+  { "prompt": "Publish the three newest articles in Prepr.", "skill": "manage-content" },
+  { "prompt": "Upload this image to Prepr: https://example.com/hero.jpg", "skill": "manage-content" },
+  { "prompt": "Schedule the 'Summer sale' page in Prepr to go offline on September 1.", "skill": "manage-content" },
+  { "prompt": "Fill our new Prepr environment with some sample content.", "skill": "manage-content" }
+]

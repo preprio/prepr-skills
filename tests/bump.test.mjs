@@ -16,6 +16,8 @@ function makeRepo(t) {
   write(root, '.claude-plugin/plugin.json', JSON.stringify({ name: 'prepr', version: '0.1.0' }, null, 2) + '\n');
   write(root, '.claude-plugin/marketplace.json', JSON.stringify({ metadata: { version: '0.1.0' } }, null, 2) + '\n');
   write(root, '.mcp.json', '{ "headers": { "X-Prepr-Client": "prepr-skills/0.1.0" } }\n');
+  write(root, 'plugin.json', JSON.stringify({ name: 'prepr', version: '0.1.0' }, null, 2) + '\n');
+  write(root, 'mcp.json', '{ "headers": { "X-Prepr-Client": "prepr-skills/0.1.0" } }\n');
   write(root, 'skills/connect-prepr/references/clients.md', '`prepr-skills/0.1.0` and again prepr-skills/0.1.0\n');
   write(root, 'CHANGELOG.md', '# Changelog\n\n## Unreleased\n\n- Something new.\n\n## 0.1.0\n\n- First.\n');
   return root;
@@ -29,6 +31,8 @@ test('bump rewrites every version and dates the Unreleased section', (t) => {
   assert.equal(JSON.parse(read(root, '.claude-plugin/plugin.json')).version, '0.2.0');
   assert.equal(JSON.parse(read(root, '.claude-plugin/marketplace.json')).metadata.version, '0.2.0');
   assert.ok(read(root, '.mcp.json').includes('prepr-skills/0.2.0'));
+  assert.equal(JSON.parse(read(root, 'plugin.json')).version, '0.2.0');
+  assert.ok(read(root, 'mcp.json').includes('prepr-skills/0.2.0'));
   assert.ok(!read(root, 'skills/connect-prepr/references/clients.md').includes('0.1.0'));
   assert.ok(read(root, 'CHANGELOG.md').includes('## Unreleased\n\n## 0.2.0 (2026-10-20)\n\n- Something new.'));
 });

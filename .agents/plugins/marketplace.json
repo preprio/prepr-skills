@@ -1,0 +1,20 @@
+{
+  "name": "prepr",
+  "interface": {
+    "displayName": "Prepr"
+  },
+  "plugins": [
+    {
+      "name": "prepr",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

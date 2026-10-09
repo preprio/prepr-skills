@@ -1,11 +1,21 @@
 # Behaviour scenarios
 
-Manual checks to run before each release, in a **Scratch** Prepr environment
+Checks to run before each release, in a **Scratch** Prepr environment
 that holds nothing anyone depends on. Use a fresh agent session per scenario.
 Tick each box; record failures with the agent's actual output under
 **Results**.
 
 Scenarios 2, 3, 4 and 5 block a release when they fail.
+
+Run a turn headlessly with `node scripts/scenario.mjs <project-dir> "<prompt>"`,
+and answer the skill's plan with `--resume <session-id>`. Name everything you
+create with a `SkillsTest` prefix, and finish with:
+
+> Clean up after our skills test: delete all items in SkillsTest models, then
+> delete every SkillsTest model, component and enum. Touch nothing else.
+
+No MCP tool deletes assets, so skip uploads in environments you want to keep
+clean.
 
 ## 1. connect-prepr from scratch (OAuth)
 

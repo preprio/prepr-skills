@@ -37,7 +37,19 @@ Updates are not automatic for plugins installed from GitHub. Update with
 `claude plugin update prepr@prepr`, or turn on auto-update under `/plugin` →
 Marketplaces.
 
-Cursor, Codex, VS Code, GitHub Copilot, OpenCode and other agents:
+Codex (CLI, IDE extension and the ChatGPT desktop app):
+
+```bash
+codex plugin marketplace add preprio/prepr-skills
+```
+
+```bash
+codex plugin add prepr@prepr
+```
+
+Then authorize the bundled MCP server with `codex mcp login prepr`.
+
+Cursor, VS Code, GitHub Copilot, OpenCode and other agents:
 
 ```bash
 npx skills add preprio/prepr-skills
@@ -47,6 +59,17 @@ Then ask your agent to "connect to Prepr". The connect-prepr skill adds the
 server to your project config and explains how to authorize. Clients without
 OAuth support use an MCP token from Prepr Support; the skills never ask for or
 store the token itself.
+
+## What you can ask
+
+- "Connect this project to Prepr."
+- "Help me model an Events section: date, location and a signup link."
+- "Add a Testimonial component with a quote, name and photo."
+- "Review our Prepr schema and tell me what to improve."
+- "Add an Opinion option to the article topic list."
+- "Create a draft article 'Hello Prepr' and schedule it to go offline next Friday."
+
+Every change is shown as a plan first and waits for your yes.
 
 ## Safety
 

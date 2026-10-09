@@ -9,6 +9,10 @@ in `skills/`.
 
 ## Layout
 
+- `.claude-plugin/`: Claude Code plugin and marketplace. `plugin.json` and
+  `mcp.json` at the root: the portable package Codex and ChatGPT install,
+  listed by `.agents/plugins/marketplace.json`. Name, version, URL and the
+  client header must match across both; `scripts/check.mjs` enforces it.
 - `skills/<name>/SKILL.md`: one skill. Frontmatter `name` must equal the
   folder name; `description` decides when agents load the skill, so treat it
   as the most important text in the file.
@@ -72,6 +76,17 @@ Run all of these before committing; CI runs the same. Keep `CLAUDE.md` in
 ```bash
 node scripts/sync-shared.mjs --check && node scripts/check.mjs && node --test && claude plugin validate --strict .
 ```
+
+## Before a release
+
+- `node scripts/eval-routing.mjs` sends the prompts in
+  `tests/routing.json` to headless Claude Code and checks each one loads the
+  expected skill. It calls the model, so it is not part of CI; run it after
+  changing any `description`.
+- `node scripts/scenario.mjs` runs one turn of a scenario from
+  `docs/scenarios.md` in a project where the skills and Prepr are set up, and
+  prints the skill, tool calls and reply. Use `SkillsTest` names and finish
+  with the cleanup scenario.
 
 ## Trying a change locally
 

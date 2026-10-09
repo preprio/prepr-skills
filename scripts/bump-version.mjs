@@ -40,8 +40,15 @@ export function bump(root, version, date = new Date().toISOString().slice(0, 10)
     writeFileSync(marketplacePath, JSON.stringify(marketplace, null, 2) + '\n');
   }
 
+  const portablePath = join(root, 'plugin.json');
+  if (existsSync(portablePath)) {
+    const portable = JSON.parse(readFileSync(portablePath, 'utf8'));
+    portable.version = version;
+    writeFileSync(portablePath, JSON.stringify(portable, null, 2) + '\n');
+  }
+
   const header = new RegExp(`prepr-skills/${current.replace(/\./g, '\\.')}`, 'g');
-  for (const file of [join(root, '.mcp.json'), ...filesUnder(join(root, 'skills')), ...(existsSync(join(root, 'shared')) ? filesUnder(join(root, 'shared')) : [])]) {
+  for (const file of [join(root, '.mcp.json'), join(root, 'mcp.json'), ...filesUnder(join(root, 'skills')), ...(existsSync(join(root, 'shared')) ? filesUnder(join(root, 'shared')) : [])]) {
     if (!existsSync(file)) continue;
     const text = readFileSync(file, 'utf8');
     if (text.includes(`prepr-skills/${current}`)) writeFileSync(file, text.replace(header, `prepr-skills/${version}`));

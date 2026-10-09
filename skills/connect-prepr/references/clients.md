@@ -134,6 +134,10 @@ Source: https://code.visualstudio.com/docs/agents/reference/mcp-configuration
 
 ## Codex
 
+If the Prepr Codex plugin is installed (`codex plugin add prepr@prepr`), the
+server is already registered and only needs authorizing with
+`codex mcp login prepr`. Check with `codex mcp list`. Otherwise configure it:
+
 Project file: `.codex/config.toml` (Codex loads it in trusted projects only),
 or `~/.codex/config.toml`. The ChatGPT desktop app, the Codex CLI and the IDE
 extension share this config.

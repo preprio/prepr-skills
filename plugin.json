@@ -1,0 +1,51 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "prepr",
+  "version": "0.1.0",
+  "description": "Prepr CMS skills for AI agents: connect to the Prepr MCP server, design and build your content model, review it, and manage content.",
+  "author": {
+    "name": "Prepr",
+    "url": "https://prepr.io"
+  },
+  "homepage": "https://docs.prepr.io/prepr-mcp-server",
+  "repository": "https://github.com/preprio/prepr-skills",
+  "license": "MIT",
+  "keywords": [
+    "prepr",
+    "cms",
+    "headless-cms",
+    "mcp",
+    "schema",
+    "content-modeling"
+  ],
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/connect-prepr/SKILL.md",
+      "interface": {
+        "displayName": "Prepr",
+        "shortDescription": "Content models through MCP",
+        "longDescription": "Design, build and review your Prepr CMS content model, and create and manage content, through the Prepr MCP server. Every change is shown as a plan that names the target environment and waits for your approval; deletes need a second confirmation. Requires a Prepr account; what the agent may do follows your Prepr role and the environment's MCP permissions.",
+        "developerName": "Prepr",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Read schema",
+          "Write schema",
+          "Read content",
+          "Write content"
+        ],
+        "websiteURL": "https://prepr.io",
+        "supportURL": "https://prepr.io/support",
+        "privacyPolicyURL": "https://prepr.io/company/privacy",
+        "termsOfServiceURL": "https://prepr.io/general-terms-and-conditions",
+        "defaultPrompt": [
+          "Connect this project to Prepr.",
+          "Review our Prepr schema and tell me what to improve.",
+          "Help me model an Events section in Prepr."
+        ],
+        "brandColor": "#5237E6",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png"
+      }
+    }
+  }
+}

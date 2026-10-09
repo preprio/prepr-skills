@@ -142,6 +142,23 @@ RULES.push(
   { file: 'FRESHNESS.md', must: ['live tool schemas', 'get_initial_context', 'validateOnly'] },
 );
 
+// Codex plugin, onboarding friction, known errors, examples
+RULES.push(
+  { file: 'README.md',
+    must: ['codex plugin marketplace add preprio/prepr-skills', 'codex plugin add prepr@prepr', 'codex mcp login prepr', '## What you can ask'] },
+  { file: 'skills/connect-prepr/references/clients.md',
+    must: ['Prepr Codex plugin'] },
+  { file: 'skills/connect-prepr/SKILL.md',
+    must: ['Scratch environment', 'permissions.allow', 'only after the user agrees'],
+    mustNot: ['mcp__prepr__*'] },
+  { file: 'shared/mcp-limits.md',
+    must: ['## Known errors', 'validator.error.max.gte', '{"success":false}'] },
+  { file: 'FRESHNESS.md',
+    must: ['Codex plugin', '.agents/plugins/marketplace.json', 'agent-plugins.org'] },
+  { file: 'AGENTS.md',
+    must: ['plugin.json', 'mcp.json', '.agents/plugins/marketplace.json', 'eval-routing', 'scenario.mjs'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;

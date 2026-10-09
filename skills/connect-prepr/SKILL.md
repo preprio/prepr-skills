@@ -43,6 +43,10 @@ Then look for an existing `prepr` entry in every place the client reads:
 - **Token**: GitHub Copilot CLI, or any client where the user says OAuth is
   not available. Tokens are issued by Prepr Support.
 
+Recommend picking a Scratch environment for a first try. Writes go to
+whatever environment is chosen when signing in, and a Scratch environment
+makes it safe to see what the skills do.
+
 ## Step 3: Write the config
 
 Use the snippet for the client from [clients.md](references/clients.md). A
@@ -94,7 +98,18 @@ entry named `prepr-token`.
    [the check](references/mcp-connection.md#the-check) and report which state
    you are in.
 
-## Step 6: Recommend a safety setting
+## Step 6: Allow read-only tools (Claude Code)
+
+Each Prepr tool asks for permission the first time, which blocks the checks
+above in a non-interactive session. Offer to allow the read-only tools in the
+project's `.claude/settings.json` under `permissions.allow`:
+`mcp__prepr__get_initial_context`, `mcp__prepr__list_schema`,
+`mcp__prepr__get_schema_entity`, `mcp__prepr__query_items`,
+`mcp__prepr__get_item`, `mcp__prepr__list_locales`. Write this only after the
+user agrees, merge with existing entries, and never allow write tools or a
+wildcard: every write must keep asking.
+
+## Step 7: Recommend a safety setting
 
 Tell the user once: for production, an administrator can switch off schema
 writes and deletes for all MCP requests under

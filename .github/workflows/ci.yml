@@ -14,3 +14,14 @@ jobs:
       - run: node scripts/check.mjs
       - run: node --test
       - run: npx -y @anthropic-ai/claude-code plugin validate --strict .
+      - name: Validate the portable Codex package against the Agent Plugins schemas
+        run: |
+          pip install --quiet jsonschema
+          python3 - <<'PY'
+          import json, urllib.request, jsonschema
+          for f in ('plugin.json', 'mcp.json'):
+              doc = json.load(open(f))
+              schema = json.load(urllib.request.urlopen(doc['$schema']))
+              jsonschema.Draft202012Validator(schema).validate(doc)
+              print(f, 'OK')
+          PY

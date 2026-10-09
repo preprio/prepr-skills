@@ -45,6 +45,18 @@ applies.
 - Up to 10 GB per file; images, documents, audio, video.
 - Search existing assets with `query_assets` first to avoid duplicate uploads.
 
+## Known errors
+
+Prepr's error messages often don't say what to fix. Known cases:
+
+| Error | Cause | Fix |
+|---|---|---|
+| `validator.error.max.gte` on a reference field | Required reference with a maximum but no minimum | Set a minimum (1 for a required single reference) |
+| `{"success":false}` when scheduling an unpublish | The item was never published, or scheduling is off for the model | Publish first, or turn on scheduling for the model; ask the user which |
+| Enum update rejected | An option you left out is still used by content | Keep the option, or migrate the content first |
+
+Add a row whenever a new error turns up, with how it was fixed.
+
 ## Read-after-write lag
 
 A successful write is persisted, but reaches Prepr's CDN cache with a short

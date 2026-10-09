@@ -112,6 +112,23 @@ export function checkRepo(root) {
   if (prepr?.headers?.['X-Prepr-Client'] !== `prepr-skills/${version}`)
     errors.push(`.mcp.json: X-Prepr-Client is "${prepr?.headers?.['X-Prepr-Client']}", expected "prepr-skills/${version}"`);
 
+  // Portable Agent Plugins package for Codex/ChatGPT: must mirror the Claude manifest.
+  const portable = join(root, 'plugin.json');
+  if (existsSync(portable)) {
+    const claude = JSON.parse(readFileSync(join(root, '.claude-plugin/plugin.json'), 'utf8'));
+    const p = JSON.parse(readFileSync(portable, 'utf8'));
+    if (p.name !== claude.name) errors.push(`plugin.json: name "${p.name}" differs from .claude-plugin/plugin.json "${claude.name}"`);
+    if (p.version !== version) errors.push(`plugin.json: version "${p.version}" differs from .claude-plugin/plugin.json "${version}"`);
+  }
+  const portableMcp = join(root, 'mcp.json');
+  if (existsSync(portableMcp)) {
+    const s = JSON.parse(readFileSync(portableMcp, 'utf8')).mcpServers?.prepr;
+    if (s?.type !== 'streamable-http') errors.push(`mcp.json: type is "${s?.type}", expected "streamable-http"`);
+    if (s?.url !== MCP_URL) errors.push(`mcp.json: url is "${s?.url}", expected "${MCP_URL}"`);
+    if (s?.headers?.['X-Prepr-Client'] !== `prepr-skills/${version}`)
+      errors.push(`mcp.json: X-Prepr-Client is "${s?.headers?.['X-Prepr-Client']}", expected "prepr-skills/${version}"`);
+  }
+
   return errors;
 }
 

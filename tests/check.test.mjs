@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { checkRepo } from '../scripts/check.mjs';
@@ -148,4 +148,32 @@ test('marketplace metadata version must match plugin version', (t) => {
   const root = makeRepo(t);
   write(root, '.claude-plugin/marketplace.json', JSON.stringify({ metadata: { version: '0.0.1' } }));
   assert.ok(checkRepo(root).some((e) => e.includes('marketplace.json')));
+});
+
+function writePortable(root, { version = '0.1.0', url = 'https://mcp.prepr.io', header = 'prepr-skills/0.1.0', name = 'prepr' } = {}) {
+  write(root, 'plugin.json', JSON.stringify({ $schema: 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', name, version }));
+  write(root, 'mcp.json', JSON.stringify({ $schema: 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json', mcpServers: { prepr: { type: 'streamable-http', url, headers: { 'X-Prepr-Client': header } } } }));
+}
+
+test('portable manifest must match the Claude manifest', (t) => {
+  const root = makeRepo(t);
+  writePortable(root);
+  assert.deepEqual(checkRepo(root), []);
+  writePortable(root, { version: '0.2.0' });
+  assert.ok(checkRepo(root).some((e) => e.startsWith('plugin.json') && e.includes('version')));
+  writePortable(root, { name: 'other' });
+  assert.ok(checkRepo(root).some((e) => e.startsWith('plugin.json') && e.includes('name')));
+});
+
+test('portable mcp.json must use the Prepr URL, streamable-http and the client header', (t) => {
+  const root = makeRepo(t);
+  writePortable(root, { url: 'https://mcp.prepr.io/mcp' });
+  assert.ok(checkRepo(root).some((e) => e.startsWith('mcp.json') && e.includes('url')));
+  writePortable(root, { header: 'prepr-skills/0.0.1' });
+  assert.ok(checkRepo(root).some((e) => e.startsWith('mcp.json') && e.includes('X-Prepr-Client')));
+});
+
+test('the real repo ships a portable Codex package', () => {
+  const root = fileURLToPath(new URL('..', import.meta.url));
+  for (const f of ['plugin.json', 'mcp.json', '.agents/plugins/marketplace.json']) assert.ok(existsSync(join(root, f)), `${f} missing`);
 });
