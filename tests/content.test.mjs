@@ -34,6 +34,14 @@ RULES.push({
   mustNot: ['../', 'mcp.prepr.io/mcp', 'paste your token', 'enter your token'],
 });
 
+RULES.push({
+  file: 'skills/design-schema/SKILL.md',
+  must: ['name: design-schema', 'list_schema', 'create-schema', 'references/schema-design-principles.md',
+         'references/mcp-connection.md', 'without MCP', 'only if the user asks'],
+  mustNot: ['../', 'plan-project', 'setup-project', 'sync-schema', 'schema JSON', 'prepr/schema/', 'schema-spec',
+            'RemoteSource', 'project-plan.md', 'validator'],
+});
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     assert.ok(existsSync(r.file), `${r.file} missing`);
