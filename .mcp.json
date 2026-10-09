@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "prepr": {
+      "type": "http",
+      "url": "https://mcp.prepr.io",
+      "headers": { "X-Prepr-Client": "prepr-skills/0.1.0" }
+    }
+  }
+}
