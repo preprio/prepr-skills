@@ -116,6 +116,15 @@ RULES.push(
     must: ['name the environment'] },
 );
 
+// Publishing
+RULES.push(
+  { file: '.claude-plugin/plugin.json',
+    must: ['"icon": "./assets/icon.png"', '"documentationUrl": "https://', '"supportUrl": "https://', '"privacyPolicyUrl": "https://', '"termsOfServiceUrl": "https://'] },
+  { file: '.github/workflows/ci.yml', must: ['plugin validate --strict'] },
+  { file: 'README.md', must: ['claude plugin install prepr --marketplace preprio/prepr-skills', 'claude plugin update prepr@prepr', 'auto-update', 'bump-version'] },
+  { file: 'CHANGELOG.md', must: ['## Unreleased', '## 0.1.0'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;

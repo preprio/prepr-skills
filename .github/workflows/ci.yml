@@ -13,3 +13,4 @@ jobs:
       - run: node scripts/sync-shared.mjs --check
       - run: node scripts/check.mjs
       - run: node --test
+      - run: npx -y @anthropic-ai/claude-code plugin validate --strict .
