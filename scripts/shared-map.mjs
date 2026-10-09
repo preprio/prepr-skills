@@ -6,4 +6,5 @@ export const SHARED_MAP = {
   'write-safety.md': ['create-schema', 'manage-content'],
   'schema-design-principles.md': ['create-schema', 'design-schema', 'review-schema'],
   'mcp-limits.md': ['create-schema', 'manage-content'],
+  'ai-context.md': ['connect-prepr', 'create-schema', 'design-schema', 'review-schema'],
 };

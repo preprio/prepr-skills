@@ -51,9 +51,11 @@ a remembered tool list. Server rules that shape the plan are in
 [mcp-limits.md](references/mcp-limits.md): an entity starts with no fields,
 each field is one call, types cannot change, lists replace.
 
-Fill the AI description of each model and field where the tools expose it:
-one sentence on what the content is for. Prepr's AI features and every MCP
-client read it.
+Write an AI description for every model (`ai_goal`) and every text field
+(`ai_purpose`), following
+[ai-context.md](references/ai-context.md): what the content is for, where it
+appears, and its limits. Include them in the plan so the user can correct
+them. Prepr's AI features and every MCP client read them.
 
 ## Step 3: Plan, confirm, apply, verify
 

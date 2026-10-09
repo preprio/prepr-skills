@@ -62,7 +62,7 @@ phases with different people in them:
    when others need to review it). Step 5.
 5. **Validate** — the agreed plan is built in a Scratch environment and an
    editor builds a real page in it, before any front-end work. Step 6.
-6. **Build** — create-schema, then review-schema. Step 7 hands off.
+6. **Build** — create-schema, then review-schema. Step 8 hands off.
 
 The gate that matters is between 5 and 6. Once content exists or the front end
 is built on the schema, findings stop being free — see
@@ -274,7 +274,15 @@ the user declines the round — no environment yet, no editor available — say
 what they are trading: a finding that is free today costs a content migration
 once items exist.
 
-## Step 7: Hand off
+## Step 7: Environment AI context
+
+Steps 1 to 4 tell you most of what the environment's AI context needs:
+organisation, audience, purpose, tone, languages and content types. Draft it
+in the shape from
+[ai-context.md](references/ai-context.md#environment-ai-context), show it with
+the plan, and ask the user to paste it under Settings → General → AI context.
+
+## Step 8: Hand off
 
 Once the plan is agreed, say that the next step is **create-schema**, which
 shows the exact changes and builds them after a yes. Do not start building

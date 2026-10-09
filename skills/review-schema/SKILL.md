@@ -76,8 +76,12 @@ from the principles' reasoning are. Check in particular:
    label instead of its description; models with no title field, or more than
    one. Also check translation intent: human-language text should be marked
    for translation, and URLs, names and identifiers should not.
-6. **AI context.** Models and fields without an AI description. Prepr's AI
-   features and every MCP client read it; one sentence per model is enough.
+6. **AI context.** Models without an `ai_goal`, text fields without an
+   `ai_purpose`, and descriptions too weak to guide anyone ("Summary of the
+   article."). Judge them against
+   [ai-context.md](references/ai-context.md) and propose concrete
+   replacements. Also note whether the environment AI context is set, as
+   described there.
 7. **Naming.** Presentation-based field names (`small_text_left`),
    inconsistent vocabulary across components (headline vs title vs heading
    for the same role), casing that differs from the rest of the environment.

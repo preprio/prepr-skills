@@ -168,6 +168,17 @@ RULES.push(
   { file: 'CHANGELOG.md', mustNot: ['## Unreleased\n\n-'] },
 );
 
+// AI context guidance
+RULES.push(
+  { file: 'shared/ai-context.md',
+    must: ['ai_goal', 'ai_purpose', '## Models', '## Fields', '## Environment AI context', 'Weak', 'Strong',
+           'Settings → General', 'get_initial_context', 'paste'] },
+  { file: 'skills/create-schema/SKILL.md', must: ['references/ai-context.md'] },
+  { file: 'skills/review-schema/SKILL.md', must: ['references/ai-context.md', 'weak'] },
+  { file: 'skills/design-schema/SKILL.md', must: ['references/ai-context.md#environment-ai-context', 'Environment AI context'] },
+  { file: 'skills/connect-prepr/SKILL.md', must: ['references/ai-context.md#environment-ai-context'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;
