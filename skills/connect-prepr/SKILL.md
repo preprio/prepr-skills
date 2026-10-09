@@ -88,7 +88,8 @@ entry named `prepr-token`.
    means authorizing again.
 2. Ask the user to say when they are done. Some clients need a restart or a
    reload to pick up the new server.
-3. Call `list_schema` (first page only, read-only). Report the environment and
+3. Call `get_initial_context` for the environment's name and domain, then
+   `list_schema` (first page only, read-only). Report the environment and
    how many models it has. If the tools are still missing, go back to
    [the check](references/mcp-connection.md#the-check) and report which state
    you are in.

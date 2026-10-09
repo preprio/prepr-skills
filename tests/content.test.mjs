@@ -134,6 +134,14 @@ RULES.push({
   mustNot: ['schema-spec', 'prepr-toolkit', 'action-schema-validation', 'recommedations'],
 });
 
+// Live-test improvements
+RULES.push(
+  { file: 'shared/mcp-connection.md', must: ['get_initial_context'] },
+  { file: 'skills/connect-prepr/SKILL.md', must: ['get_initial_context'] },
+  { file: 'skills/review-schema/SKILL.md', must: ['up to 3 items'] },
+  { file: 'FRESHNESS.md', must: ['live tool schemas', 'get_initial_context', 'validateOnly'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;

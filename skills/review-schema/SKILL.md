@@ -88,8 +88,15 @@ from the principles' reasoning are. Check in particular:
 ## Step 3: Assess against actual use
 
 Only when content exists. Before launch there is nothing to measure, so skip
-this step and say so. Count and sample content with `query_items` (conditions
-under `filters`), read-only.
+this step and say so. Work read-only with `query_items` (conditions under
+`filters`) and `get_item`:
+
+- Count items per model.
+- For every model with items, open up to 3 items, the most recently updated
+  first, and note which section and block types they use, which optional
+  fields are empty, and which enum values appear.
+- Don't report "actual use" findings from counts alone. If you could not
+  sample, say which models you skipped.
 
 The schema was designed against expectations. Content records what actually
 happened, and the gap is a class of finding no pre-launch review can produce:

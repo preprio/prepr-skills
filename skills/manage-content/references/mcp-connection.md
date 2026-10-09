@@ -42,7 +42,9 @@ Every write must name its target environment, so know it for certain:
 - **Organization-level OAuth** can reach several environments. Check whether
   the tools take an environment argument; if they do, pass the environment
   explicitly on every call that writes.
-- Take the environment from a tool response or a tool's environment argument.
+- Call `get_initial_context` when it exists: it returns the environment's
+  name, domain and id. Otherwise take the environment from a tool response or
+  a tool's environment argument.
   If you cannot determine it, ask the user which environment the connection
   points at, and do not write until they confirm it. Never infer it from
   memory, the project, or names mentioned in the conversation.
