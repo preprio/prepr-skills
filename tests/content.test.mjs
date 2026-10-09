@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 
 // One entry per file. `must` strings have to appear (case-insensitive), `mustNot` must not.
 export const RULES = [];
@@ -93,10 +96,31 @@ RULES.push(
     mustNot: ['recreating freely'] },
 );
 
+// Deferred-minor fixes
+RULES.push(
+  { file: 'shared/schema-design-principles.md',
+    mustNot: ['localize-content', 'query-content', "spec's"] },
+  { file: 'shared/write-safety.md',
+    must: ['unless the confirmed plan says to continue', 'schema tools have no dry-run', 'immediately before the write',
+           'removing an option', 'the **environment** you will write to', 'comments'] },
+  { file: 'shared/mcp-connection.md',
+    must: ['not installed', 'https://docs.prepr.io/prepr-mcp-server/getting-started'] },
+  { file: 'skills/manage-content/SKILL.md',
+    must: ['validateonly', 'up to 25 items'],
+    mustNot: ['without confirmation', 'do them in batches', 'a few dozen'] },
+  { file: 'skills/connect-prepr/references/clients.md',
+    must: ['"oauth": false'] },
+  { file: 'skills/review-schema/SKILL.md',
+    mustNot: ['middle group', 'references/write-safety.md'] },
+  { file: 'skills/create-schema/SKILL.md',
+    must: ['name the environment'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
-    assert.ok(existsSync(r.file), `${r.file} missing`);
-    const text = readFileSync(r.file, 'utf8').toLowerCase();
+    const path = ROOT + r.file;
+    assert.ok(existsSync(path), `${r.file} missing`);
+    const text = readFileSync(path, 'utf8').toLowerCase();
     for (const s of r.must ?? []) assert.ok(text.includes(s.toLowerCase()), `${r.file} must mention "${s}"`);
     for (const s of r.mustNot ?? []) assert.ok(!text.includes(s.toLowerCase()), `${r.file} must not mention "${s}"`);
   });

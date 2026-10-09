@@ -61,6 +61,7 @@ function markdownFiles(dir) {
 
 export function checkRepo(root) {
   const errors = [];
+  const pluginVersion = JSON.parse(readFileSync(join(root, '.claude-plugin/plugin.json'), 'utf8')).version;
   const skillsDir = join(root, 'skills');
   const present = existsSync(skillsDir) ? readdirSync(skillsDir).filter((n) => statSync(join(skillsDir, n)).isDirectory()) : [];
 
@@ -77,23 +78,35 @@ export function checkRepo(root) {
       if (fm.name !== s) errors.push(`skills/${s}/SKILL.md: frontmatter name "${fm.name}" does not match folder`);
       if (!fm.description) errors.push(`skills/${s}/SKILL.md: frontmatter description missing`);
     }
-    for (const file of markdownFiles(skillRoot)) {
+    const linked = new Set();
+    const files = markdownFiles(skillRoot);
+    for (const file of files) {
       const rel = relative(root, file);
       const text = read(file);
+      for (const v of text.matchAll(/prepr-skills\/(\d+\.\d+\.\d+)/g))
+        if (v[1] !== pluginVersion) errors.push(`${rel}: prepr-skills/${v[1]} does not match plugin version ${pluginVersion}`);
       for (const target of links(text)) {
         if (/^(https?:|mailto:)/.test(target)) continue;
         const [pathPart, anchor] = target.split('#');
         const path = pathPart ? resolve(dirname(file), pathPart) : file;
         if (!(path + sep).startsWith(skillRoot + sep)) { errors.push(`${rel}: link ${target} escapes the skill folder`); continue; }
         if (!existsSync(path)) { errors.push(`${rel}: broken link ${target}`); continue; }
+        if (path !== file) linked.add(path);
         if (anchor && path.endsWith('.md') && !anchors(read(path)).has(anchor)) errors.push(`${rel}: broken anchor ${target}`);
       }
     }
+    for (const file of files)
+      if (file !== skillMd && !linked.has(file)) errors.push(`${relative(root, file)}: not linked from any file in the skill`);
   }
 
   if (existsSync(join(root, 'shared'))) for (const p of sync(root, { check: true })) errors.push(`${p}: differs from shared/`);
 
-  const version = JSON.parse(readFileSync(join(root, '.claude-plugin/plugin.json'), 'utf8')).version;
+  const version = pluginVersion;
+  const marketplace = join(root, '.claude-plugin/marketplace.json');
+  if (existsSync(marketplace)) {
+    const mv = JSON.parse(readFileSync(marketplace, 'utf8')).metadata?.version;
+    if (mv !== version) errors.push(`.claude-plugin/marketplace.json: metadata.version is "${mv}", expected "${version}"`);
+  }
   const prepr = JSON.parse(readFileSync(join(root, '.mcp.json'), 'utf8')).mcpServers?.prepr;
   if (prepr?.url !== MCP_URL) errors.push(`.mcp.json: url is "${prepr?.url}", expected "${MCP_URL}"`);
   if (prepr?.headers?.['X-Prepr-Client'] !== `prepr-skills/${version}`)

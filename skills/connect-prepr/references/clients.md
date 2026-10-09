@@ -193,6 +193,7 @@ Token:
       "type": "remote",
       "url": "https://mcp.prepr.io",
       "enabled": true,
+      "oauth": false,
       "headers": {
         "X-Prepr-Client": "prepr-skills/0.1.0",
         "Authorization": "Bearer {env:PREPR_MCP_TOKEN}"

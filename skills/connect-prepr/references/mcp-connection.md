@@ -28,6 +28,10 @@ the server ships new tools often.
    the server to this project and walks through authorization. Only
    `design-schema` continues without MCP. Every other skill stops here.
 
+If a skill these instructions name (such as `connect-prepr` or
+`create-schema`) is not installed, say so and point the user to
+https://docs.prepr.io/prepr-mcp-server/getting-started instead.
+
 ## The environment
 
 Every write must name its target environment, so know it for certain:

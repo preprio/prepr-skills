@@ -7,7 +7,7 @@ description: >-
   add comments, upload or import images, video, audio, documents, or other
   media into Prepr, find or reuse existing assets, write content in several
   locales, seed a fresh environment with sample content, or perform content
-  operations on up to a few dozen items. Also use it when the user asks
+  operations on up to 25 items. Also use it when the user asks
   Prepr questions that need reading or changing live content rather than
   project code.
 license: MIT
@@ -52,7 +52,7 @@ names the environment, an explicit yes, apply, verify. Server limits are in
    model.
 8. **Validate unfamiliar payloads.** Before the first create against a model
    you have not written to in this session, check the create tool's schema
-   for a validate-only option and use it. One call catches a wrong field
+   for a validate-only option (`validateOnly` on `create_item`) and use it. One call catches a wrong field
    structure before it lands.
 9. **Reads can lag writes.** A GraphQL read right after a successful write can
    be stale. Do not treat it as a failed write and do not retry; see
@@ -76,8 +76,8 @@ tools from the live tool list; never work from a remembered list.
 - **Scheduled unpublishing.** Take an item offline at a future date-time in one
   locale. The plan states the date, time zone and locale; confirm all three.
 - **Comments are for context.** When an automated edit needs explaining to
-  editors, a comment on the item is the right channel. It is the one write
-  that is safe to add without confirmation.
+  editors, a comment on the item is the right channel. Comments can notify
+  people, so include them in the plan with the edit they explain.
 
 ## Uploading assets
 
@@ -125,9 +125,9 @@ articles, not one.
 
 ## Larger imports
 
-Bulk calls handle up to 25 item IDs each. Imports of more than 25 items are
-out of scope for this skill. Do them in batches through the same plan →
-confirm loop, or ask Prepr about migration support:
+This skill handles up to 25 items per request, the size of one bulk call.
+Imports of more than 25 items, or from another system, are out of scope. Say
+so and point the user to Prepr's migration guide:
 https://docs.prepr.io/project-setup/migrating-content
 
 ## Typical requests

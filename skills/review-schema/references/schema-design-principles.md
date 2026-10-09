@@ -160,7 +160,7 @@ Casing per entity kind is a mechanic: mirror what the environment already uses. 
 Every entity and field carries two names for two different readers, and they are written in different registers. Keeping them apart is mechanical once stated, and mixing them up is one of the most visible defects in a schema.
 
 - **The display name is prose.** `body` is read by everyone: spaces, ordinary sentence case — "Cards per row", "Show in footer navigation". Not Title Case, which makes a form look like a menu and drifts within a week as some fields get it and some do not; and never an identifier, because an underscore in a label means someone pasted the `api_id` into it.
-- **The API name is an identifier**, and it follows the spec's casing rules per entity kind — PascalCase for models, components and enums, snake_case for fields, SCREAMING_SNAKE for enum values. A display name that reaches the API, or an identifier that reaches the form, is a straightforward finding.
+- **The API name is an identifier**, and it follows Prepr's casing conventions per entity kind — PascalCase for models, components and enums, snake_case for fields, SCREAMING_SNAKE for enum values. A display name that reaches the API, or an identifier that reaches the form, is a straightforward finding.
 - **The two names may be in different languages, and usually should be.** The label follows the editors — a Dutch team gets "Kop" and "Uitgelicht" — while the `api_id` stays English whatever the editorial language, because it appears in queries, generated types, and front-end code, is read by developers who need not share that language, and outlives the team that chose it. The shared field vocabulary is part of that layer, so it stays English even where every label is Dutch. Decide it once per project and write it down: left to itself a schema ends up half in each language, which is worse than either. This is not localization — `body` is a single string, so a schema has one set of labels; locales translate content values, never schema names.
 - **They do not have to be transliterations of each other.** The display name may be longer and clearer than the identifier allows: `show_in_footer` labelled "Show in footer navigation", `seo` labelled "Search engine settings". Match the meaning, not the characters.
 
@@ -232,11 +232,11 @@ Prices in Integer **cents** (`price_monthly`, `price_annually`). Display-formatt
 
 ### Localization and translation
 
-AI translation is a project decision, not a default — it sends field content through OpenAI, which privacy- or compliance-sensitive projects may not accept. Ask (a design-schema posture question, alongside locales). Where it is wanted: mark human-language fields with `openai_options: { "translate": "1" }`, leave it off URLs, names, email addresses, and identifiers, and decide per field at design time. Where it is not, editors translate manually or via an external workflow — see localize-content.
+AI translation is a project decision, not a default — it sends field content through OpenAI, which privacy- or compliance-sensitive projects may not accept. Ask (a design-schema posture question, alongside locales). Where it is wanted: mark human-language fields with `openai_options: { "translate": "1" }`, leave it off URLs, names, email addresses, and identifiers, and decide per field at design time. Where it is not, editors translate manually or via an external workflow.
 
 ### Personalization and A/B testing
 
 - Follow the project's personalization posture (ask if it is unknown). In scope or "maybe later" → enable `personalization: true` and `a_b_testing: true` broadly (every `sections` and `blocks` stack) — cheap at design time, painful to retrofit. A deliberate "no" → leave the flags off; they add variant controls to the editor UI that a team not running tests will only find confusing.
 - Add a `Personalization` model: `internal_title` + its own `sections` stack, accepted inside every page's sections stack. Editors wrap any group of sections in per-segment variants without schema changes.
-- The frontend must send the visitor/customer identifier for adapted responses — see the `query-content` skill.
+- The front end must send the visitor/customer identifier for adapted responses.
 - Half-enabled is the state to look for: the flags on some stacks and not others, so editors can vary one section and not the next with nothing in the UI explaining why.

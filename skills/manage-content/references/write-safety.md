@@ -1,7 +1,9 @@
 # Write safety
 
 Every write to Prepr (schema or content) follows these four steps. The Prepr
-MCP server has no dry-run, and a token or OAuth session can reach production.
+MCP schema tools have no dry-run (some content tools have a validate-only
+option; see the tool's schema), and a token or OAuth session can reach
+production.
 
 ## Plan
 
@@ -13,7 +15,8 @@ Before any write, show the user:
 - every change, one line each. For schema: entity, field API id, type,
   required, and notable settings. For content: model, item, locale, fields
   changed, and the workflow stage it ends in;
-- anything destructive, marked as such.
+- anything destructive, marked as such. Removing an option from an enum or
+  an allowed type from a field counts: items that use it are affected.
 
 ## Confirm
 
@@ -21,16 +24,21 @@ Wait for an explicit yes to that plan. A yes covers only the plan you showed.
 If anything changes (an extra field, a different type, another environment),
 show the new plan and ask again. Silence or "looks fine so far" is not a yes.
 
+Comments, workflow-stage changes and assignments are writes too (they can
+notify people), so they belong in the plan like any other change.
+
 ## Apply
 
 - Follow the server's order. Schema: create the entity (it starts with no
   fields), then add fields one call each, in plan order.
-- Stop at the first error. Do not retry with guessed parameters and do not
-  delete what was already created. Report what was applied, what failed with
+- Stop at the first error, unless the confirmed plan says to continue (a
+  bulk content operation where the user chose that). Do not retry with
+  guessed parameters and do not delete what was already created. Report what was applied, what failed with
   the server's message, and what was not attempted.
 - Lists are replaced, not appended. Passing `types` on a field or an option
-  list on an enum replaces the whole list. Read first, merge your change into
-  the current list, then write the merged list.
+  list on an enum replaces the whole list. Read first,
+  immediately before the write (not from an earlier read in the session),
+  merge your change into the current list, then write the merged list.
 - A field's type cannot be changed with an update. Changing type means a new
   field plus content migration; plan it as such.
 

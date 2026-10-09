@@ -156,9 +156,9 @@ follow-up question.
 Rules that keep the report useful:
 
 - **Which group a finding belongs in depends on whether content exists.**
-  Check with a content query. On an empty environment the middle group is
-  empty and everything structural is free; say so, because it is the best
-  news a review can carry.
+  Check with a content query. On an empty environment nothing needs a content
+  migration yet and every structural fix is free; say so, because it is the
+  best news a review can carry.
 - **What belongs in "Fix before content exists"** is the list in
   [Decisions that are expensive to reverse](references/schema-design-principles.md#decisions-that-are-expensive-to-reverse).
 - **Bundle mass findings.** "19 fields have no description" is one finding,
