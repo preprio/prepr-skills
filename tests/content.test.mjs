@@ -125,6 +125,15 @@ RULES.push(
   { file: 'CHANGELOG.md', must: ['## Unreleased', '## 0.1.0'] },
 );
 
+// Maintainer skill
+RULES.push({
+  file: '.claude/skills/check-freshness/SKILL.md',
+  must: ['name: check-freshness', 'FRESHNESS.md', 'https://docs.prepr.io/prepr-mcp-server/release-notes',
+         'safety-limitations', 'Source:', 'Last verified', 'report before changing', 'content.test.mjs', 'CHANGELOG.md',
+         'unreachable', 'list_schema', 'internal: true'],
+  mustNot: ['schema-spec', 'prepr-toolkit', 'action-schema-validation', 'recommedations'],
+});
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;

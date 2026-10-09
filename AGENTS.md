@@ -23,6 +23,9 @@ in `skills/`.
   not contain; `check.test.mjs` and `bump.test.mjs` test the scripts.
 - `docs/scenarios.md`: manual scenarios to run against a Scratch environment
   before a release. `FRESHNESS.md`: upstream facts the skills depend on.
+- `.claude/skills/`: maintainer-only skills such as `check-freshness` (run it
+  after an MCP release-notes entry or before a release). They must set
+  `metadata.internal: true`, or `npx skills add` installs them for end users.
 
 ## Rules
 
