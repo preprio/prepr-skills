@@ -63,7 +63,8 @@ test pins on one line.
 
 ## Checks
 
-Run all of these before committing; CI runs the same:
+Run all of these before committing; CI runs the same. Keep `CLAUDE.md` in
+`.claude/`: at the repo root it fails `plugin validate --strict`.
 
 ```bash
 node scripts/sync-shared.mjs --check && node scripts/check.mjs && node --test && claude plugin validate --strict .
