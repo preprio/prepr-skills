@@ -26,6 +26,14 @@ RULES.push({
   mustNot: ['mcp.prepr.io/mcp', 'YOUR_ACCESS_TOKEN'],
 });
 
+RULES.push({
+  file: 'skills/connect-prepr/SKILL.md',
+  must: ['name: connect-prepr', 'references/clients.md', 'references/mcp-connection.md', 'OAuth', 'PREPR_MCP_TOKEN',
+         'support@prepr.io', 'existing entry', 'other servers', 'list_schema', 'Settings → Integrations → MCP Server',
+         'shell profile', 'environment'],
+  mustNot: ['../', 'mcp.prepr.io/mcp', 'paste your token', 'enter your token'],
+});
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     assert.ok(existsSync(r.file), `${r.file} missing`);
