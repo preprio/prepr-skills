@@ -59,6 +59,13 @@ RULES.push({
   mustNot: ['../', 'prepr/schema/', 'validator', 'Blocks import', 'CI guardrail', 'sync-schema', 'scripts/'],
 });
 
+RULES.push({
+  file: 'skills/manage-content/SKILL.md',
+  must: ['name: manage-content', 'references/write-safety.md', 'references/mcp-limits.md', 'connect-prepr',
+         'upload_asset_from_public_url', 'create_asset_upload_url', 'unpublish', 'one locale per', 'workflow', 'environment'],
+  mustNot: ['../', 'Mutation API', 'upload_asset`', 'migrate-content', 'manage-environments'],
+});
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     assert.ok(existsSync(r.file), `${r.file} missing`);
