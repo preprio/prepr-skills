@@ -27,6 +27,14 @@ Use the agent you are running in when you know it. Otherwise look for
 `opencode.json` in the project. If more than one client is in use, ask which
 ones to configure. If nothing points to a client, ask.
 
+Then look for an existing `prepr` entry in every place the client reads:
+
+- Claude Code: the project `.mcp.json`, and `claude mcp get prepr` (local and
+  user scopes in `~/.claude.json` take precedence over the project file).
+- VS Code: `.vscode/mcp.json` and `.mcp.json`.
+- Cursor: `.cursor/mcp.json`. Codex: `.codex/config.toml`. OpenCode:
+  `opencode.json`.
+
 ## Step 2: Choose the auth route
 
 - **OAuth** (default): Claude Code, Claude Desktop, Cursor, Codex, OpenCode,
@@ -38,13 +46,21 @@ ones to configure. If nothing points to a client, ask.
 ## Step 3: Write the config
 
 Use the snippet for the client from [clients.md](references/clients.md). A
-project-root `.mcp.json` serves Claude Code, VS Code and Copilot CLI at once
-for OAuth; see the note at the top of clients.md.
+project-root `.mcp.json` serves Claude Code and VS Code at once for OAuth; see
+the note at the top of clients.md. Copilot CLI is token-only and gets its own
+entry named `prepr-token`.
 
 - Merge into the existing file. Keep other servers exactly as they are.
-- If an existing entry named `prepr` is present (for example with the old
-  `/mcp` URL), update its URL and headers in place rather than adding a
-  second entry.
+- If an existing `prepr` HTTP entry is present (for example with the old
+  `/mcp` URL), update it in place in the file where it lives, even if that is
+  not the file you would pick for a new entry: URL, headers, and the client's
+  required `"type"`. Never leave two `prepr` entries that the same client reads.
+- If the existing entry is a stdio or `mcp-remote` entry (a `command` instead
+  of a `url`), replace the whole entry, and only after the user agrees.
+  Otherwise print the snippet.
+- If an existing entry holds a literal token, never print it: mask it as
+  `Bearer ****` in anything you show. Replace it with the env-var reference and
+  advise the user to rotate the token, since it has been stored in a file.
 - If the file cannot be edited safely (JSON with comments, or an entry in a
   shape you do not recognise), do not touch it. Print the snippet and tell the
   user where it goes.

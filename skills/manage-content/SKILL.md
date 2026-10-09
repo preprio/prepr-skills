@@ -57,10 +57,12 @@ names the environment, an explicit yes, apply, verify. Server limits are in
 9. **Reads can lag writes.** A GraphQL read right after a successful write can
    be stale. Do not treat it as a failed write and do not retry; see
    [mcp-limits.md](references/mcp-limits.md#read-after-write-lag).
-10. **Scale caution to what the content is worth.** In a Scratch environment
-    the user is iterating in, creating published content and recreating
-    freely is fine; say that you assumed this. Switch back to full caution as
-    soon as published content or an environment someone depends on is in
+10. **Scale caution to what the content is worth.** Only after
+    the user has said that the named environment is a Scratch environment they are
+    iterating in, you may create content as published and confirm a whole
+    session's work in one plan instead of per batch. Deletes and publishes of
+    existing content still need an explicit yes. Switch back to full caution
+    as soon as published content or an environment someone depends on is in
     scope. Rules 1, 5, 6 and 7 always apply.
 
 ## Workflow and collaboration

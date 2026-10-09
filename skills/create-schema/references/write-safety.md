@@ -7,7 +7,9 @@ MCP server has no dry-run, and a token or OAuth session can reach production.
 
 Before any write, show the user:
 
-- the **environment** you will write to, by name;
+- the **environment** you will write to, by name. If you do not know it for
+  certain (see [the environment](mcp-connection.md#the-environment)), ask, and
+  do not write until the user confirms it;
 - every change, one line each. For schema: entity, field API id, type,
   required, and notable settings. For content: model, item, locale, fields
   changed, and the workflow stage it ends in;

@@ -11,8 +11,8 @@ Look at your live tool list. Do not trust a remembered or written tool list;
 the server ships new tools often.
 
 1. **Connected.** Prepr tools are present (for example `list_schema`).
-   Continue. If a tool response names the environment, say which environment
-   you are working in.
+   Continue, and establish [the environment](#the-environment) before any
+   write.
 2. **Registered, not authorized.** The `prepr` server is in the client's MCP
    config but its tools are missing, or the client reports that
    authorization is needed. Tell the user the one step that authorizes it in
@@ -28,13 +28,27 @@ the server ships new tools often.
    the server to this project and walks through authorization. Only
    `design-schema` continues without MCP. Every other skill stops here.
 
-During OAuth the user picks one Prepr environment. Switching environment
-means authorizing again.
+## The environment
+
+Every write must name its target environment, so know it for certain:
+
+- **Project-level OAuth or a token** binds the connection to one environment
+  (picked during sign-in, or the one the token was issued for). Switching
+  means authorizing again.
+- **Organization-level OAuth** can reach several environments. Check whether
+  the tools take an environment argument; if they do, pass the environment
+  explicitly on every call that writes.
+- Take the environment from a tool response or a tool's environment argument.
+  If you cannot determine it, ask the user which environment the connection
+  points at, and do not write until they confirm it. Never infer it from
+  memory, the project, or names mentioned in the conversation.
 
 ## Rules
 
-- Never ask for an MCP token, never read one from a file, never print or write
-  one. Token setups reference the env var `PREPR_MCP_TOKEN` only.
+- Never ask for an MCP token. If you come across one (in a config file or a
+  command's output), never print, copy or write it; mask it as `Bearer ****`
+  in anything you show. Token setups reference the env var `PREPR_MCP_TOKEN`
+  only.
 - Do not retry a failing connection in a loop. Report what you saw.
 - In a non-interactive session, an unauthorized server cannot be connected.
   Say that authorization is needed and stop.

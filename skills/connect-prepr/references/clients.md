@@ -6,11 +6,12 @@ Server URL for every client: `https://mcp.prepr.io`. File entries also send
 Formats verified against each vendor's docs on 2026-10-09. If a client
 rejects a snippet, check its `Source:` link; vendors change formats.
 
-**One file, several clients.** A project-root `.mcp.json` with `mcpServers`
-is read by Claude Code, VS Code (portable format) and GitHub Copilot CLI.
-Write the OAuth entry there once rather than in three places. Only Claude Code
-expands `${PREPR_MCP_TOKEN}` in that file, so a token header goes in `.mcp.json`
-only when Claude Code is the only client reading it.
+**One file, two clients.** A project-root `.mcp.json` with `mcpServers` is
+read by Claude Code and VS Code (portable format). Write the OAuth entry there
+once rather than twice. Only Claude Code expands `${PREPR_MCP_TOKEN}` in that
+file, so a token header goes in `.mcp.json` only when Claude Code is the only
+client reading it. GitHub Copilot CLI also reads this file but is token-only;
+see its section.
 
 ## Claude Code
 
@@ -216,15 +217,18 @@ own terminal; their shell expands the variable and Copilot stores the result
 in `~/.copilot/mcp-config.json`, outside the repository:
 
 ```bash
-copilot mcp add --transport http --header "Authorization: Bearer $PREPR_MCP_TOKEN" --header "X-Prepr-Client: prepr-skills/0.1.0" prepr https://mcp.prepr.io
+copilot mcp add --transport http --header "Authorization: Bearer $PREPR_MCP_TOKEN" --header "X-Prepr-Client: prepr-skills/0.1.0" prepr-token https://mcp.prepr.io
 ```
 
-Copilot CLI also reads a project `.mcp.json`; a project definition named
-`prepr` takes precedence over the user one. If the project `.mcp.json` already
-has a `prepr` entry without a token (written for another client), tell the user
-that Copilot CLI will use that entry and fail to authenticate.
+The entry is named `prepr-token`, not `prepr`. Copilot CLI also reads the
+project `.mcp.json`, and a project definition named `prepr` would take
+precedence over a user-level `prepr`. If the project has an OAuth `prepr`
+entry for Claude Code or VS Code, Copilot CLI will list it as failing to
+authenticate; tell the user that is expected and that `prepr-token` is the one
+it uses.
 
-Check: `copilot mcp list`.
+Check: let the user run `copilot mcp list` themselves; its output may include
+header values.
 
 Source: https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers
 

@@ -77,6 +77,22 @@ RULES.push(
     must: ['Scratch', 'connect-prepr', 'PREPR_MCP_TOKEN', 'enum', 'confirmToken', 'review-schema', 'unpublish'] },
 );
 
+// Final-review fixes
+RULES.push(
+  { file: 'skills/connect-prepr/SKILL.md',
+    must: ['.vscode/mcp.json', 'claude mcp get prepr', 'whole entry', 'mask', 'rotate', '"type"', 'prepr-token'] },
+  { file: 'skills/connect-prepr/references/clients.md',
+    must: ['prepr-token', 'let the user run'],
+    mustNot: ['and GitHub Copilot CLI. Write the OAuth entry there once'] },
+  { file: 'shared/mcp-connection.md',
+    must: ['organization', 'never print, copy or write', 'ask the user which environment', 'environment argument'] },
+  { file: 'shared/write-safety.md',
+    must: ['do not write until'] },
+  { file: 'skills/manage-content/SKILL.md',
+    must: ['the user has said'],
+    mustNot: ['recreating freely'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     assert.ok(existsSync(r.file), `${r.file} missing`);
