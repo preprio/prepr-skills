@@ -95,3 +95,7 @@ Prompt: `Create a draft article "Hello Prepr", schedule it to unpublish next Fri
 
 | Date | Version | Scenario | Result | Notes |
 |---|---|---|---|---|
+| 2026-10-09 | 0.1.0 | Smoke: `claude plugin validate .` | Pass | Marketplace manifest valid |
+| 2026-10-09 | 0.1.0 | Smoke: `npx skills add <local> -a cursor codex -y` | Pass | 5 skills installed to `.agents/skills/`; all synced references present; 0 broken relative links |
+| 2026-10-09 | 0.1.0 | Smoke: Claude Code plugin install + `/mcp` | Not run | Needs the maintainer's Claude Code config (replaces the `prepr` marketplace from prepr-plugins) |
+| 2026-10-09 | 0.1.0 | Scenarios 1–7 | Not run | Need an authorized Prepr Scratch environment |
