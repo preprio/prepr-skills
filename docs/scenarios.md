@@ -118,3 +118,5 @@ Prompt: `Create a draft article "Hello Prepr", schedule it to unpublish next Fri
 | 2026-10-09 | 0.1.0 | 7 manage-content | Pass (partial) | Asked locale and date, `validateOnly` before each create, draft kept, stopped when unpublish schedule on a never-published item returned `{"success":false}`. Asset upload skipped: no MCP tool deletes assets, so it can't be cleaned up |
 | 2026-10-09 | 0.1.0 | Cleanup | Pass | All SkillsTest items, models and enum deleted with two-step confirms; verified 29 entities, 0 SkillsTest items |
 
+| 2026-10-09 | 0.1.0 | Routing (`scripts/eval-routing.mjs`) | Pass | 18/18 prompts loaded the expected skill (plugin loaded with `--plugin-dir`, no MCP) |
+| 2026-10-09 | 0.1.0 | Codex plugin install | Pass | codex-cli 0.162.0 in an isolated `CODEX_HOME`: marketplace add, `plugin add prepr@prepr` → installed, enabled, 0.1.0; bundled `prepr` MCP listed, "Not logged in" |
