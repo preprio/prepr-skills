@@ -222,7 +222,8 @@ RULES.push(
 // Findings from live use of the MCP server
 RULES.push(
   { file: 'shared/mcp-limits.md',
-    must: ['Missing required fields for workflow stage Done', '403', 'review_urls', 'additional properties'] },
+    must: ['Missing required fields for workflow stage Done', '403', 'additional properties'],
+    mustNot: ['review_urls/0/url'] },
   { file: 'skills/manage-content/SKILL.md',
     must: ['returned slug', 'archived', 'locales', 'query_assets'] },
   { file: 'skills/connect-prepr/SKILL.md', must: ['same environment'] },

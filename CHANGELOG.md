@@ -11,8 +11,7 @@ Fixes from an end-to-end review and more live MCP findings.
   unique; manage-content triggers on personalized and A/B variants.
 - Known errors: the required-field error at Done depends on the stage the
   environment validates at and on its setting for hidden conditional
-  fields; an asset upload 403 first asks the user to check permissions. The `review_urls` row is marked as
-  temporary until the announced server fix ships.
+  fields; an asset upload 403 first asks the user to check permissions.
 
 ## 0.3.0 (2026-10-13)
 
@@ -32,8 +31,8 @@ fixes from live use of the MCP server.
   and a note that archived items still show on preview tokens.
 - connect-prepr: check that the app's GraphQL token reads the same
   environment as MCP.
-- Known errors: required component fields at Done, asset upload 403,
-  `review_urls` placeholders, and parameters that differ per tool.
+- Known errors: required component fields at Done, asset upload 403, and
+  parameters that differ per tool.
 - Deletes: a request to delete is not the confirmation; show the preview and
   wait for a yes, also during cleanup.
 
