@@ -1,7 +1,13 @@
 {
   "name": "prepr",
-  "owner": { "name": "Prepr", "url": "https://prepr.io" },
-  "metadata": { "description": "Official Prepr CMS plugin marketplace", "version": "0.1.0" },
+  "owner": {
+    "name": "Prepr",
+    "url": "https://prepr.io"
+  },
+  "metadata": {
+    "description": "Official Prepr CMS plugin marketplace",
+    "version": "0.2.0"
+  },
   "plugins": [
     {
       "name": "prepr",
