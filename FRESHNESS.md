@@ -28,6 +28,7 @@ the client rows when a client changes its MCP config format.
 | Query filters | `query_items` / `query_assets` conditions under `filters` | release-notes (2026-10-06) | 2026-10-09 |
 | Asset tools | `upload_asset_from_public_url`, `create_asset_upload_url` (replace `upload_asset`); 10 GB | release-notes (2026-10-06, 2026-07-21) | 2026-10-09 |
 | Scheduled unpublishing | Date-time plus locale | release-notes (2026-10-06) | 2026-10-09 |
+| Adaptive content | Stack variants share `_context.group`; personalized entries add `_context.segments`; A/B entries use `segments: ["A"]`/`["B"]` plus `ab_test: true`; the simplified stack format in `update_item` drops `_context`, JSON Pointer writes keep it; segment ids via GraphQL `_Segments` | live scenario run (manage-content); not yet in the public docs | 2026-10-13 |
 | Claude Code config | `.mcp.json` `mcpServers`, `"type": "http"` required, `${VAR}` in headers | https://code.claude.com/docs/en/mcp | 2026-10-09 |
 | Cursor config | `.cursor/mcp.json` `mcpServers`, `url` + `headers`, `${env:VAR}` | https://cursor.com/docs/mcp | 2026-10-09 |
 | VS Code config | Portable `.mcp.json` preferred; `.vscode/mcp.json` deprecated but supports `inputs` + `${input:id}` | https://code.visualstudio.com/docs/agents/reference/mcp-configuration | 2026-10-09 |

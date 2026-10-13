@@ -78,6 +78,10 @@ tools from the live tool list; never work from a remembered list.
 - **Comments are for context.** When an automated edit needs explaining to
   editors, a comment on the item is the right channel. Comments can notify
   people, so include them in the plan with the edit they explain.
+- **Personalized and A/B variants** are stack entries tied together by a
+  hidden `_context`. Follow
+  [adaptive-content.md](references/adaptive-content.md): the simplified stack
+  format drops it, and a careless stack write deletes existing variants.
 
 ## Uploading assets
 

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.2.0 (2026-10-13)
+
+Personalization and A/B tests in manage-content.
+
+- manage-content: add adaptive-content.md for personalized and A/B test
+  stack variants (`_context` groups, segment ids, JSON Pointer writes,
+  per-segment verification).
+
 ## 0.1.0 (2026-10-09)
 
 First release.

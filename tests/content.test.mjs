@@ -186,6 +186,16 @@ RULES.push(
   { file: 'FRESHNESS.md', must: ['Environment AI context'] },
 );
 
+// Adaptive content: personalization and A/B test variants in stacks
+RULES.push(
+  { file: 'skills/manage-content/SKILL.md', must: ['references/adaptive-content.md', 'personaliz', 'A/B'] },
+  { file: 'skills/manage-content/references/adaptive-content.md',
+    must: ['_context', 'group', 'segments', 'JSON Pointer', '_Segments', 'includeRaw', 'replaces the whole',
+           'Prepr-Segments', 'default variant', '## A/B tests', 'ab_test', '["A"]', '["B"]'],
+    mustNot: ['../', 'Mutation API'] },
+  { file: 'FRESHNESS.md', must: ['Adaptive content'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;
