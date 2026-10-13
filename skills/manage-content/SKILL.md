@@ -117,9 +117,12 @@ Rules:
   call.
 - Uploads are writes. Confirm bulk uploads, and report exactly which files
   landed and which did not.
-- If an upload is refused (for example a 403), the token may not be allowed
-  to upload assets. Ask the user to upload the files in Prepr, then find them
-  with `query_assets` by name and link them.
+- If an upload is refused (for example a 403), the user's role or the
+  environment's MCP permissions may not allow asset uploads. Ask the user to
+  check the asset permissions (their role, and Settings → Integrations → MCP
+  Server) and retry once they are fixed. If they should stay off, ask the
+  user to upload the files in Prepr, then find them with `query_assets` by
+  name and link them.
 
 ## Seeding a fresh environment
 

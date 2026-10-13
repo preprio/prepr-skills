@@ -240,7 +240,11 @@ RULES.push(
   { file: 'skills/manage-content/SKILL.md', must: ['A/B test variants'] },
   { file: 'skills/design-schema/SKILL.md', must: ['read the files in `prepr/schema/`'] },
   { file: 'skills/connect-prepr/SKILL.md', must: ['(`sync-schema`)'] },
-  { file: 'FRESHNESS.md', must: ['import preview'] },
+  { file: 'FRESHNESS.md', must: ['import preview', 'Ignore required fields with conditional visibility'] },
+  { file: 'shared/mcp-limits.md', must: ['Ignore required fields with conditional visibility', 'Required field validation'],
+    mustNot: ['The check applies even when the editor hides that field'] },
+  { file: 'shared/mcp-limits.md', must: ['check the asset permissions'] },
+  { file: 'skills/manage-content/SKILL.md', must: ['check the asset permissions'] },
 );
 
 

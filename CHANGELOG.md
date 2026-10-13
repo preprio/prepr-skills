@@ -9,6 +9,10 @@ Fixes from an end-to-end review and more live MCP findings.
   sync-schema points to Prepr's import preview and names both known causes
   of an empty import error; schema files must keep GraphQL type names
   unique; manage-content triggers on personalized and A/B variants.
+- Known errors: the required-field error at Done depends on the stage the
+  environment validates at and on its setting for hidden conditional
+  fields; an asset upload 403 first asks the user to check permissions. The `review_urls` row is marked as
+  temporary until the announced server fix ships.
 
 ## 0.3.0 (2026-10-13)
 
