@@ -799,3 +799,7 @@ Models and fields carry optional AI-guidance keys consumed by Prepr's AI feature
 | Field `api_id` | snake_case | `cards_per_row` |
 | Display names (`body`) | Human-readable | `"Cards per row"` |
 | File name | the entity's own name, lowercased, no separators and no type prefix or suffix | `HeroBlock` → `heroblock.json` |
+
+GraphQL type names must be unique across all files: model `body_singular`
+and `body_plural`, enum `body_singular`, remote source `body_singular` and
+component `api_id`. The validator checks this.

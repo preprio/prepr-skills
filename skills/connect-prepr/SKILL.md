@@ -129,5 +129,5 @@ Settings → Integrations → MCP Server, while keeping them on in development.
 ## What's next
 
 Offer the next step that fits: design a content model (`design-schema`),
-review the existing schema (`review-schema`), or work with content
-(`manage-content`).
+review the existing schema (`review-schema`), keep the schema in Git
+(`sync-schema`), or work with content (`manage-content`).

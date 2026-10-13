@@ -7,8 +7,9 @@ description: >-
   Azure DevOps, get local schema file changes into a Prepr environment,
   export an environment's schema to the repository, promote schema between
   development, acceptance and production, add schema validation to CI,
-  debug a schema import that fails or returns github.validation.failed, or
-  asks why schema file edits have not appeared in Prepr. Also use it when
+  debug a schema import that fails or returns github.validation.failed,
+  check whether the schema files and an environment have drifted, or asks
+  why schema file edits have not appeared in Prepr. Also use it when
   the user considers direct environment-to-environment sync.
 license: MIT
 metadata:
@@ -23,8 +24,8 @@ can delete fields and their content, so the goal is a change that is
 reviewed before it lands and can be reverted. That is what Git sync gives
 you and the alternatives do not.
 
-Read [schema-route.md](references/schema-route.md) first: it explains when
-the files are the source of truth and what Export and Import do.
+Read [schema-route.md](references/schema-route.md) first: it explains how
+the files and the environment stay in step and what Export and Import do.
 
 **The user runs Export and Import in Prepr.** Your part is valid files, an
 accurate impact assessment, and telling the user exactly what will happen.
@@ -118,11 +119,6 @@ The repository side is yours:
    only, or both). Write it in the project's README or agent instructions;
    newcomers get it wrong.
 
-Once connected there are two loops. Editing files: export, edit, validate
-in CI, review the diff, merge, run Import in Prepr, verify. Editing live
-through MCP: check nothing waits for an Import, make the change, run Export,
-merge the export.
-
 ## Editing schema files
 
 Follow [schema-files.md](references/schema-files.md) for keys, field types
@@ -144,8 +140,13 @@ environment and says whether it is production:
   removes its content, and there is no undo.
 
 With MCP connected, build this list by comparing `list_schema` and
-`get_schema_entity` with the files. Without MCP, ask the user to export the
-target to a branch and diff it.
+`get_schema_entity` with the files, matched as in
+[Drift](references/schema-route.md#drift). Without MCP, ask the user to
+export the target to a branch and diff it.
+
+Prepr validates the files and then shows its own import preview before
+anything changes. Ask the user to compare that preview with your assessment
+and to stop if they differ.
 
 ## What direct sync does, if the user chooses it
 
@@ -177,8 +178,9 @@ import.
 - **An empty error list is not a hint.** `github.validation.failed` with
   `data: "[]"` says nothing about the cause. Say so, and ask the user for
   the detailed log from Prepr's log viewer before proposing a fix.
-- **Check file names first.** Names that do not match their entity
-  identifiers are the one known cause of an empty error list.
+- **Check the known causes first.** File names that do not match their
+  entity names, and a `schema_version` that is not a released API version
+  (see [Validation is not import](references/schema-files.md#validation-is-not-import)).
 - **Read where the log stopped.** The import reports each entity it
   completes. If it reached the last entity alphabetically, every entity
   passed on its own and the failure is a check on the whole schema.
