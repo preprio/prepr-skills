@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+Fixes from an end-to-end review and more live MCP findings.
+
+- Review fixes: skills that work on schema files no longer stop without
+  MCP; drift matches entities on name the way Import does and flags renames;
+  sync-schema points to Prepr's import preview and names both known causes
+  of an empty import error; schema files must keep GraphQL type names
+  unique; manage-content triggers on personalized and A/B variants.
+
 ## 0.3.0 (2026-10-13)
 
 Schema kept in Git and edited live or in files, a new sync-schema skill, and

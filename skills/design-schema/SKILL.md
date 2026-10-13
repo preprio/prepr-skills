@@ -42,7 +42,8 @@ reshaping that will migrate existing content.
 [the check](references/mcp-connection.md#the-check). If Prepr tools are
 present, page through `list_schema` before asking anything: reuse existing
 models and components, and avoid name clashes. This skill also works
-without MCP; then ask the user what already exists.
+without MCP; then read the files in `prepr/schema/` if the project has them,
+or ask the user what already exists.
 
 ## The route to an agreed model
 

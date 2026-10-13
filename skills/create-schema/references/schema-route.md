@@ -67,8 +67,12 @@ not documented. Assume the Import overwrites it.
 
 When an environment and its files disagree, find out which is right before
 changing either. Compare with `list_schema` and `get_schema_entity` against
-the files: match a file to its entity by `ref` (the entity's `ref`, not its
-`id`, which differs), then list each difference, and ask the user whether to export (the
-environment wins) or import (the files win). An import overwrites each entity
-with its file, so expect fields missing from a file to be removed, and
-removing a field removes its content.
+the files. Match them the way Import does: a model by its Singular name, a
+component, enum or remote source by its Type name, both lowercased, which is
+also the file name. Never match on `id`; it differs between environments.
+The same `ref` under another name is a rename, and Import then creates the
+new entity and deletes the old one when no content uses it (an inference
+from the docs; warn about it). List each difference, then ask the user
+whether to export (the environment wins) or import (the files win). An
+import overwrites each entity with its file, so expect fields missing from a
+file to be removed, and removing a field removes its content.

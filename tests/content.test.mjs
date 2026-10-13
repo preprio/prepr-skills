@@ -229,6 +229,21 @@ RULES.push(
   { file: 'shared/write-safety.md', must: ['is not the yes', 'also in a cleanup'] },
 );
 
+// Review 2026-10-13: route contradictions, docs alignment, routing gaps
+RULES.push(
+  { file: 'shared/mcp-connection.md', mustNot: ['Only\n  `design-schema` continues without MCP', 'Every other skill stops here'],
+    must: ['schema files in `prepr/schema/`'] },
+  { file: 'shared/schema-route.md', must: ['Singular name', 'Type name', 'rename'] },
+  { file: 'skills/sync-schema/SKILL.md', must: ['import preview', 'schema_version', 'drift'],
+    mustNot: ['source of truth', 'the one known cause'] },
+  { file: 'shared/schema-files.md', must: ['unique across'] },
+  { file: 'skills/manage-content/SKILL.md', must: ['A/B test variants'] },
+  { file: 'skills/design-schema/SKILL.md', must: ['read the files in `prepr/schema/`'] },
+  { file: 'skills/connect-prepr/SKILL.md', must: ['(`sync-schema`)'] },
+  { file: 'FRESHNESS.md', must: ['import preview'] },
+);
+
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;

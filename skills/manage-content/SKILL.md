@@ -6,7 +6,8 @@ description: >-
   schedule content to go offline, change workflow stages, assign items or
   add comments, upload or import images, video, audio, documents, or other
   media into Prepr, find or reuse existing assets, write content in several
-  locales, seed a fresh environment with sample content, or perform content
+  locales, add personalized or A/B test variants to a page, seed a fresh
+  environment with sample content, or perform content
   operations on up to 25 items. Also use it when the user asks
   Prepr questions that need reading or changing live content rather than
   project code.
