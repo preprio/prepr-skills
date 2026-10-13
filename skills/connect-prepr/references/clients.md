@@ -1,7 +1,7 @@
 # Prepr MCP config per client
 
 Server URL for every client: `https://mcp.prepr.io`. File entries also send
-`X-Prepr-Client: prepr-skills/0.2.0` so Prepr can tell skill traffic apart.
+`X-Prepr-Client: prepr-skills/0.3.0` so Prepr can tell skill traffic apart.
 
 Formats verified against each vendor's docs on 2026-10-09. If a client
 rejects a snippet, check its `Source:` link; vendors change formats.
@@ -31,7 +31,7 @@ OAuth:
     "prepr": {
       "type": "http",
       "url": "https://mcp.prepr.io",
-      "headers": { "X-Prepr-Client": "prepr-skills/0.2.0" }
+      "headers": { "X-Prepr-Client": "prepr-skills/0.3.0" }
     }
   }
 }
@@ -46,7 +46,7 @@ Token (Claude Code expands `${VAR}` in `url` and `headers`):
       "type": "http",
       "url": "https://mcp.prepr.io",
       "headers": {
-        "X-Prepr-Client": "prepr-skills/0.2.0",
+        "X-Prepr-Client": "prepr-skills/0.3.0",
         "Authorization": "Bearer ${PREPR_MCP_TOKEN}"
       }
     }
@@ -70,7 +70,7 @@ OAuth:
   "mcpServers": {
     "prepr": {
       "url": "https://mcp.prepr.io",
-      "headers": { "X-Prepr-Client": "prepr-skills/0.2.0" }
+      "headers": { "X-Prepr-Client": "prepr-skills/0.3.0" }
     }
   }
 }
@@ -84,7 +84,7 @@ Token:
     "prepr": {
       "url": "https://mcp.prepr.io",
       "headers": {
-        "X-Prepr-Client": "prepr-skills/0.2.0",
+        "X-Prepr-Client": "prepr-skills/0.3.0",
         "Authorization": "Bearer ${env:PREPR_MCP_TOKEN}"
       }
     }
@@ -118,7 +118,7 @@ file. The portable format does not support input variables.
       "type": "http",
       "url": "https://mcp.prepr.io",
       "headers": {
-        "X-Prepr-Client": "prepr-skills/0.2.0",
+        "X-Prepr-Client": "prepr-skills/0.3.0",
         "Authorization": "Bearer ${input:prepr-mcp-token}"
       }
     }
@@ -147,7 +147,7 @@ OAuth:
 ```toml
 [mcp_servers.prepr]
 url = "https://mcp.prepr.io"
-http_headers = { "X-Prepr-Client" = "prepr-skills/0.2.0" }
+http_headers = { "X-Prepr-Client" = "prepr-skills/0.3.0" }
 ```
 
 Token: `bearer_token_env_var` names the variable; Codex reads it at connect
@@ -157,7 +157,7 @@ time and sends it as `Authorization: Bearer`.
 [mcp_servers.prepr]
 url = "https://mcp.prepr.io"
 bearer_token_env_var = "PREPR_MCP_TOKEN"
-http_headers = { "X-Prepr-Client" = "prepr-skills/0.2.0" }
+http_headers = { "X-Prepr-Client" = "prepr-skills/0.3.0" }
 ```
 
 Authorize (OAuth): `codex mcp login prepr`, or Settings → MCP servers →
@@ -181,7 +181,7 @@ OAuth:
       "type": "remote",
       "url": "https://mcp.prepr.io",
       "enabled": true,
-      "headers": { "X-Prepr-Client": "prepr-skills/0.2.0" }
+      "headers": { "X-Prepr-Client": "prepr-skills/0.3.0" }
     }
   }
 }
@@ -199,7 +199,7 @@ Token:
       "enabled": true,
       "oauth": false,
       "headers": {
-        "X-Prepr-Client": "prepr-skills/0.2.0",
+        "X-Prepr-Client": "prepr-skills/0.3.0",
         "Authorization": "Bearer {env:PREPR_MCP_TOKEN}"
       }
     }
@@ -222,7 +222,7 @@ own terminal; their shell expands the variable and Copilot stores the result
 in `~/.copilot/mcp-config.json`, outside the repository:
 
 ```bash
-copilot mcp add --transport http --header "Authorization: Bearer $PREPR_MCP_TOKEN" --header "X-Prepr-Client: prepr-skills/0.2.0" prepr-token https://mcp.prepr.io
+copilot mcp add --transport http --header "Authorization: Bearer $PREPR_MCP_TOKEN" --header "X-Prepr-Client: prepr-skills/0.3.0" prepr-token https://mcp.prepr.io
 ```
 
 The entry is named `prepr-token`, not `prepr`. Copilot CLI also reads the

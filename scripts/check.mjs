@@ -66,7 +66,7 @@ export function checkRepo(root) {
   const present = existsSync(skillsDir) ? readdirSync(skillsDir).filter((n) => statSync(join(skillsDir, n)).isDirectory()) : [];
 
   for (const s of SKILLS) if (!present.includes(s)) errors.push(`skills/${s}: missing`);
-  for (const s of present) if (!SKILLS.includes(s)) errors.push(`skills/${s}: not one of the five launch skills`);
+  for (const s of present) if (!SKILLS.includes(s)) errors.push(`skills/${s}: not a shipped skill (scripts/shared-map.mjs)`);
 
   for (const s of SKILLS.filter((x) => present.includes(x))) {
     const skillRoot = join(skillsDir, s);

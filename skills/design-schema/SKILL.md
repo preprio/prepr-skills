@@ -42,7 +42,8 @@ reshaping that will migrate existing content.
 [the check](references/mcp-connection.md#the-check). If Prepr tools are
 present, page through `list_schema` before asking anything: reuse existing
 models and components, and avoid name clashes. This skill also works
-without MCP; then ask the user what already exists.
+without MCP; then read the files in `prepr/schema/` if the project has them,
+or ask the user what already exists.
 
 ## The route to an agreed model
 
@@ -285,8 +286,9 @@ the plan, and ask the user to paste it under Settings → General → AI context
 ## Step 8: Hand off
 
 Once the plan is agreed, say that the next step is **create-schema**, which
-shows the exact changes and builds them after a yes. Do not start building
-without telling the user.
+shows the exact changes and builds them after a yes.
+create-schema picks the route: live through MCP, or schema files in
+`prepr/schema/` when the project syncs its schema with Git. Do not start building without telling the user.
 
 ## Related skills
 

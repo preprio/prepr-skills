@@ -2,6 +2,40 @@
 
 ## Unreleased
 
+Fixes from an end-to-end review and more live MCP findings.
+
+- Review fixes: skills that work on schema files no longer stop without
+  MCP; drift matches entities on name the way Import does and flags renames;
+  sync-schema points to Prepr's import preview and names both known causes
+  of an empty import error; schema files must keep GraphQL type names
+  unique; manage-content triggers on personalized and A/B variants.
+- Known errors: the required-field error at Done depends on the stage the
+  environment validates at and on its setting for hidden conditional
+  fields; an asset upload 403 first asks the user to check permissions.
+
+## 0.3.0 (2026-10-13)
+
+Schema kept in Git and edited live or in files, a new sync-schema skill, and
+fixes from live use of the MCP server.
+
+- New skill sync-schema: Git sync setup for `prepr/schema/`, CI validation
+  with the official workflow, import impact assessment, and debugging failed
+  imports.
+- Schema stays Git-synced in `prepr/schema/`, edited either live through
+  MCP (then Export) or in the files (then Import). New shared
+  `schema-route.md` and `schema-files.md`; create-schema reminds the user to
+  Export after a live change; review-schema reviews files or the live
+  schema and reports drift.
+- manage-content: check the returned slug, edit inside stacks with a JSON
+  Pointer, report locales the tools cannot reach, an asset upload fallback,
+  and a note that archived items still show on preview tokens.
+- connect-prepr: check that the app's GraphQL token reads the same
+  environment as MCP.
+- Known errors: required component fields at Done, asset upload 403, and
+  parameters that differ per tool.
+- Deletes: a request to delete is not the confirmation; show the preview and
+  wait for a yes, also during cleanup.
+
 ## 0.2.0 (2026-10-13)
 
 Personalization and A/B tests in manage-content.

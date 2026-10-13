@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "prepr",
-  "version": "0.2.0",
-  "description": "Prepr CMS skills for AI agents: connect to the Prepr MCP server, design and build your content model, review it, and manage content.",
+  "version": "0.3.0",
+  "description": "Prepr CMS skills for AI agents: connect to the Prepr MCP server, design and build your content model live or as Git-synced schema files, review it, and manage content.",
   "author": {
     "name": "Prepr",
     "url": "https://prepr.io"
@@ -24,7 +24,7 @@
       "interface": {
         "displayName": "Prepr",
         "shortDescription": "Content models through MCP",
-        "longDescription": "Design, build and review your Prepr CMS content model, and create and manage content, through the Prepr MCP server. Every change is shown as a plan that names the target environment and waits for your approval; deletes need a second confirmation. Requires a Prepr account; what the agent may do follows your Prepr role and the environment's MCP permissions.",
+        "longDescription": "Design, build and review your Prepr CMS content model, live through the Prepr MCP server or as schema files synced with Git, and create and manage content through the MCP server. Every change is shown as a plan that names the target environment and waits for your approval; deletes need a second confirmation. Requires a Prepr account; what the agent may do follows your Prepr role and the environment's MCP permissions.",
         "developerName": "Prepr",
         "category": "Developer Tools",
         "capabilities": [

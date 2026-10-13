@@ -97,6 +97,11 @@ entry named `prepr-token`.
    how many models it has. If the tools are still missing, go back to
    [the check](references/mcp-connection.md#the-check) and report which state
    you are in.
+4. If the project's front end has its own Prepr GraphQL URL or token (for
+   example in `.env`), check that it reads the same environment as MCP:
+   compare one item's id through both. A different environment means
+   schema and content changes made through MCP will not show in the app or
+   in its generated types. Never print the token while you check.
 
 ## Step 6: Allow read-only tools (Claude Code)
 
@@ -124,5 +129,5 @@ Settings → Integrations → MCP Server, while keeping them on in development.
 ## What's next
 
 Offer the next step that fits: design a content model (`design-schema`),
-review the existing schema (`review-schema`), or work with content
-(`manage-content`).
+review the existing schema (`review-schema`), keep the schema in Git
+(`sync-schema`), or work with content (`manage-content`).

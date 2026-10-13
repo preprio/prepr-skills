@@ -101,6 +101,35 @@ Prompt: `Create a draft article "Hello Prepr", schedule it to unpublish next Fri
 - [ ] Schedules the unpublish for the stated date, time and locale
 - [ ] Verifies the result
 
+## 8. Schema kept in Git
+
+Setup: a project with `prepr/schema/` exported from the Scratch environment,
+Git sync set up in both directions.
+
+8a. Prompt: `Add a reading_time integer field to the Article model.`
+
+- [ ] create-schema notices `prepr/schema/` and asks whether files and environment are in step
+- [ ] Edits live through MCP (plan, yes, apply, verify)
+- [ ] The report tells the user to run Export and pull it, so the files catch up
+
+8b. Prompt: `Add a reading_time integer field to the Article schema file in prepr/schema, I want to review it in a PR.`
+
+- [ ] Edits the file, not the environment; plans it and waits for a yes
+- [ ] Keeps every existing `ref`; the new field matches `schema-files.md`
+- [ ] Says a commit is not a sync and that the user runs Import, in which environment
+
+## 9. Personalized variants
+
+Setup: Scratch with a Page model whose stack allows personalization, and one
+segment created in Prepr.
+
+Prompt: `Give the hero on the homepage a variant for the <segment> segment.`
+
+- [ ] Resolves the segment id; does not invent one
+- [ ] Reads the item with `includeRaw` right before writing
+- [ ] Sets `_context` with JSON Pointer and reads it back
+- [ ] Verifies with the `Prepr-Segments` header after publishing
+
 ## Results
 
 | Date | Version | Scenario | Result | Notes |
@@ -120,3 +149,12 @@ Prompt: `Create a draft article "Hello Prepr", schedule it to unpublish next Fri
 
 | 2026-10-09 | 0.1.0 | Routing (`scripts/eval-routing.mjs`) | Pass | 18/18 prompts loaded the expected skill (plugin loaded with `--plugin-dir`, no MCP) |
 | 2026-10-09 | 0.1.0 | Codex plugin install | Pass | codex-cli 0.162.0 in an isolated `CODEX_HOME`: marketplace add, `plugin add prepr@prepr` → installed, enabled, 0.1.0; bundled `prepr` MCP listed, "Not logged in" |
+| 2026-10-13 | 0.3.0 (pre-release) | 8a schema kept in Git, live edit | Pass | Noticed `prepr/schema/`, asked whether files and environment are in step, MCP by default; after yes created the field, read it back, report ended with "run Export and pull". First compared a file `ref` with an entity `id` (wrong) and corrected itself; drift section now says to match on `ref` |
+| 2026-10-13 | 0.3.0 (pre-release) | 8b edit in files for a PR | Pass (plan only) | File route named in the first line; asked for an Export first if live changes are pending; no MCP writes; Import after merge. The harness blocks Edit/Write, so the file edit itself was not run |
+| 2026-10-13 | 0.3.0 (pre-release) | 9 personalized variants | Partial | Read the stack, refused to invent a segment id and offered the `_Segments` query; plan sets `_context` with JSON Pointer and reads back with `includeRaw`. Not executed: no segment in the test environment |
+| 2026-10-13 | 0.3.0 (pre-release) | Cleanup | Fail → fixed | Deleted the SkillsTest field and found nothing else, but confirmed the delete without showing the preview and waiting for a yes (treated the cleanup prompt as the yes). `write-safety.md` now says the request is not the yes, also in a cleanup |
+| 2026-10-13 | 0.3.0 (pre-release) | Routing (`scripts/eval-routing.mjs`) | Pass | 23/23, including the 4 new sync-schema prompts and the schema-file prompt for create-schema |
+| 2026-10-13 | 0.3.0 + review fixes | sync-schema: import fails with an empty error list | Pass | Did not guess; asked for the detailed log and the last entity reached; checked file names and `schema_version`; flagged the remote source URL. No MCP, so no live comparison |
+| 2026-10-13 | 0.3.0 + review fixes | sync-schema: set up Git sync with GitHub | Pass | Pinned workflow `@v1.0.15`, token scope, sync methods, import impact warning, "a commit is not a sync", asked for environment and direction. Called the exporting environment "the source of truth" in passing |
+| 2026-10-13 | 0.3.0 + review fixes | Cleanup re-run, 9 to completion, A/B variant, review-schema drift, 2–5 | Not run | Skipped by the maintainer: the Prepr MCP server was not authorized for headless runs |
+| 2026-10-13 | 0.3.0 + review fixes | Routing (`scripts/eval-routing.mjs`) | Pass | 28/28, including 5 new prompts: A/B and personalized variants, drift check, component create, review of schema files |

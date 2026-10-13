@@ -41,15 +41,14 @@ RULES.push({
   file: 'skills/design-schema/SKILL.md',
   must: ['name: design-schema', 'list_schema', 'create-schema', 'references/schema-design-principles.md',
          'references/mcp-connection.md', 'without MCP', 'only if the user asks'],
-  mustNot: ['../', 'plan-project', 'setup-project', 'sync-schema', 'schema JSON', 'prepr/schema/', 'schema-spec',
-            'RemoteSource', 'project-plan.md', 'validator'],
+  mustNot: ['../', 'plan-project', 'setup-project', 'schema-spec', 'RemoteSource', 'project-plan.md'],
 });
 
 RULES.push(
   { file: 'skills/create-schema/SKILL.md',
     must: ['name: create-schema', 'references/write-safety.md', 'references/field-types.md', 'references/mcp-limits.md',
            'list_schema', 'get_schema_entity', 'connect-prepr', 'environment', 'one call', 'AI', 'naming', 'design-schema'],
-    mustNot: ['../', 'prepr/schema/', 'validator', 'sync-schema', 'JSON file', 'schema-spec', 'RemoteSource'] },
+    mustNot: ['../', 'schema-spec', 'RemoteSource'] },
   { file: 'skills/create-schema/references/field-types.md',
     must: ['use when', "don't use when", 'Stack', 'Component', 'Content reference', 'Enum', 'minimum of 1'],
     mustNot: ['"type":', 'prepr/schema/', 'importer', 'schema_version'] },
@@ -59,7 +58,7 @@ RULES.push({
   file: 'skills/review-schema/SKILL.md',
   must: ['name: review-schema', 'list_schema', 'get_schema_entity', 'read-only', 'create-schema', 'connect-prepr',
          'references/schema-design-principles.md', 'Fix before content exists', 'Fix any time', "What's good", 'environment'],
-  mustNot: ['../', 'prepr/schema/', 'validator', 'Blocks import', 'CI guardrail', 'sync-schema', 'scripts/'],
+  mustNot: ['../', 'Blocks import', 'CI guardrail', 'scripts/'],
 });
 
 RULES.push({
@@ -195,6 +194,60 @@ RULES.push(
     mustNot: ['../', 'Mutation API'] },
   { file: 'FRESHNESS.md', must: ['Adaptive content'] },
 );
+
+// Two schema routes: live through MCP, or files in prepr/schema/ with Git sync
+RULES.push(
+  { file: 'shared/schema-route.md',
+    must: ['prepr/schema/', 'Git sync', 'run Export', 'A commit is not a sync', 'Export', 'Import', 'deletes',
+           'not documented', 'ask the user', 'both are fine'],
+    mustNot: ['../', 'source of truth', 'unless the user explicitly chooses'] },
+  { file: 'shared/schema-files.md',
+    must: ['one JSON file per', 'body_singular', 'api_id', '## Validation is not import', 'schema_version'],
+    mustNot: ['../', '_shared', 'setup-project', 'plan-project'] },
+  { file: 'skills/sync-schema/SKILL.md',
+    must: ['name: sync-schema', 'references/schema-route.md', 'references/schema-files.md', 'references/mcp-connection.md',
+           'prepr-schema-validation.yml@v1.0.15', 'A commit is not a sync', 'github.validation.failed', 'Export', 'Import',
+           'environment'],
+    mustNot: ['../', 'setup-project', 'migrate-content', 'manage-environments', 'create-component', 'plan-project'] },
+  { file: 'skills/create-schema/SKILL.md',
+    must: ['references/schema-route.md', 'references/schema-files.md', 'prepr/schema/', 'sync-schema', 'run Export'],
+    mustNot: ['unless the user explicitly chooses otherwise'] },
+  { file: 'skills/review-schema/SKILL.md', must: ['references/schema-route.md', 'prepr/schema/', 'drift'] },
+  { file: 'skills/design-schema/SKILL.md', must: ['create-schema picks the route'] },
+  { file: 'README.md', must: ['sync-schema', 'prepr/schema/'] },
+  { file: 'AGENTS.md', must: ['sync-schema', 'prepr/schema/'], mustNot: ['MCP only', 'Only the five skills'] },
+  { file: 'FRESHNESS.md', must: ['Git sync', 'prepr-schema-validation.yml@v1.0.15'] },
+);
+
+// Findings from live use of the MCP server
+RULES.push(
+  { file: 'shared/mcp-limits.md',
+    must: ['Missing required fields for workflow stage Done', '403', 'additional properties'],
+    mustNot: ['review_urls/0/url'] },
+  { file: 'skills/manage-content/SKILL.md',
+    must: ['returned slug', 'archived', 'locales', 'query_assets'] },
+  { file: 'skills/connect-prepr/SKILL.md', must: ['same environment'] },
+  { file: 'shared/write-safety.md', must: ['is not the yes', 'also in a cleanup'] },
+);
+
+// Review 2026-10-13: route contradictions, docs alignment, routing gaps
+RULES.push(
+  { file: 'shared/mcp-connection.md', mustNot: ['Only\n  `design-schema` continues without MCP', 'Every other skill stops here'],
+    must: ['schema files in `prepr/schema/`'] },
+  { file: 'shared/schema-route.md', must: ['Singular name', 'Type name', 'rename'] },
+  { file: 'skills/sync-schema/SKILL.md', must: ['import preview', 'schema_version', 'drift'],
+    mustNot: ['source of truth', 'the one known cause'] },
+  { file: 'shared/schema-files.md', must: ['unique across'] },
+  { file: 'skills/manage-content/SKILL.md', must: ['A/B test variants'] },
+  { file: 'skills/design-schema/SKILL.md', must: ['read the files in `prepr/schema/`'] },
+  { file: 'skills/connect-prepr/SKILL.md', must: ['(`sync-schema`)'] },
+  { file: 'FRESHNESS.md', must: ['import preview', 'Ignore required fields with conditional visibility'] },
+  { file: 'shared/mcp-limits.md', must: ['Ignore required fields with conditional visibility', 'Required field validation'],
+    mustNot: ['The check applies even when the editor hides that field'] },
+  { file: 'shared/mcp-limits.md', must: ['check the asset permissions'] },
+  { file: 'skills/manage-content/SKILL.md', must: ['check the asset permissions'] },
+);
+
 
 for (const r of RULES) {
   test(`${r.file}`, () => {
