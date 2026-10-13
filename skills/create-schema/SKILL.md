@@ -18,24 +18,27 @@ metadata:
 Turn an agreed plan, or a concrete request ("add an Event model with a date
 and a location"), into models, components, enums and fields in Prepr.
 
-## Step 0: Pick the route
+## Step 0: Choose how to edit
 
-There are two routes, explained in
-[schema-route.md](references/schema-route.md):
+A project keeps its schema in Git, in `prepr/schema/`, synced with Prepr.
+You can edit it in two ways, and both are fine
+([schema-route.md](references/schema-route.md)):
 
 - **Live through MCP:** the Prepr MCP schema tools change the environment
-  directly. Steps 1 to 4 below.
-- **Files with Git sync:** you edit JSON files in `prepr/schema/`, and the
-  change reaches an environment when someone runs Import in Prepr. See
+  directly. Steps 1 to 4 below; the user then runs Export so the files
+  catch up.
+- **In the files:** you edit JSON files in `prepr/schema/`; the user runs
+  Import to bring the change into the environment. See
   [The file route](#the-file-route).
 
-Detect the route as schema-route.md describes, and name it in the first line
-of your plan. If the repository has `prepr/schema/` and the target
-environment imports from it, a live MCP change will be overwritten by the
-next import: use the file route unless the user explicitly chooses otherwise.
+Use MCP unless the user asks for a file change or wants it reviewed in a pull
+request first. Check [Before you edit](references/schema-route.md#before-you-edit)
+when the repository has `prepr/schema/`, and say in the first line of your
+plan how you edit and which sync follows.
 
-On the MCP route, run [the check](references/mcp-connection.md#the-check)
-first. If MCP is not connected, offer **connect-prepr** and stop.
+For live changes, run [the check](references/mcp-connection.md#the-check)
+first. If MCP is not connected, offer **connect-prepr**, or edit the files
+instead if the project has them.
 
 If the brief is vague ("a marketing site"), run **design-schema** first. If a
 plan from design-schema is in this conversation or in
@@ -99,8 +102,15 @@ Follow [write-safety.md](references/write-safety.md) exactly:
 ## Step 4: Report
 
 List what now exists, in the environment you named, and what the user should
-do next. Usually that is: review it (`review-schema`), or create first
-content (`manage-content`).
+do next:
+
+- **If the repository has `prepr/schema/`:** tell the user to run Export in
+  Prepr and pull it, so the files catch up with your live change. Until then
+  the next Import would overwrite it.
+- **If it has none:** suggest setting up Git sync with **sync-schema** when
+  the project is shared or headed for production.
+- Then: review it (`review-schema`), or create first content
+  (`manage-content`).
 
 ## The file route
 

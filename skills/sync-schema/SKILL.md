@@ -62,18 +62,18 @@ This is the most expensive misunderstanding in this area.
 
 ## Git sync is the recommendation
 
-Recommend Git sync (GitHub, GitLab, Bitbucket or Azure DevOps) for any
-environment that others depend on. It is the only method with version
-control, reviewable diffs, CI validation before import, and a rollback path.
+Every project should keep its schema Git-synced (GitHub, GitLab, Bitbucket
+or Azure DevOps). It is the only method with version control, reviewable
+diffs, CI validation before import, and a rollback path.
 
 The alternatives exist; this skill does not run them:
 
 - **Direct sync** between two environments of the same organization: no
   review, no rollback, destructive by design. See below.
 - **Manual export and import** of single entities.
-- **Live changes through MCP** with create-schema: fine for a Scratch or
-  prototype environment, but in an environment that imports from Git the
-  next import overwrites them.
+- **Live changes through MCP** with create-schema are fine next to Git
+  sync: follow each one with an Export, so the files catch up before anyone
+  imports. See [schema-route.md](references/schema-route.md#after-a-live-change-mcp).
 
 ## Setting up Git sync
 
@@ -118,8 +118,10 @@ The repository side is yours:
    only, or both). Write it in the project's README or agent instructions;
    newcomers get it wrong.
 
-Once connected, the loop is: export, edit the files, validate in CI, review
-the diff, merge, run Import in Prepr, verify.
+Once connected there are two loops. Editing files: export, edit, validate
+in CI, review the diff, merge, run Import in Prepr, verify. Editing live
+through MCP: check nothing waits for an Import, make the change, run Export,
+merge the export.
 
 ## Editing schema files
 

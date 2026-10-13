@@ -40,10 +40,11 @@ in `skills/`.
   time, so no link may leave it (`../` is an error). Shared material reaches a
   skill only as a synced copy. Every file in `references/` must be linked from
   the skill.
-- **Two schema routes, one content route.** Schema changes go live through
-  the Prepr MCP tools, or as JSON files in `prepr/schema/` that Prepr
-  imports with Git sync (`shared/schema-route.md`, `shared/schema-files.md`,
-  sync-schema). Content always goes through MCP. Never the Mutation API
+- **Schema lives in Git, edited two ways.** Projects keep their schema in
+  `prepr/schema/`, Git-synced with Prepr. Agents edit it live through the
+  Prepr MCP tools (then the user runs Export) or in the files (then the
+  user runs Import); see `shared/schema-route.md`, `shared/schema-files.md`
+  and sync-schema. Content always goes through MCP. Never the Mutation API
   directly.
 - **Never hard-code a tool list.** Name a tool only for a rule attached to it
   (`list_schema`, `get_schema_entity`, `confirmToken`) and tell the agent to

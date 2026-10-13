@@ -52,6 +52,9 @@ fetch the item) and compare with the plan. Report any difference.
 - Deletes are two-step: the server returns a preview naming the environment
   and a `confirmToken`. Show the preview to the user, get an explicit yes, then
   call again with `confirm=true` and that token. Never reuse a token.
+- The request that names what to delete is not the yes. Even when the user
+  asked for exactly this delete, show the preview and wait for the explicit
+  yes before you confirm, also in a cleanup.
 - Field delete has no content check on the server. Before deleting a field,
   warn that its values are lost in every item, and count affected items with a
   content query when possible.

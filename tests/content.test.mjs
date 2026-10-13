@@ -198,9 +198,9 @@ RULES.push(
 // Two schema routes: live through MCP, or files in prepr/schema/ with Git sync
 RULES.push(
   { file: 'shared/schema-route.md',
-    must: ['prepr/schema/', 'source of truth', 'A commit is not a sync', 'Export', 'Import', 'deletes',
-           'not documented', 'ask the user'],
-    mustNot: ['../'] },
+    must: ['prepr/schema/', 'Git sync', 'run Export', 'A commit is not a sync', 'Export', 'Import', 'deletes',
+           'not documented', 'ask the user', 'both are fine'],
+    mustNot: ['../', 'source of truth', 'unless the user explicitly chooses'] },
   { file: 'shared/schema-files.md',
     must: ['one JSON file per', 'body_singular', 'api_id', '## Validation is not import', 'schema_version'],
     mustNot: ['../', '_shared', 'setup-project', 'plan-project'] },
@@ -210,7 +210,8 @@ RULES.push(
            'environment'],
     mustNot: ['../', 'setup-project', 'migrate-content', 'manage-environments', 'create-component', 'plan-project'] },
   { file: 'skills/create-schema/SKILL.md',
-    must: ['references/schema-route.md', 'references/schema-files.md', 'prepr/schema/', 'sync-schema'] },
+    must: ['references/schema-route.md', 'references/schema-files.md', 'prepr/schema/', 'sync-schema', 'run Export'],
+    mustNot: ['unless the user explicitly chooses otherwise'] },
   { file: 'skills/review-schema/SKILL.md', must: ['references/schema-route.md', 'prepr/schema/', 'drift'] },
   { file: 'skills/design-schema/SKILL.md', must: ['create-schema picks the route'] },
   { file: 'README.md', must: ['sync-schema', 'prepr/schema/'] },
@@ -225,6 +226,7 @@ RULES.push(
   { file: 'skills/manage-content/SKILL.md',
     must: ['returned slug', 'archived', 'locales', 'query_assets'] },
   { file: 'skills/connect-prepr/SKILL.md', must: ['same environment'] },
+  { file: 'shared/write-safety.md', must: ['is not the yes', 'also in a cleanup'] },
 );
 
 for (const r of RULES) {
