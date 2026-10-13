@@ -1,8 +1,9 @@
 # Working on prepr-skills
 
-This repo ships five agent skills for Prepr CMS that work through the Prepr
-MCP server (`https://mcp.prepr.io`): connect-prepr, design-schema,
-create-schema, review-schema and manage-content. It is installed as a Claude
+This repo ships six agent skills for Prepr CMS: connect-prepr,
+design-schema, create-schema, review-schema, manage-content and sync-schema.
+They work through the Prepr MCP server (`https://mcp.prepr.io`) and, for
+schema, also through JSON files in `prepr/schema/` with Git sync. It is installed as a Claude
 Code plugin (`.claude-plugin/`) and through `npx skills add
 preprio/prepr-skills`. There is no runtime code; the product is the Markdown
 in `skills/`.
@@ -39,9 +40,11 @@ in `skills/`.
   time, so no link may leave it (`../` is an error). Shared material reaches a
   skill only as a synced copy. Every file in `references/` must be linked from
   the skill.
-- **MCP only.** The skills change schema and content through the Prepr MCP
-  tools. No `prepr/schema/` JSON files, schema validator, Git sync, or
-  Mutation API.
+- **Two schema routes, one content route.** Schema changes go live through
+  the Prepr MCP tools, or as JSON files in `prepr/schema/` that Prepr
+  imports with Git sync (`shared/schema-route.md`, `shared/schema-files.md`,
+  sync-schema). Content always goes through MCP. Never the Mutation API
+  directly.
 - **Never hard-code a tool list.** Name a tool only for a rule attached to it
   (`list_schema`, `get_schema_entity`, `confirmToken`) and tell the agent to
   read the live tool schemas.
@@ -50,9 +53,9 @@ in `skills/`.
 - **Tokens are never asked for, printed or written.** Configs reference
   `PREPR_MCP_TOKEN` only.
 - **The server URL is exactly `https://mcp.prepr.io`**, never `/mcp`.
-- **Only the five skills ship.** Don't reference skills from the larger
-  `preprio/prepr-plugins` repo (plan-project, setup-project, sync-schema,
-  query-content, …).
+- **Only the six skills in `scripts/shared-map.mjs` ship.** Don't reference
+  skills that don't ship here (plan-project, setup-project, query-content,
+  …).
 - **Upstream facts come from the docs, not memory.** Before changing a fact
   about the MCP server or a client's config format, check the source linked in
   `FRESHNESS.md` and update its row and date.

@@ -101,6 +101,32 @@ Prompt: `Create a draft article "Hello Prepr", schedule it to unpublish next Fri
 - [ ] Schedules the unpublish for the stated date, time and locale
 - [ ] Verifies the result
 
+## 8. Schema files with Git sync
+
+Setup: a repository with `prepr/schema/` exported from the Scratch
+environment, and that environment set to import from the repository.
+
+Prompt: `Add a reading_time integer field to the Article model.`
+
+- [ ] create-schema detects the file route and says so in the first line
+- [ ] Asks for an Export or a pull before editing
+- [ ] Plans the file change and waits for a yes; writes no schema through MCP
+- [ ] Keeps every existing `ref`; the new field matches `schema-files.md`
+- [ ] Says a commit is not a sync and names who imports where
+- [ ] After the user imports, sync-schema verifies the field with `get_schema_entity`
+
+## 9. Personalized variants
+
+Setup: Scratch with a Page model whose stack allows personalization, and one
+segment created in Prepr.
+
+Prompt: `Give the hero on the homepage a variant for the <segment> segment.`
+
+- [ ] Resolves the segment id; does not invent one
+- [ ] Reads the item with `includeRaw` right before writing
+- [ ] Sets `_context` with JSON Pointer and reads it back
+- [ ] Verifies with the `Prepr-Segments` header after publishing
+
 ## Results
 
 | Date | Version | Scenario | Result | Notes |
