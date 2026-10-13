@@ -46,7 +46,10 @@ names the environment, an explicit yes, apply, verify. Server limits are in
 6. **Locales.** `create_item` writes one locale per call; add other locales with
    updates. State which locales you are writing and what happens to the
    others. In a multi-locale environment, ask which locale when the request
-   does not say.
+   does not say. An item can hold locales the environment no longer lists
+   (check `locales` on the item); the tools cannot reach them, so
+   unpublishing one locale can leave another one live. Report what stays
+   live.
 7. **Ambiguous targets.** When several items match a request, ask which one
    before writing. "Update the blog posts" does not license touching every
    model.
@@ -57,7 +60,17 @@ names the environment, an explicit yes, apply, verify. Server limits are in
 9. **Reads can lag writes.** A GraphQL read right after a successful write can
    be stale. Do not treat it as a failed write and do not retry; see
    [mcp-limits.md](references/mcp-limits.md#read-after-write-lag).
-10. **Scale caution to what the content is worth.** Only after
+10. **Check the returned slug.** If the requested slug is taken, Prepr adds a
+    suffix (`contact` becomes `contact-1`) without an error. Compare the
+    returned slug with the requested one. Archived items keep their slugs, so
+    an archived item can block the slug a new item needs; ask before renaming
+    its slug.
+11. **Edit inside a stack with a JSON Pointer.** To change one value in a
+    stack or component (a heading, an image, an enum), target it with a
+    JSON Pointer such as `/content/items/1/items/heading`. Everything else
+    stays as it is. Sending the whole stack replaces it, see
+    [adaptive-content.md](references/adaptive-content.md).
+12. **Scale caution to what the content is worth.** Only after
     the user has said that the named environment is a Scratch environment they are
     iterating in, you may create content as published and confirm a whole
     session's work in one plan instead of per batch. Deletes and publishes of
@@ -103,6 +116,9 @@ Rules:
   call.
 - Uploads are writes. Confirm bulk uploads, and report exactly which files
   landed and which did not.
+- If an upload is refused (for example a 403), the token may not be allowed
+  to upload assets. Ask the user to upload the files in Prepr, then find them
+  with `query_assets` by name and link them.
 
 ## Seeding a fresh environment
 
@@ -126,6 +142,10 @@ articles, not one.
    development environment, or an empty pre-launch one. Never seed an
    environment that holds content someone depends on without explicit
    agreement.
+6. **Old content still shows.** Archived and unpublished items still come
+   back from a preview token, so a front end on such a token mixes them with
+   the seed. Say so in the plan; only deleting them (by the user) clears
+   them.
 
 ## Larger imports
 

@@ -16,5 +16,10 @@
   { "prompt": "Publish the three newest articles in Prepr.", "skill": "manage-content" },
   { "prompt": "Upload this image to Prepr: https://example.com/hero.jpg", "skill": "manage-content" },
   { "prompt": "Schedule the 'Summer sale' page in Prepr to go offline on September 1.", "skill": "manage-content" },
-  { "prompt": "Fill our new Prepr environment with some sample content.", "skill": "manage-content" }
+  { "prompt": "Fill our new Prepr environment with some sample content.", "skill": "manage-content" },
+  { "prompt": "Set up Git sync for our Prepr schema with GitHub.", "skill": "sync-schema" },
+  { "prompt": "I pushed changes to prepr/schema but they don't show up in Prepr. Why?", "skill": "sync-schema" },
+  { "prompt": "Our Prepr schema import fails with github.validation.failed and an empty error list.", "skill": "sync-schema" },
+  { "prompt": "Add a CI check that validates our Prepr schema files.", "skill": "sync-schema" },
+  { "prompt": "Add an author field to the Article schema file in prepr/schema.", "skill": "create-schema" }
 ]

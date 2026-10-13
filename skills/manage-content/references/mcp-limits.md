@@ -54,6 +54,10 @@ Prepr's error messages often don't say what to fix. Known cases:
 | `validator.error.max.gte` on a reference field | Required reference with a maximum but no minimum | Set a minimum (1 for a required single reference) |
 | `{"success":false}` when scheduling an unpublish | The item was never published, or scheduling is off for the model | Publish first, or turn on scheduling for the model; ask the user which |
 | Enum update rejected | An option you left out is still used by content | Keep the option, or migrate the content first |
+| `Missing required fields for workflow stage Done: <component>.<field>` | A required field inside a component is empty. The check applies even when the editor hides that field through a condition (a Button's `external_url` when `use_external_link` is false) | Fill the field, or create the item in a stage before Done; ask the user which |
+| `Prepr Mutation API request failed: 403` on an asset upload | The token or the environment's MCP permissions do not allow asset uploads | Ask the user to upload the files in Prepr, then find them with `query_assets` by name and link them |
+| `review_urls/0/url must match format "uri"` | The tool's input schema rejects Prepr's URL placeholders such as `{slug}` and `{access_token}`. Percent-encoding them is accepted but stored literally, so preview breaks | Ask the user to set the preview URL in the model settings in Prepr |
+| `data must NOT have additional properties` | A parameter one tool accepts (such as `intent`) is not in another tool's input schema | Read each tool's schema; do not copy parameters between tools |
 
 Add a row whenever a new error turns up, with how it was fixed.
 

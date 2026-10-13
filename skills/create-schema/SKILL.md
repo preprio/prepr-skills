@@ -1,12 +1,13 @@
 ---
 name: create-schema
 description: >-
-  Build or change a Prepr CMS content model directly in Prepr through the MCP
-  server. Use this skill whenever the user wants to create or modify a model,
+  Build or change a Prepr CMS content model, either live in an environment
+  through the MCP server or as JSON schema files in prepr/schema/ for Git
+  sync. Use this skill whenever the user wants to create or modify a model,
   component, enum, or field, turn an agreed content model plan into a working
-  schema, add a content type to an existing Prepr environment, or apply a fix
-  from a schema review. For deciding what the model should be from a vague
-  brief, the design-schema skill applies first.
+  schema, add a content type to an existing Prepr environment or schema
+  files, or apply a fix from a schema review. For deciding what the model
+  should be from a vague brief, the design-schema skill applies first.
 license: MIT
 metadata:
   author: Prepr
@@ -15,11 +16,26 @@ metadata:
 # Build a Prepr schema
 
 Turn an agreed plan, or a concrete request ("add an Event model with a date
-and a location"), into models, components, enums and fields in Prepr, using
-the Prepr MCP schema tools.
+and a location"), into models, components, enums and fields in Prepr.
 
-Run [the check](references/mcp-connection.md#the-check) first. This skill
-needs MCP. If it is not connected, offer **connect-prepr** and stop.
+## Step 0: Pick the route
+
+There are two routes, explained in
+[schema-route.md](references/schema-route.md):
+
+- **Live through MCP:** the Prepr MCP schema tools change the environment
+  directly. Steps 1 to 4 below.
+- **Files with Git sync:** you edit JSON files in `prepr/schema/`, and the
+  change reaches an environment when someone runs Import in Prepr. See
+  [The file route](#the-file-route).
+
+Detect the route as schema-route.md describes, and name it in the first line
+of your plan. If the repository has `prepr/schema/` and the target
+environment imports from it, a live MCP change will be overwritten by the
+next import: use the file route unless the user explicitly chooses otherwise.
+
+On the MCP route, run [the check](references/mcp-connection.md#the-check)
+first. If MCP is not connected, offer **connect-prepr** and stop.
 
 If the brief is vague ("a marketing site"), run **design-schema** first. If a
 plan from design-schema is in this conversation or in
@@ -85,3 +101,25 @@ Follow [write-safety.md](references/write-safety.md) exactly:
 List what now exists, in the environment you named, and what the user should
 do next. Usually that is: review it (`review-schema`), or create first
 content (`manage-content`).
+
+## The file route
+
+1. **Start from the current state.** Ask the user to run Export (or pull the
+   branch Prepr exports to) before you edit. If MCP is connected, compare the
+   files with the live schema and report any drift before you change
+   anything.
+2. **Read what exists** in `prepr/schema/`, as in Step 1: naming, reuse,
+   conventions, clashes.
+3. **Design the changes** as in Step 2, then write them in the format of
+   [schema-files.md](references/schema-files.md): one file per entity, the
+   file named after the entity, a new `ref` (UUID) for each new entity,
+   existing `ref` values untouched.
+4. **Plan, confirm, write.** Show the plan (files to add, change and delete,
+   and which entities and fields an import will remove), wait for an explicit
+   yes, then write the files. Deleting a file deletes its entity on the next
+   import when no content uses it.
+5. **Validate** with the official workflow (see **sync-schema**) and read
+   [Validation is not import](references/schema-files.md#validation-is-not-import).
+6. **Hand off.** A commit is not a sync. Tell the user which environment must
+   run Import, and that **sync-schema** covers the import, its impact
+   assessment and verifying the result. Do not report the change as live.
