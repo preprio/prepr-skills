@@ -134,6 +134,10 @@ Work outward from what the site actually publishes.
    catalog, an events API). That should not be copied into a Prepr model;
    note it under "Deliberately not modeled" and say that connecting it as a
    remote source is outside these skills.
+   If the site looks Prepr content up by the external key (a product page
+   by its handle), plan a model that enriches the remote item with a
+   required, filterable handle field; see
+   [Remote content and lookup keys](references/schema-design-principles.md#remote-content-and-lookup-keys).
 
 For each candidate, capture the fields the front end will actually render.
 Resist fields nobody named.

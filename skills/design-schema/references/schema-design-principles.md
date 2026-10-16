@@ -224,6 +224,17 @@ Two breaches are visible on sight: a component with a long field list where half
 - Set `review_urls` with `{slug}` placeholders on page models so editors get live preview.
 - Two failures show up later: a slug template pointing at a field editors leave empty, which produces URLs nobody intended, and a routable model with no `review_urls`, which leaves editors publishing blind.
 
+### Remote content and lookup keys
+
+A remote item cannot be filtered by its own id from the other system: the
+GraphQL `where` input for a remote source only has `_id_any`, which takes
+Prepr's ids. When the front end looks up Prepr content by the external key
+(a product page by its handle), give the model that enriches the remote item
+a required, `filterable` Text field holding that key, such as
+`product_handle`, and make it `unique`. The front end then queries
+`where: { product_handle: $handle }`. The remote-content field on the same
+model stays optional for editors to pick the item.
+
 ### Numbers and money
 
 Prices in Integer **cents** (`price_monthly`, `price_annually`). Display-formatted prices ("Custom", "€49") as Text when marketing needs freeform. Never Float for money.

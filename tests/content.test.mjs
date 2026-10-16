@@ -248,6 +248,22 @@ RULES.push(
   { file: 'skills/manage-content/SKILL.md', must: ['check the asset permissions'] },
 );
 
+// Lessons from a scripted demo build: batch route, remote-content fields, handle fields
+RULES.push(
+  { file: 'shared/batch-route.md',
+    must: ['https://mcp.prepr.io', 'PREPR_MCP_TOKEN', 'tools/call', 'text/event-stream', 'data:', 'isError',
+           'plan', 'apply', 'state file', 'stop at the first error', 'phase', 'get_initial_context', 'never print'],
+    mustNot: ['../', 'mcp.prepr.io/mcp', 'Mutation API'] },
+  { file: 'skills/manage-content/SKILL.md', must: ['references/batch-route.md'] },
+  { file: 'skills/create-schema/SKILL.md', must: ['references/batch-route.md'] },
+  { file: 'shared/mcp-limits.md',
+    must: ['## Remote content fields', 'JSON Pointer', '"items": [', '_json', '`items: []`', 'before Done',
+           'read tools'] },
+  { file: 'shared/schema-design-principles.md', must: ['_id_any', 'handle', 'filterable'] },
+  { file: 'skills/design-schema/SKILL.md', must: ['handle'] },
+  { file: 'skills/create-schema/references/field-types.md', must: ['_id_any', 'filterable'] },
+);
+
 
 for (const r of RULES) {
   test(`${r.file}`, () => {

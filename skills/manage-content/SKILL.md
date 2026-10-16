@@ -154,8 +154,10 @@ articles, not one.
 ## Larger imports
 
 This skill handles up to 25 items per request, the size of one bulk call.
-Imports of more than 25 items, or from another system, are out of scope. Say
-so and point the user to Prepr's migration guide:
+For a planned job of more than about 50 items or a bulk asset import, such
+as seeding a demo, write a script that calls the MCP tools instead; see
+[batch-route.md](references/batch-route.md). Migrating content from another
+system is out of scope. Say so and point the user to Prepr's migration guide:
 https://docs.prepr.io/project-setup/migrating-content
 
 ## Typical requests

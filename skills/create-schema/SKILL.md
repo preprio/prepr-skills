@@ -89,6 +89,10 @@ Follow [write-safety.md](references/write-safety.md) exactly:
 4. [Verify](references/write-safety.md#verify): `get_schema_entity` on each
    entity you touched and compare it with the plan.
 
+A whole schema, dozens of entities with hundreds of fields, is too many calls
+for chat. Write a script that makes the same calls, with the same plan and
+yes; see [batch-route.md](references/batch-route.md).
+
 ## Changing an existing schema
 
 - Adding a field: read the entity, plan the one field, same loop.

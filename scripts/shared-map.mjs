@@ -9,4 +9,5 @@ export const SHARED_MAP = {
   'ai-context.md': ['connect-prepr', 'create-schema', 'design-schema', 'review-schema'],
   'schema-route.md': ['create-schema', 'review-schema', 'sync-schema'],
   'schema-files.md': ['create-schema', 'review-schema', 'sync-schema'],
+  'batch-route.md': ['create-schema', 'manage-content'],
 };
