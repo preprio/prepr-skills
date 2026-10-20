@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "prepr",
   "version": "0.3.0",
-  "description": "Prepr CMS skills for AI agents: connect to the Prepr MCP server, design and build your content model live or as Git-synced schema files, review it, and manage content.",
+  "description": "Prepr CMS skills for AI agents: connect to the Prepr MCP server, design and build your content model live or as Git-synced schema files, review it, and manage and migrate content.",
   "author": {
     "name": "Prepr",
     "url": "https://prepr.io"

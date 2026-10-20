@@ -21,6 +21,19 @@ Fixes from an end-to-end review and more live MCP findings.
   OAuth. Linked from create-schema and manage-content; scenario 10 covers
   both.
 - Known errors: `intent` is the usual cause of `additional properties`.
+- New skill migrate-content: plans and scripts a migration from another
+  CMS or an old Prepr environment into a Prepr schema, following Prepr's
+  migration guides. A plain Node script writes through the REST Mutation
+  API: assets first, then `create` (empty items and an id map) and `fill`
+  (mapped fields, resolved references, Review stage), with dry runs, a
+  report, and Test before Production. Same-schema copies go to Export to.
+  For other CMSs it covers source credentials, a source snapshot,
+  translations, taxonomies, dates and a content freeze, and a transform
+  guide for rich text, inline images and links, embeds and a redirect map,
+  and an Umbraco reference: export route per version, Delivery API paging
+  and cultures, property editor output, links, redirects and what is not
+  content.
+  manage-content now hands migrations to it.
 
 ## 0.3.0 (2026-10-13)
 

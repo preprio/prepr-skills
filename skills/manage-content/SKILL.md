@@ -152,7 +152,8 @@ For a planned job of more than 25 items or a bulk asset import, such as
 seeding a demo, run it as one job through the same MCP tools: one plan, one
 yes, and a state file to resume from; see
 [batch-route.md](references/batch-route.md). Migrating content from another
-system is out of scope. Say so and point the user to Prepr's migration guide:
+system or an old Prepr environment is a job for **migrate-content**; offer
+it. If it is not installed, point the user to Prepr's migration guide:
 https://docs.prepr.io/project-setup/migrating-content
 
 ## Typical requests

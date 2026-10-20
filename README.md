@@ -12,6 +12,7 @@ files in `prepr/schema/`, synced with Prepr through Git.
 | create-schema | Builds models, components, enums and fields, live in Prepr or as schema files, after you approve the plan |
 | review-schema | Reviews a live schema or schema files and suggests fixes (read-only) |
 | manage-content | Creates, updates, schedules and uploads content, including personalized and A/B variants |
+| migrate-content | Plans and scripts a content migration from another CMS or an old Prepr environment into your Prepr schema |
 | sync-schema | Sets up Git sync for `prepr/schema/`, CI validation, and safe imports between environments |
 
 ## Install

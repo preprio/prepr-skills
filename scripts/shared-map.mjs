@@ -1,9 +1,9 @@
-export const SKILLS = ['connect-prepr', 'create-schema', 'design-schema', 'manage-content', 'review-schema', 'sync-schema'];
+export const SKILLS = ['connect-prepr', 'create-schema', 'design-schema', 'manage-content', 'migrate-content', 'review-schema', 'sync-schema'];
 
 // shared/<file> → skills that receive a copy in references/<file>
 export const SHARED_MAP = {
-  'mcp-connection.md': ['connect-prepr', 'create-schema', 'design-schema', 'manage-content', 'review-schema', 'sync-schema'],
-  'write-safety.md': ['create-schema', 'manage-content'],
+  'mcp-connection.md': ['connect-prepr', 'create-schema', 'design-schema', 'manage-content', 'migrate-content', 'review-schema', 'sync-schema'],
+  'write-safety.md': ['create-schema', 'manage-content', 'migrate-content'],
   'schema-design-principles.md': ['create-schema', 'design-schema', 'review-schema', 'sync-schema'],
   'mcp-limits.md': ['create-schema', 'manage-content'],
   'ai-context.md': ['connect-prepr', 'create-schema', 'design-schema', 'review-schema'],

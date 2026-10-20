@@ -65,13 +65,14 @@ RULES.push({
   file: 'skills/manage-content/SKILL.md',
   must: ['name: manage-content', 'references/write-safety.md', 'references/mcp-limits.md', 'connect-prepr',
          'upload_asset_from_public_url', 'create_asset_upload_url', 'unpublish', 'one locale per', 'workflow', 'environment'],
-  mustNot: ['../', 'Mutation API', 'upload_asset`', 'migrate-content', 'manage-environments'],
+  mustNot: ['../', 'Mutation API', 'upload_asset`', 'manage-environments'],
 });
 
 RULES.push(
   { file: 'README.md',
     must: ['claude plugin marketplace add preprio/prepr-skills', 'claude plugin install prepr@prepr', 'npx skills add preprio/prepr-skills',
-           'connect-prepr', 'design-schema', 'create-schema', 'review-schema', 'manage-content', 'https://mcp.prepr.io', 'shared/', 'sync-shared'] },
+           'connect-prepr', 'design-schema', 'create-schema', 'review-schema', 'manage-content', 'migrate-content',
+           'https://mcp.prepr.io', 'shared/', 'sync-shared'] },
   { file: 'FRESHNESS.md',
     must: ['https://mcp.prepr.io', 'list_schema', 'get_schema_entity', 'confirmToken', 'bearer_token_env_var',
            'Settings → Integrations → MCP Server', 'release-notes', 'Last verified'] },
@@ -262,6 +263,47 @@ RULES.push(
   { file: 'shared/mcp-limits.md', must: ['read tools'] },
 );
 
+
+// migrate-content: move content from another CMS or an old Prepr environment into a new schema
+RULES.push(
+  { file: 'skills/migrate-content/SKILL.md',
+    must: ['name: migrate-content', 'references/mcp-connection.md', 'references/write-safety.md',
+           'references/payloads.md', 'references/script.md', 'Export to', 'design-schema', 'create-schema',
+           'manage-content', 'Test environment', 'empty', 'create', 'fill', 'id map', '--dry-run', 'Review',
+           'Mutation API', 'Settings → Access tokens', 'Bound to user', 'PREPR_TARGET_TOKEN', 'PREPR_SOURCE_TOKEN',
+           '.gitignore', 'never print', 'never writes to the source', 'ask about', 'report', 'Production'],
+    mustNot: ['../', 'prepr-migrator', 'mcp.prepr.io/mcp', 'paste your token', 'enter your token'] },
+  { file: 'skills/migrate-content/references/payloads.md',
+    must: ['https://mutation.prepr.io', 'POST /content_items', 'PUT /content_items/{id}', 'entire body',
+           '{"value"', '{"body"', '"items": [{"id"', 'component', 'not its `ref`', 'workflow_stage', 'publish_on',
+           'slug', 'unique', 'allowed', 'Y-m-d', 'latitude', 'reference_id', '25MB'],
+    mustNot: ['../', 'prepr-migrator'] },
+  { file: 'skills/migrate-content/references/script.md',
+    must: ['--dry-run', '--model', '--slug', '--id', '--limit', 'id-map', '429', 'X-Prepr-Retry-After',
+           '200', 'report', 'plain JavaScript', 'process.env.PREPR_TARGET_TOKEN', 'one mapper', 'exit'],
+    mustNot: ['../', 'prepr-migrator', 'console.log(process.env', 'TypeScript types'] },
+  { file: 'skills/manage-content/SKILL.md', must: ['migrate-content'] },
+  { file: 'docs/scenarios.md', must: ['## 11. Migrate content', '11c', 'WordPress'] },
+  { file: 'skills/migrate-content/SKILL.md',
+    must: ['## Sources outside Prepr', 'references/transform.md', 'snapshot', 'SOURCE_', 'read-only',
+           'translation', 'taxonom', 'Tags field', 'content freeze', 'UNIX timestamp', 'timezone'] },
+  { file: 'skills/migrate-content/SKILL.md', must: ['references/umbraco.md', 'Umbraco'] },
+  { file: 'skills/migrate-content/references/umbraco.md',
+    must: ['Content Delivery API', '/umbraco/delivery/api/v2/content', 'Api-Key', 'Accept-Language', 'skip', 'take',
+           'sort=', 'expand=properties[$all]', 'published', 'Preview: true', 'Media Delivery API', 'relative',
+           'markup', 'umb-rte-block', 'Block List', 'Block Grid', 'localLink', 'data-udi', 'Management API',
+           'uSync', 'Nested Content', 'UMBRACO_MACRO', 'Accept-Language', 'umbracoRedirectUrl', 'Members',
+           'Umbraco Forms', 'Dictionary', 'version', 'UMBRACO_API_KEY'],
+    mustNot: ['../', 'prepr-migrator'] },
+  { file: 'docs/scenarios.md', must: ['11d', 'Umbraco'] },
+  { file: 'FRESHNESS.md', must: ['Umbraco'] },
+  { file: 'skills/migrate-content/references/transform.md',
+    must: ['Portable Text', 'Gutenberg', 'shortcode', 'Contentful', 'clean HTML', 'dynamic content',
+           '<img', 'upload', 'internal links', 'id map', 'redirect map', 'old URL', 'Social', 'YouTube',
+           'report'],
+    mustNot: ['../', 'prepr-migrator'] },
+  { file: 'FRESHNESS.md', must: ['Mutation API', 'Bound to user', 'X-Prepr-Retry-After'] },
+);
 
 for (const r of RULES) {
   test(`${r.file}`, () => {

@@ -1,6 +1,6 @@
 {
   "name": "prepr",
-  "description": "Prepr CMS skills for AI agents: connect to the Prepr MCP server, design and build your content model live or as Git-synced schema files, review it, and manage content.",
+  "description": "Prepr CMS skills for AI agents: connect to the Prepr MCP server, design and build your content model live or as Git-synced schema files, review it, and manage and migrate content.",
   "version": "0.3.0",
   "author": {
     "name": "Prepr",
