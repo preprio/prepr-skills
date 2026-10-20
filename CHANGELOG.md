@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-Fixes from an end-to-end review and more live MCP findings.
+## 0.4.0 (2026-10-20)
+
+Three new skills (migrate-content, build-frontend, personalize-and-track),
+a batch route for large jobs, editor-friendly schema guidance, and fixes
+from an end-to-end review and live MCP findings.
 
 - Editor experience: create-schema designs the editor's form (names, field
   order, sections, help text placement, Help text fields, widths,
