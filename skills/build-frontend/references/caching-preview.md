@@ -3,9 +3,8 @@
 ## Prepr's CDN
 
 Prepr serves GraphQL through a CDN, invalidated when content or schema
-changes. Cached responses don't count against rate limits. The
-`X-Prepr-Cache` response header shows `HIT` or `MISS`. Right after a
-publish, a request can still return the old version for a moment.
+changes. The `X-Prepr-Cache` response header shows `HIT` or `MISS`. Right
+after a publish, a request can still return the old version for a moment.
 
 ## What your app may cache
 

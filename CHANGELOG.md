@@ -14,7 +14,9 @@ Fixes from an end-to-end review and more live MCP findings.
   and call to action into every section; use a shared heading component or
   one content section with blocks, keep options few, and keep it simple
   for the developer. A test keeps project-specific mentions out of the
-  skills.
+  skills. Examples are neutral, and folders, personalization flags and a
+  personalization wrapper model are options to agree with the user, not
+  rules.
 - Review fixes: skills that work on schema files no longer stop without
   MCP; drift matches entities on name the way Import does and flags renames;
   sync-schema points to Prepr's import preview and names both known causes
