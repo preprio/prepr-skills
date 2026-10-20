@@ -5,7 +5,7 @@
       "type": "streamable-http",
       "url": "https://mcp.prepr.io",
       "headers": {
-        "X-Prepr-Client": "prepr-skills/0.4.0"
+        "X-Prepr-Client": "prepr-skills/0.4.1"
       }
     }
   }

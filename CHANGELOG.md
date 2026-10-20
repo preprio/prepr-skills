@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.1 (2026-10-20)
+
 Safer reruns in migrate-content.
 
 - migrate-content: a new `updates.md` on rerunning `fill` without losing
