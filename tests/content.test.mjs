@@ -283,6 +283,9 @@ RULES.push(
     must: ['**Form**', 'sections', 'help text', 'conditions'] },
   { file: 'skills/review-schema/SKILL.md',
     must: ['help text', 'collapsed', 'side by side', 'placeholder', 'framed'] },
+  { file: 'shared/schema-design-principles.md',
+    must: ['**One option: a generic block container.**'],
+    mustNot: ['Key insight', 'does most of the work'] },
   { file: 'FRESHNESS.md',
     must: ['Field help text', 'Field widths', 'Conditional visibility', 'Sections', 'Component display', 'Column field'] },
 );

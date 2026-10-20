@@ -67,16 +67,18 @@ Page (Model, slug: {parent_page.slug}/{internal_title}/)
 ├── parent_page (ContentReference → Page)     ← hierarchical URLs
 ├── sections (Stack, a_b_testing + personalization)
 │   ├── SideBySide (Component)      text + image section
-│   ├── Content (Component)         generic block container ← does most of the work
+│   ├── Content (Component)         generic block container ← one option, see below
 │   ├── CTA (Model, allow_new)      reusable call-to-action section
 │   ├── ContentForm (Model)         content + form section
 │   └── Personalization (Model)     per-segment section wrapper
 └── seo (Component → SEO)
 ```
 
-Key insight: keep the **section** level small (5-6 types), and put variety one level down. In the example, a `Content` section acts as a generic container: a `blocks` Stack accepting the whole block library (grids, media, quotes, tables, FAQ, pricing…) plus whatever display settings that project chose to expose, so new block types get added to `Content.blocks` rather than to every page model.
+Keep the **section** level small (5-6 types). How to fit the variety in is a choice, and several approaches work.
 
-**That two-level nesting is one site's choice, not a rule.** Sections holding blocks pays off when there is a large block library that several section types share, or when display settings (background, width, spacing) belong on a wrapper rather than on each block. It costs editors an extra click per item and adds a level to every query and component. Flat is often better: put the block types directly in the page's `sections` stack when the library is small, when blocks do not need a shared wrapper, or when each section is self-contained. Some models want neither — a fixed field list is right for a strongly-structured page (a pricing page, an author profile), and rich text with embeddable components is right for article bodies. Pick per project; do not add a container level just because the example has one.
+**One option: a generic block container.** In the example, a `Content` section acts as a generic container: a `blocks` Stack accepting the whole block library (grids, media, quotes, tables, FAQ, pricing…) plus whatever display settings that project chose to expose, so new block types get added to `Content.blocks` rather than to every page model. It worked well for the site it came from. It is one way to reach the goal, not a rule and not the default.
+
+When to choose it: sections holding blocks pays off when there is a large block library that several section types share, or when display settings (background, width, spacing) belong on a wrapper rather than on each block. It costs editors an extra click per item and adds a level to every query and component. Flat is often better: put the block types directly in the page's `sections` stack when the library is small, when blocks do not need a shared wrapper, or when each section is self-contained. Some models want neither — a fixed field list is right for a strongly-structured page (a pricing page, an author profile), and rich text with embeddable components is right for article bodies. Pick per project, offer the container as one of the options, and do not add it just because the example has one.
 
 Detail pages (in the example: `Post`, `CaseStudy`, `Agency`, `Event`) are separate models: their own fields + slug template + the same `sections` stack for flexible extra content. Blog-like bodies use an `ElementBox` (rich text with embeddable components) instead of a sections stack. Which detail-page models exist follows entirely from the project's content — start from what the site actually publishes, not from this list.
 
