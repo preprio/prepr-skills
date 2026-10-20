@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
@@ -285,8 +285,9 @@ RULES.push(
   { file: 'skills/review-schema/SKILL.md',
     must: ['help text', 'collapsed', 'side by side', 'placeholder', 'framed'] },
   { file: 'shared/schema-design-principles.md',
-    must: ['**One option: a generic block container.**'],
-    mustNot: ['Key insight', 'does most of the work'] },
+    must: ['### Composable sections', 'label, heading, sub-heading', 'shared heading component',
+           'one content section with blocks', 'Developer-friendly first', 'Few options', 'as simple as'],
+    mustNot: ['Key insight', 'does most of the work', 'generic block container'] },
   { file: 'FRESHNESS.md',
     must: ['Field help text', 'Field widths', 'Conditional visibility', 'Sections', 'Component display', 'Column field'] },
 );
@@ -407,3 +408,19 @@ for (const r of RULES) {
     for (const s of r.mustNot ?? []) assert.ok(!text.includes(s.toLowerCase()), `${r.file} must not mention "${s}"`);
   });
 }
+
+// Skills teach patterns; they never point at a specific project or site
+test('no skill or shared file refers to a specific project', () => {
+  const files = [...readdirSync(ROOT + 'shared').map((f) => 'shared/' + f)];
+  for (const skill of readdirSync(ROOT + 'skills')) {
+    files.push(`skills/${skill}/SKILL.md`);
+    const refs = ROOT + `skills/${skill}/references`;
+    if (existsSync(refs)) for (const f of readdirSync(refs)) files.push(`skills/${skill}/references/${f}`);
+  }
+  const banned = ['worked example', 'in the example', 'the example schema', 'the site it came from', 'that project',
+                  'real marketing-site', "prepr's own migration", "prepr's own website", 'prepr-marketing', 'wildkamp'];
+  for (const f of files) {
+    const text = readFileSync(ROOT + f, 'utf8').toLowerCase();
+    for (const b of banned) assert.ok(!text.includes(b), `${f} mentions "${b}"`);
+  }
+});

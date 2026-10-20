@@ -165,9 +165,12 @@ If a stack is right, decide the **nesting** just as deliberately:
   wrapper, or when a large block library is reused across several section
   types.
 
-Nesting everything inside a generic content section is one pattern among
-several, not a requirement. Offer it as an option when one of those two
-reasons applies. State which you picked and why in the plan.
+Either way, don't copy the same heading fields (label, heading,
+sub-heading, call to action) into every section: make sections composable
+with a shared heading component or one content section with blocks (see
+[Composable sections](references/schema-design-principles.md#composable-sections)).
+Keep options few and the result simple for the developer. State which you
+picked and why in the plan.
 
 When the plan names field types, use the editor names (Text, Rich text,
 Content reference, Stack, Component, Enum, …). create-schema maps them to tool

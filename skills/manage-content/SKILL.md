@@ -158,5 +158,5 @@ https://docs.prepr.io/project-setup/migrating-content
 
 ## Typical requests
 
-For worked examples of editorial prompts and expected behaviour, see
+For examples of editorial prompts and expected behaviour, see
 https://docs.prepr.io/prepr-mcp-server/use-cases.

@@ -1,8 +1,8 @@
 # Prepr schema design principles
 
-The decisions that shape a Prepr schema, and the patterns they lead to, illustrated with one worked example: a real marketing-site schema. The example shows *how* the patterns compose — it is not a template to copy, and its model names, section vocabulary, and field choices are one site's answers, not requirements. The authority on modeling is the official documentation (https://docs.prepr.io/content-modeling/best-practices); when this file and the docs disagree, the docs win. Adapt everything below to the project's actual content.
+The decisions that shape a Prepr schema, and the patterns they lead to. Model and field names below (`Page`, `Hero`, `Button`) illustrate the patterns; they are not requirements. The authority on modeling is the official documentation (https://docs.prepr.io/content-modeling/best-practices); when this file and the docs disagree, the docs win. Adapt everything below to the project's actual content.
 
-This file has no output of its own — three skills read it and produce different things. design-schema turns it into a model plan and the questions needed to get one agreed; create-schema turns it into models and fields in Prepr; review-schema turns it into findings on a schema that already exists. So each principle is written to be read in both directions: the decision to make, and what it looks like in a finished schema when the decision went the other way. Where a deviation is legitimate, that is said so explicitly — departing from the worked example is not a finding, and treating it as one is how a review turns into noise.
+This file has no output of its own — three skills read it and produce different things. design-schema turns it into a model plan and the questions needed to get one agreed; create-schema turns it into models and fields in Prepr; review-schema turns it into findings on a schema that already exists. So each principle is written to be read in both directions: the decision to make, and what it looks like in a finished schema when the decision went the other way. Where a deviation is legitimate, that is said so explicitly — choosing a different pattern is not a finding, and treating it as one is how a review turns into noise.
 
 ## Before you model
 
@@ -59,42 +59,52 @@ Two things behave unlike either group. `personalization` and `a_b_testing` are S
 
 ### The page-builder pattern
 
-A proven architecture for content websites: a small set of routable **page models**, each with a `sections` Stack, composed of a deliberately small section vocabulary. From the example schema:
+A common architecture for content websites: a small set of routable **page models**, each with a `sections` Stack. For instance:
 
 ```
 Page (Model, slug: {parent_page.slug}/{internal_title}/)
 ├── internal_title (Text, title: true)
 ├── parent_page (ContentReference → Page)     ← hierarchical URLs
-├── sections (Stack, a_b_testing + personalization)
-│   ├── SideBySide (Component)      text + image section
-│   ├── Content (Component)         generic block container ← one option, see below
-│   ├── CTA (Model, allow_new)      reusable call-to-action section
-│   ├── ContentForm (Model)         content + form section
-│   └── Personalization (Model)     per-segment section wrapper
+├── sections (Stack)
+│   ├── Hero (Component)
+│   ├── Content (Component)         heading + blocks, see below
+│   ├── CTA (Model, allow_new)      reusable call to action
+│   └── …
 └── seo (Component → SEO)
 ```
 
-Keep the **section** level small (5-6 types). How to fit the variety in is a choice, and several approaches work.
+Keep the section level small, and keep it simple for the developer who renders it and the editor who fills it.
 
-**One option: a generic block container.** In the example, a `Content` section acts as a generic container: a `blocks` Stack accepting the whole block library (grids, media, quotes, tables, FAQ, pricing…) plus whatever display settings that project chose to expose, so new block types get added to `Content.blocks` rather than to every page model. It worked well for the site it came from. It is one way to reach the goal, not a rule and not the default.
+### Composable sections
 
-When to choose it: sections holding blocks pays off when there is a large block library that several section types share, or when display settings (background, width, spacing) belong on a wrapper rather than on each block. It costs editors an extra click per item and adds a level to every query and component. Flat is often better: put the block types directly in the page's `sections` stack when the library is small, when blocks do not need a shared wrapper, or when each section is self-contained. Some models want neither — a fixed field list is right for a strongly-structured page (a pricing page, an author profile), and rich text with embeddable components is right for article bodies. Pick per project, offer the container as one of the options, and do not add it just because the example has one.
+Most sections open the same way, with label, heading, sub-heading and a call to action, followed by one element: a grid of cards, an image, a form, a row of logos. Modeled as separate sections, those fields get copied into every one. Twenty sections later the copies have drifted (`title` here, `heading` there, two buttons in one, a link field in another), and every component re-implements the same header.
 
-Detail pages (in the example: `Post`, `CaseStudy`, `Agency`, `Event`) are separate models: their own fields + slug template + the same `sections` stack for flexible extra content. Blog-like bodies use an `ElementBox` (rich text with embeddable components) instead of a sections stack. Which detail-page models exist follows entirely from the project's content — start from what the site actually publishes, not from this list.
+Make sections composable instead. Two ways; pick with the user, by what their pages need:
+
+- **A shared heading component.** The shared fields live in one component (the `TextGroup` atom below) that each section embeds, next to its own element fields. Sections stay separate and flat, and the front end renders the heading with one component.
+- **One content section with blocks.** One section carries the shared heading fields and a `blocks` Stack for the element below them (a grid, media, a quote, an FAQ, a form). A new element is a new block type, not a new section. This fits when many sections differ only in the element under the heading. It costs one level: an extra click for editors, and a level in every query and component.
+
+Either way:
+
+- **Developer-friendly first.** One place per field, the same field names everywhere, and a small set of types the front end has to render.
+- **Few options.** Add a display option only when the design really varies. Each one is a branch in a component and a choice an editor can get wrong. One enum beats several booleans.
+- **Keep it as simple as the content allows.** A page with a fixed structure (a pricing page, an author profile) wants a fixed field list, not a stack. An article body wants rich text with embeddable components. Not every page needs sections.
+
+Detail pages (a blog post, an event, a case study) are separate models: their own fields and slug template, and optionally the same `sections` stack for extra content. Article-like bodies use a dynamic content field (rich text with embeddable components) instead of a sections stack. Which detail pages exist follows from what the site publishes.
 
 ### Model vs. component
 
 - **Model**: has identity — queried directly, referenced from multiple places, or has a URL. Pages and detail pages, but also reusable content atoms: `Testimonial`, `Person`, `Logo`, `FAQItem`, `PricingPlan`, taxonomy terms. Also site singletons: `Navigation`, `Footer`, `Banner` (`single_instance: true`).
 - **Component**: structure without identity — exists only inside a content item: `Button`, `TextGroup`, `Hero`-style sections, cards, grids.
 - Test: "would an editor search for this, or reuse it on another page?" Yes → Model. "Is it just the shape of a part of a page?" → Component.
-- Stacks can mix both: `CardGrid.cards` accepts `Card`, `Post`, `Agency`, `CaseStudy` models — the frontend renders each referenced item as a card. Reference models in stacks with `allow_new: true` so editors can create them inline.
+- Stacks can mix both: `CardGrid.cards` accepts `Card`, `Post`, `CaseStudy` models — the frontend renders each referenced item as a card. Reference models in stacks with `allow_new: true` so editors can create them inline.
 - Both mistakes are visible in a finished schema. The same quote, author, or logo typed into several items is a Component where a Model belonged. A Model that only ever appears inside one page, reached through a picker dialog and never queried on its own, is the reverse.
 
 ### Flat vs. nested: how deep to compose
 
 Nesting is not free structure. Every level costs an editor a dialog to open, every query a level of selection, the generated types a layer, and the front end a component whose only job is to pass its children through. [The page-builder pattern](#the-page-builder-pattern) covers one specific instance of this question — whether sections hold blocks; this is the general one.
 
-- **Count the levels between the page and the field someone actually has to change.** That number matters more than the schema's total depth. In the worked example, fixing a typo in one feature's headline means Page → Content → FeatureGrid → FeatureItem: four dialogs down. Depth like that is sometimes worth what it buys, but it should be a decision someone made rather than something that accumulated one component at a time.
+- **Count the levels between the page and the field someone actually has to change.** That number matters more than the schema's total depth. Fixing a typo in one feature's headline through Page → Content → FeatureGrid → FeatureItem is four dialogs down. Depth like that is sometimes worth what it buys, but it should be a decision someone made rather than something that accumulated one component at a time.
 - **A level has to carry something.** Display settings shared by everything below it, reuse of the level below by more than one parent, or a genuine repeat — one grid, many cards. Those pay for themselves. A level that holds exactly one child, or whose fields would sit perfectly well on its parent, is a dialog in exchange for nothing.
 - **The flattening test: remove the level, move its fields up, and see what breaks.** If nothing does, it was not carrying anything.
 - **A reference is not a nesting level.** A Model in a Stack with `allow_new: true` lets an editor create it inline and then edit it as its own item — one screen rather than one more layer down. So when a branch is getting deep and the thing at the bottom has any reuse or lifecycle of its own, promoting it from Component to Model flattens the editing experience without giving up the composition.
@@ -123,8 +133,8 @@ Layout options (columns, variant, alignment) live on the grid; per-item options 
 
 Define once, reuse everywhere:
 
-- **`Button`**: value + `ButtonType` enum + a `LinkType` enum gating a `ContentReference` vs. a URL Text via `appearance_conditions` (see [conditional fields](#conditional-fields)). In the example schema, every CTA is this one component.
-- **`TextGroup`**: label + headline + `HeadlineStyle` enum + rich content + CTAs Stack + alignment. The standard "text part" of any section — `SideBySide`, `CTA`, `ContentCard` all embed it via a `Component` field.
+- **`Button`**: value + `ButtonType` enum + a `LinkType` enum gating a `ContentReference` vs. a URL Text via `appearance_conditions` (see [conditional fields](#conditional-fields)). Every call to action can be this one component.
+- **`TextGroup`**: label + heading + sub-heading + CTAs Stack, plus at most a style enum. The shared heading of any section (see [Composable sections](#composable-sections)), embedded via a `Component` field.
 - **`SEO`**: meta title/description/image + noindex/nofollow + sitemap priority. A `Component` field on every routable model, behind an "SEO" divider.
 
 When two components need the same 3+ fields, extract a shared component instead of copying fields.
@@ -132,7 +142,7 @@ When two components need the same 3+ fields, extract a shared component instead 
 ### References and taxonomy
 
 - Relationships have one owning side, on the "many" side pointing to the shared entity: `Post.author → Person`, `CaseStudy.industry → Industry`. Shared entities (people, logos, testimonials, FAQ items) are always models — never duplicate a quote into every page that shows it.
-- **Model taxonomy yourself — that is the recommendation.** Taxonomy terms are small models (`Topic`, `Industry`, `FrameworkCategory`): `title` + `Slug` + `priority` (Integer sort order) + optional `SEO` for category pages. Mark reference fields `filterable: true` so list pages can filter by them. A modelled term can grow fields (description, image, parent term for hierarchy), get its own landing page and slug, be referenced from anywhere, and be curated with the same publishing workflow as other content. This is the freedom tags cannot give you.
+- **Model taxonomy yourself — that is the recommendation.** Taxonomy terms are small models (`Topic`, `Industry`, `Category`): `title` + `Slug` + `priority` (Integer sort order) + optional `SEO` for category pages. Mark reference fields `filterable: true` so list pages can filter by them. A modelled term can grow fields (description, image, parent term for hierarchy), get its own landing page and slug, be referenced from anywhere, and be curated with the same publishing workflow as other content. This is the freedom tags cannot give you.
 - **Prepr's built-in tags** (the `Tags` field) are the lightweight alternative and they do exist — see https://docs.prepr.io/mutation-api/tags. A tag is a label with `id`, `body`, `slug`, and timestamps, assignable to content items, assets, and visitors, and usable for filtering and as a recommendation signal. Tags live at environment level, not in the schema; **tag groups** bundle related tags (an `Article category` group), and the field's `appearance` restricts entry to a group (`"select"`, `"auto_suggest"`) or leaves it free.
 - Choose tags when the terms are genuinely just labels: no term page, no term description or image, no hierarchy, and editors can be trusted with (or restricted from) free entry. Choose a model the moment a term needs fields, a URL, hierarchy, or curation — retrofitting tags into a model means migrating every item that used them. Mixed is fine: modelled `Industry` for the terms that have landing pages, free tags for loose keywords.
 - A `Redirect` model (`source` path Text + `destination` reference + `permanent` Boolean) puts URL management in the CMS. It earns its place when marketing owns redirects or a migration produces many; when developers own URLs and they rarely change, framework-config or middleware redirects are simpler — no model needed. Ask who manages redirects before adding it.

@@ -49,10 +49,10 @@ or "the blog").
 
 Judge against https://docs.prepr.io/content-modeling/best-practices (the
 authority) with
-[schema-design-principles.md](references/schema-design-principles.md) as a
-worked example of the patterns in practice. Deviating from the example is
-never a finding by itself; only deviations from documented best practices or
-from the principles' reasoning are. Check in particular:
+[schema-design-principles.md](references/schema-design-principles.md) for
+the patterns and their reasoning. Choosing a different pattern is never a
+finding by itself; only deviations from documented best practices or from
+the principles' reasoning are. Check in particular:
 
 1. **Model/Component/Enum choices.** Standalone lifecycle or cross-page
    reuse → Model; embedded structure → Component; fixed choice list → Enum,

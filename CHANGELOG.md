@@ -9,8 +9,12 @@ Fixes from an end-to-end review and more live MCP findings.
   conditions, component framing and picker images, required and defaults),
   says which of these the MCP tools cannot set, design-schema plans them and
   review-schema flags their absence. Schema files document the exact keys.
-- The generic block container in the page-builder example is now framed as
-  one option, not the recommended default.
+- Schema principles no longer lean on one site's schema. A new
+  "Composable sections" principle: don't copy label, heading, sub-heading
+  and call to action into every section; use a shared heading component or
+  one content section with blocks, keep options few, and keep it simple
+  for the developer. A test keeps project-specific mentions out of the
+  skills.
 - Review fixes: skills that work on schema files no longer stop without
   MCP; drift matches entities on name the way Import does and flags renames;
   sync-schema points to Prepr's import preview and names both known causes

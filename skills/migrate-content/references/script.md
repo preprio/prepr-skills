@@ -1,9 +1,10 @@
 # The migration script
 
 Keep it small. Use plain JavaScript in Node 20 or later, with ES modules and
-the built-in `fetch`, and add no framework. Prepr's own migration first
-tried a typed framework with generated abstractions and threw it away; the
-version that worked was a few small modules and a log to work from.
+the built-in `fetch`, and add no framework. A migration script runs a few
+times and is thrown away; a typed framework and generated abstractions cost
+more than they save. A few small modules and a report to work from are
+enough.
 
 ## Layout
 
