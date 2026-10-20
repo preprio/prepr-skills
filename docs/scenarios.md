@@ -269,3 +269,4 @@ Prompt: `Add Prepr tracking, show visitors their personalized sections, and meas
 | 2026-10-13 | 0.3.0 + review fixes | Cleanup re-run, 9 to completion, A/B variant, review-schema drift, 2–5 | Not run | Skipped by the maintainer: the Prepr MCP server was not authorized for headless runs |
 | 2026-10-13 | 0.3.0 + review fixes | Routing (`scripts/eval-routing.mjs`) | Pass | 28/28, including 5 new prompts: A/B and personalized variants, drift check, component create, review of schema files |
 | 2026-10-20 | 0.3.0 + batch route, migrate-content | Routing (`scripts/eval-routing.mjs`) | Pass | 31/31, including 3 new migrate-content prompts (WordPress, old Prepr environment, Contentful script); no regressions |
+| 2026-10-20 | 0.3.0 + front-end skills | Routing (`scripts/eval-routing.mjs`) | Pass | 38/38, including 7 new prompts for build-frontend and personalize-and-track; no regressions |
