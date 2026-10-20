@@ -1,7 +1,8 @@
 ---
 name: review-schema
 description: >-
-  Review a live Prepr CMS schema and report what to improve. Use this skill
+  Review a Prepr CMS schema, live or as schema files in prepr/schema/, and
+  report what to improve. Use this skill
   whenever the user wants to review, audit, or improve a Prepr content model,
   asks "is this schema any good", wants a second opinion before content is
   added, or inherits an environment and wants to understand its model. Makes
@@ -13,17 +14,26 @@ metadata:
 
 # Review a Prepr schema
 
-Review the schema of a live Prepr environment and deliver concrete,
-prioritized fixes. A review has two layers: **design** (is it a good schema)
+Review the schema of a live Prepr environment, or the schema files in
+`prepr/schema/`, and deliver concrete, prioritized fixes. A review has two layers: **design** (is it a good schema)
 and, where content exists, **actual use** (what editors did with it, which
 contradicts the design more often than anyone expects).
 
 This skill is **read-only**. It never changes the schema; fixes go through
 **create-schema**, which plans them and waits for a yes.
 
-Run [the check](references/mcp-connection.md#the-check) first. This skill
-needs MCP. If it is not connected, offer **connect-prepr** and stop. Name the
-environment under review in the first line of your report.
+Run [the check](references/mcp-connection.md#the-check) first. Name what you
+review, the environment or the files, in the first line of your report.
+
+- **Live environment:** needs MCP. If it is not connected, offer
+  **connect-prepr**, or review the files instead if the project has them.
+- **Schema files:** read every file in `prepr/schema/` (format:
+  [schema-files.md](references/schema-files.md)). Use-of-content findings
+  need MCP; without it, say they were skipped.
+- **Both available:** compare them as
+  [schema-route.md](references/schema-route.md) describes and report every
+  drift between environment and files as a finding of its own, with which
+  side the user should keep.
 
 ## Step 1: Collect the whole schema
 
@@ -39,10 +49,10 @@ or "the blog").
 
 Judge against https://docs.prepr.io/content-modeling/best-practices (the
 authority) with
-[schema-design-principles.md](references/schema-design-principles.md) as a
-worked example of the patterns in practice. Deviating from the example is
-never a finding by itself; only deviations from documented best practices or
-from the principles' reasoning are. Check in particular:
+[schema-design-principles.md](references/schema-design-principles.md) for
+the patterns and their reasoning. Choosing a different pattern is never a
+finding by itself; only deviations from documented best practices or from
+the principles' reasoning are. Check in particular:
 
 1. **Model/Component/Enum choices.** Standalone lifecycle or cross-page
    reuse → Model; embedded structure → Component; fixed choice list → Enum,
@@ -70,8 +80,14 @@ from the principles' reasoning are. Check in particular:
    item that used them. A term Model with nothing but a title is **not** a
    finding.
 5. **Editor experience.** Missing internal title on models editors must find;
-   missing field descriptions; forms without dividers past about 8 fields;
-   variant-specific fields not hidden behind conditional display;
+   missing field help text, or rules hidden in a placeholder that vanishes
+   once the editor types; forms without dividers past about 8 fields; SEO
+   and display sections not collapsed; short related fields that could sit
+   side by side each taking a full row; fields in an order that does not
+   follow how the content is written; components framed or unframed against
+   their purpose, and section components with no icon, preview image or
+   picker description; required set where the item is not broken without
+   it; variant-specific fields not hidden behind conditional display;
    presentation enums without a default; guidance crammed into a field's
    label instead of its description; models with no title field, or more than
    one. Also check translation intent: human-language text should be marked

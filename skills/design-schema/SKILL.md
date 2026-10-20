@@ -42,7 +42,8 @@ reshaping that will migrate existing content.
 [the check](references/mcp-connection.md#the-check). If Prepr tools are
 present, page through `list_schema` before asking anything: reuse existing
 models and components, and avoid name clashes. This skill also works
-without MCP; then ask the user what already exists.
+without MCP; then read the files in `prepr/schema/` if the project has them,
+or ask the user what already exists.
 
 ## The route to an agreed model
 
@@ -164,9 +165,12 @@ If a stack is right, decide the **nesting** just as deliberately:
   wrapper, or when a large block library is reused across several section
   types.
 
-Nesting everything inside a generic content section is one pattern among
-several, not a requirement — do not adopt it unless one of those two reasons
-applies. State which you picked and why in the plan.
+Either way, don't copy the same heading fields (label, heading,
+sub-heading, call to action) into every section: make sections composable
+with a shared heading component or one content section with blocks (see
+[Composable sections](references/schema-design-principles.md#composable-sections)).
+Keep options few and the result simple for the developer. State which you
+picked and why in the plan.
 
 When the plan names field types, use the editor names (Text, Rich text,
 Content reference, Stack, Component, Enum, …). create-schema maps them to tool
@@ -231,6 +235,9 @@ Front end, editors, locales, personalization posture, migration source.
 - **Why it exists**: <the stated need>
 - **Shape**: <fixed fields | stack (flat/nested) | rich text | mix> — <why>
 - **Fields**: name — type — notes (required, filterable, translated, default)
+- **Form**: field order, sections (and which start collapsed), help text
+  for fields whose label is not enough, side-by-side widths, and conditions
+  that hide variant-specific fields
 - **URL**: <slug template, if routable>
 - **Relationships**: <references in and out, cardinality>
 
@@ -285,8 +292,9 @@ the plan, and ask the user to paste it under Settings → General → AI context
 ## Step 8: Hand off
 
 Once the plan is agreed, say that the next step is **create-schema**, which
-shows the exact changes and builds them after a yes. Do not start building
-without telling the user.
+shows the exact changes and builds them after a yes.
+create-schema picks the route: live through MCP, or schema files in
+`prepr/schema/` when the project syncs its schema with Git. Do not start building without telling the user.
 
 ## Related skills
 

@@ -47,8 +47,28 @@ with a Component.
 
 ## Fields that hold no data
 
-Divider, Column and Help text shape the editor's form and return nothing in
-the API. Adding them does not change the API response.
+Divider (a section), Column and Help text shape the editor's form and return
+nothing in the API. Adding them does not change the API response.
+
+## Settings every field has
+
+Prepr calls these the Appearance settings of a field. Set them for every
+field you plan; the reasoning is in The editor's form in
+[schema-design-principles.md](schema-design-principles.md#the-editors-form).
+
+- **Help text:** shown above the field, in a tooltip next to its name, or
+  inside the empty field as a placeholder. Supports Markdown bold and italic.
+- **Conditional visibility:** show the field based on another field's value.
+  Any field can be tested for empty or not empty, a Boolean for one value,
+  a List for one or more options, and a Text field for a regex match.
+- **Field display:** default (editable), read only (set through the API
+  only), or hidden for non-developers.
+- **Width:** 100, 80, 75, 67, 50, 33, 25 or 20 percent of the row, with an
+  option to start a new row. Stack and Dynamic content fields are always
+  full width.
+
+Required is a validation setting. Prepr checks it when an item reaches the
+environment's validation stage, usually Done, not when it is saved.
 
 ## Text
 
@@ -121,8 +141,10 @@ replaced on update, so read it and merge.
 
 ## Component
 
-Embeds exactly one component, shown inline in the editor's form, optionally
-framed.
+Embeds exactly one component, shown inline in the editor's form.
+Display fields as a group is on by default and frames the fields under the
+field's name; turn it off to show them like the item's own fields (SEO
+settings).
 
 **Use when** the group is always present exactly once. **Don't use when** it
 repeats (Stack) or is shared and edited separately (Content reference).
@@ -224,16 +246,26 @@ covers it.
 Deprecated as a Dynamic content element. Model quotes as a Component with
 author, role and photo fields.
 
+## Section (Divider)
+
+A named group of fields in the form. It can start collapsed, carry its own
+help text, and be shown conditionally. **Use when** a form passes about eight
+fields, or a group (SEO, display) is rarely edited. **Gotcha:** Prepr has no
+tabs; sections are the only grouping.
+
 ## Column
 
 Splits the editor's form into 1 to 6 columns. Authoring layout only; front-end
-column count belongs in an Enum the front end reads.
+column count belongs in an Enum the front end reads. **Gotcha:** the MCP
+schema tools cannot create it. Use field widths for side-by-side fields.
 
-## Help text
+## Help text field
 
-A guidance block in the form (default, info or warning). **Use when** a rule
-cannot be enforced by validation and editors keep getting it wrong. **Don't use
-when** a field description would do.
+A read-only guidance block in the form: a bold title, Markdown text, and a
+background of default (grey), info (blue) or warning (yellow). It can be
+conditional. **Use when** guidance spans several fields, or a rule cannot be
+enforced by validation and editors keep getting it wrong. **Don't use when**
+one field's own help text would do.
 
 ## Remote content
 

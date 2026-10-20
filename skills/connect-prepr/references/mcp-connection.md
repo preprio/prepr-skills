@@ -25,8 +25,10 @@ the server ships new tools often.
      **MCP: List Servers** → `prepr` → Start.
    - Claude Desktop / ChatGPT: reconnect the Prepr connector in settings.
 3. **Not registered.** Offer the `connect-prepr` skill in one sentence: it adds
-   the server to this project and walks through authorization. Only
-   `design-schema` continues without MCP. Every other skill stops here.
+   the server to this project and walks through authorization. Without MCP,
+   `design-schema` still runs, and work on schema files in `prepr/schema/`
+   (create-schema, review-schema, sync-schema) goes on in the files. Anything
+   that needs the live environment or content stops here.
 
 If a skill these instructions name (such as `connect-prepr` or
 `create-schema`) is not installed, say so and point the user to

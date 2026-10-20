@@ -1,0 +1,321 @@
+# Prepr schema design principles
+
+The decisions that shape a Prepr schema, and the patterns they lead to. Model and field names below (`Page`, `Hero`, `Button`) illustrate the patterns; they are not requirements. The authority on modeling is the official documentation (https://docs.prepr.io/content-modeling/best-practices); when this file and the docs disagree, the docs win. Adapt everything below to the project's actual content.
+
+This file has no output of its own — three skills read it and produce different things. design-schema turns it into a model plan and the questions needed to get one agreed; create-schema turns it into models and fields in Prepr; review-schema turns it into findings on a schema that already exists. So each principle is written to be read in both directions: the decision to make, and what it looks like in a finished schema when the decision went the other way. Where a deviation is legitimate, that is said so explicitly — choosing a different pattern is not a finding, and treating it as one is how a review turns into noise.
+
+## Before you model
+
+### Who the schema is for: developer-first vs. editor-first
+
+A schema serves two audiences whose interests genuinely differ, and every field allocates a little of one to the other. Neither side wins outright: a schema built only for developers produces content nobody can maintain, and one built only for editors produces content the front end cannot render predictably. "Find a balance" is not advice, so what follows is the useful part — what each slant looks like once you have already fallen into it.
+
+**Developer-first**, when the schema mirrors the front end's needs: a field per CSS property because the components wanted them configurable; a forty-field form with no dividers, no descriptions, and `internal_title` as the only orientation; `required` set where the front end wants non-null rather than where editors have something to say, so drafts get saved with placeholder text; entities named after the component that renders them (`HeroV2`, `SectionLarge`); every stack accepting every type because narrowing it would take a decision. The cost arrives as workarounds: editors paste HTML, duplicate items instead of referencing them, leave fields blank, and end up maintaining the real content somewhere else.
+
+**Editor-first**, when every request became a field: free text where a fixed vocabulary exists, because flexibility was asked for; `ElementBox` or `html_editor` without a narrow `accept`, so any element can land in any slot; three ways to model the same thing because each stakeholder got their preference; everything embedded rather than referenced, so one testimonial lives in six pages; a display knob on every section, added on request rather than by design. The cost lands on the other side: the front end branches on strings nobody validates, one change has to be made in six places, and pages break in ways no one can reproduce.
+
+The line between them is not a per-field compromise, it is a division of ownership: **the editor owns what the content says, the front end owns how it looks.** Every field should be assignable to one of those two. A field that belongs to neither — `wrapper_padding_top` — belongs to the design system instead. A field that seems to belong to both is usually two fields, or an enum where a free-form value was asked for.
+
+### Who to involve, and when
+
+A schema encodes whoever was in the room, and it stays legible afterwards. No SEO involvement shows up as a model with no metadata anywhere. No editor shows up as a form with no dividers, no descriptions, and no conditional fields. No front-end developer shows up as stacks that accept anything and enums with fifteen values. No product owner shows up as a model per page instead of a page-builder.
+
+- **Who:** an editor who will use it daily rather than the person who manages them, the front-end developer who will query it, whoever owns SEO, whoever owns analytics and personalization if either is in scope, and the product owner who decides what is out of scope.
+- **When:** while the model is still prose. The interview belongs before anything is built — that is what design-schema is for. A finished schema attracts cosmetic feedback; a plan attracts the structural objection, and that is the one worth having early.
+- **Record who was not there.** An absent stakeholder is a decision, not an oversight. "SEO is out of scope for this phase" in the plan reads differently from a schema that silently has no SEO fields, and it tells whoever picks it up later what to revisit.
+
+### Validate the model before you build on it
+
+A model plan reads fine and still fails in use, so test it while changing it is free: build it in a Scratch environment and have an editor build a real page in it, before any front-end work exists.
+
+- **Use the three hardest existing pages, not the easiest.** Test with the homepage and everyone approves everything. The page that defeated the previous CMS is the one that tells you something.
+- **Watch what the editor does, not what they say.** Fields they skip are unclear or unnecessary; fields they ask about are missing a description; content they cannot express without reaching for HTML is a gap in the section vocabulary; anything they build twice is a shared model you have not created yet.
+- **Have the front-end developer write one real query against it at the same time.** A shape that is pleasant to edit can still be painful to query — deep nesting, or a listing page whose stack can return fifteen types.
+- **The timing is the whole point.** Before components are generated from the schema, every finding is free. Afterwards each one has a cost, and findings that have a cost get argued instead of fixed.
+
+### Decisions that are expensive to reverse
+
+Most of a schema can be changed on a Tuesday. A short list cannot, and that asymmetry is why design-schema probes these before anything is built and why a review separates them from everything else. The window closes when the first content is created, not when the front end ships.
+
+**A content migration once items exist** — every existing item has to be touched:
+
+- a field's `api_id`, or a model's `body_singular` — the latter also breaks every query and generated type built on it
+- a field's type: Text → Enum, Boolean → Enum, or Integer → Text for anything with leading zeros
+- tags → a taxonomy Model
+- `multiple: true` added to a field that was single, which turns the GraphQL type into a list
+- `required` added while items exist that do not satisfy it
+
+**A change the front end feels immediately** — nothing to migrate, but the API shape moves:
+
+- removing an enum value, or removing a type from a Stack's accepted list
+- changing a slug template: the URLs change, and someone owes the old ones a redirect
+- changing nesting depth after components have been generated from the schema
+
+**Cheap whenever** — worth naming so no one spends the meeting on them: descriptions, dividers, field widths, icons, `folder`, adding a field, adding an enum value, adding a type to a Stack, and `filterable` (a schema change and a re-sync, but no content).
+
+Two things behave unlike either group. `personalization` and `a_b_testing` are Stack-level flags that cost nothing at design time and are painful to retrofit, so they are decided from the project's posture rather than from need — see [Personalization and A/B testing](#personalization-and-ab-testing). And every display field and every enum option is a promise in one direction only: adding one is easy, removing one means finding every item that used it.
+
+## Architecture
+
+### The page-builder pattern
+
+A common architecture for content websites: a small set of routable **page models**, each with a `sections` Stack. For instance:
+
+```
+Page (Model, slug: {parent_page.slug}/{title})
+├── title (Text, title: true)
+├── parent_page (ContentReference → Page)     ← hierarchical URLs
+├── sections (Stack)
+│   ├── Hero (Component)
+│   ├── Content (Component)         heading + blocks, see below
+│   ├── CTA (Model, allow_new)      reusable call to action
+│   └── …
+└── seo (Component → SEO)
+```
+
+Keep the section level small, and keep it simple for the developer who renders it and the editor who fills it.
+
+### Composable sections
+
+Most sections open the same way, with label, heading, sub-heading and a call to action, followed by one element: a grid of cards, an image, a form, a row of logos. Modeled as separate sections, those fields get copied into every one. Twenty sections later the copies have drifted (`title` here, `heading` there, two buttons in one, a link field in another), and every component re-implements the same header.
+
+Make sections composable instead. Two ways; pick with the user, by what their pages need:
+
+- **A shared heading component.** The shared fields live in one component (the `TextGroup` atom below) that each section embeds, next to its own element fields. Sections stay separate and flat, and the front end renders the heading with one component.
+- **One content section with blocks.** One section carries the shared heading fields and a `blocks` Stack for the element below them (a grid, media, a quote, an FAQ, a form). A new element is a new block type, not a new section. This fits when many sections differ only in the element under the heading. It costs one level: an extra click for editors, and a level in every query and component.
+
+Either way:
+
+- **Developer-friendly first.** One place per field, the same field names everywhere, and a small set of types the front end has to render.
+- **Few options.** Add a display option only when the design really varies. Each one is a branch in a component and a choice an editor can get wrong. One enum beats several booleans.
+- **Keep it as simple as the content allows.** A page with a fixed structure (a pricing page, an author profile) wants a fixed field list, not a stack. An article body wants rich text with embeddable components. Not every page needs sections.
+
+Detail pages (a blog post, an event, a case study) are separate models: their own fields and slug template, and optionally the same `sections` stack for extra content. Article-like bodies use a dynamic content field (rich text with embeddable components) instead of a sections stack. Which detail pages exist follows from what the site publishes.
+
+### Model vs. component
+
+- **Model**: has identity — queried directly, referenced from multiple places, or has a URL. Pages and detail pages, but also reusable content atoms: `Testimonial`, `Person`, `Logo`, `FAQItem`, `PricingPlan`, taxonomy terms. Also site singletons: `Navigation`, `Footer`, `Banner` (`single_instance: true`).
+- **Component**: structure without identity — exists only inside a content item: `Button`, `TextGroup`, `Hero`-style sections, cards, grids.
+- Test: "would an editor search for this, or reuse it on another page?" Yes → Model. "Is it just the shape of a part of a page?" → Component.
+- Stacks can mix both: `CardGrid.cards` accepts `Card`, `Article`, `Event` models — the frontend renders each referenced item as a card. Reference models in stacks with `allow_new: true` so editors can create them inline.
+- Both mistakes are visible in a finished schema. The same quote, author, or logo typed into several items is a Component where a Model belonged. A Model that only ever appears inside one page, reached through a picker dialog and never queried on its own, is the reverse.
+
+### Flat vs. nested: how deep to compose
+
+Nesting is not free structure. Every level costs an editor a dialog to open, every query a level of selection, the generated types a layer, and the front end a component whose only job is to pass its children through. [The page-builder pattern](#the-page-builder-pattern) covers one specific instance of this question — whether sections hold blocks; this is the general one.
+
+- **Count the levels between the page and the field someone actually has to change.** That number matters more than the schema's total depth. Fixing a typo in one card's heading through Page → Content → Grid → Card is four dialogs down. Depth like that is sometimes worth what it buys, but it should be a decision someone made rather than something that accumulated one component at a time.
+- **A level has to carry something.** Display settings shared by everything below it, reuse of the level below by more than one parent, or a genuine repeat — one grid, many cards. Those pay for themselves. A level that holds exactly one child, or whose fields would sit perfectly well on its parent, is a dialog in exchange for nothing.
+- **The flattening test: remove the level, move its fields up, and see what breaks.** If nothing does, it was not carrying anything.
+- **A reference is not a nesting level.** A Model in a Stack with `allow_new: true` lets an editor create it inline and then edit it as its own item — one screen rather than one more layer down. So when a branch is getting deep and the thing at the bottom has any reuse or lifecycle of its own, promoting it from Component to Model flattens the editing experience without giving up the composition.
+- **Bound depth in the types, not in a comment.** A Component whose own Stack lists its own `ref` is infinite containment, and a note saying "one level only" enforces nothing: `NavItem → Stack(children) → [NavLink]` is one level by construction.
+- **Model-to-Model cycles are not depth and are not a problem.** `Post → RelatedPostsBlock → Post` is a pointer between independent items — ordinary content modelling. Only Component-inside-Component containment is pathological, and a depth rule that flags both reports false positives on a healthy schema.
+
+### Singletons
+
+Site-wide structures are `single_instance: true` models: `Navigation`, `Footer`, a site-wide `Banner`. Query them once in the layout. The flag is the whole point: without `single_instance: true` nothing stops an editor creating a second `Navigation`, and the front end then quietly queries whichever one comes back first.
+
+## Composition patterns
+
+### The grid/card pattern
+
+The default for a repeating layout is two components: a **grid** (layout) containing a Stack of **cards** (content). A repeat with no layout options of its own needs no grid wrapper — just a Stack of cards on the parent.
+
+Layout options (columns, alignment) live on the grid; per-item options (emphasis, image position) live on the card. Don't flatten cards into the grid. Use one grid component with a columns enum, not a component per column count (`TwoColumnGrid`, `ThreeColumnGrid`).
+
+### Shared atoms
+
+Define once, reuse everywhere:
+
+- **`Button`**: value + `ButtonType` enum + a `LinkType` enum gating a `ContentReference` vs. a URL Text via `appearance_conditions` (see [conditional fields](#conditional-fields)). Every call to action can be this one component.
+- **`TextGroup`**: label + heading + sub-heading + CTAs Stack, plus at most a style enum. The shared heading of any section (see [Composable sections](#composable-sections)), embedded via a `Component` field.
+- **`SEO`**: meta title/description/image + noindex/nofollow + sitemap priority. A `Component` field on every routable model, behind an "SEO" divider.
+
+When two components need the same 3+ fields, extract a shared component instead of copying fields.
+
+### References and taxonomy
+
+- Relationships have one owning side, on the "many" side pointing to the shared entity: `Article.author → Person`, `Article.category → Category`. Shared entities (people, logos, testimonials, FAQ items) are always models — never duplicate a quote into every page that shows it.
+- **Model taxonomy yourself — that is the recommendation.** Taxonomy terms are small models (`Topic`, `Industry`, `Category`): `title` + `Slug` + `priority` (Integer sort order) + optional `SEO` for category pages. Mark reference fields `filterable: true` so list pages can filter by them. A modelled term can grow fields (description, image, parent term for hierarchy), get its own landing page and slug, be referenced from anywhere, and be curated with the same publishing workflow as other content. This is the freedom tags cannot give you.
+- **Prepr's built-in tags** (the `Tags` field) are the lightweight alternative and they do exist — see https://docs.prepr.io/mutation-api/tags. A tag is a label with `id`, `body`, `slug`, and timestamps, assignable to content items, assets, and visitors, and usable for filtering and as a recommendation signal. Tags live at environment level, not in the schema; **tag groups** bundle related tags (an `Article category` group), and the field's `appearance` restricts entry to a group (`"select"`, `"auto_suggest"`) or leaves it free.
+- Choose tags when the terms are genuinely just labels: no term page, no term description or image, no hierarchy, and editors can be trusted with (or restricted from) free entry. Choose a model the moment a term needs fields, a URL, hierarchy, or curation — retrofitting tags into a model means migrating every item that used them. Mixed is fine: modelled `Industry` for the terms that have landing pages, free tags for loose keywords.
+- A `Redirect` model (`source` path Text + `destination` reference + `permanent` Boolean) puts URL management in the CMS. It earns its place when marketing owns redirects or a migration produces many; when developers own URLs and they rarely change, framework-config or middleware redirects are simpler — no model needed. Ask who manages redirects before adding it.
+
+## Naming and organisation
+
+Casing per entity kind is a mechanic: mirror what the environment already uses. What a thing is *called* is a design decision, and it is close to permanent: renaming a field's `api_id` after content exists is a migration, and renaming a model's `body_singular` breaks every query and generated type built on it. Name as if you cannot rename.
+
+### Naming models and components
+
+- **Name the content, not how it appears.** This is what headless means at the naming level, and it is the rule the rest of this section is made of. A model is `Article`, not `ArticlePage`: whether the thing has a URL is what `slug` records, and the same item may render as a page, a card in a feed, a search result, an email, or a screen in an app. A name that picks one of those commits the content to a channel, which is the thing headless exists to avoid. Collections take it hardest — `FeaturedArticles` or `ArticleCollection` says what it holds and why, while `ArticleSwimlane`, `ArticleCarousel`, and `ArticleSlider` name a rendering the design will change without asking, and then the name is a lie no one can afford to fix. The rule bites on `ArticlePage`, `ProductPage`, `TeamCarousel`; it does not bite on `Page` in a page-builder, where a page genuinely *is* the content.
+- **Use the word the editorial team uses.** A model's name is what someone says when they ask where the new one goes: `Testimonial`, not `QuoteBlock`; `Recipe`, not `DetailPage`. The GraphQL name serves developers, but the display name (`body`) is read dozens of times a day by people who never opened the schema. When the team and the front end have different words for the same thing, the team's word wins.
+- **Never encode count, layout, or version.** `TwoColumnGrid`, `HeroV2`, `SectionLarge` each smuggle a design decision into an identifier, and each needs a *new* entity the day the design changes. The count belongs in an enum (see [the grid/card pattern](#the-gridcard-pattern)), the version belongs in git.
+- **Leave the entity type out of the name.** `TestimonialComponent`, `ArticleModel`, `ColorEnum` — `label` already records which kind of thing it is, exactly as it does for the filename, so the suffix only duplicates something that can drift.
+- **Singular for the thing itself.** A model is `Article`, never `Articles`; `body_plural` exists for the collection query and is the only place the plural belongs.
+- **Name the thing, not the template it sits in.** `Person` outlives the page it was first needed for; `AboutPageTeamMember` does not. If the name only makes sense next to one page, it is either a component (embedded, no name needed elsewhere) or it is named too narrowly.
+
+### Naming fields
+
+- **One concept, one name, schema-wide.** Standard parts share a vocabulary every component reuses: `label` (small text above), `headline` (main heading), `text` (supporting body), `image`, `cta`. Editors learn it once. `headline` in one component and `heading` in another costs editors and front-end developers forever, and the schema gives no hint which is right — extend the vocabulary rather than inventing a synonym.
+- **Booleans state a fact about the item, not an instruction to the front end.** `is_featured` survives a redesign; `show_badge` freezes a rendering decision into content and goes stale the moment the badge moves or disappears — that one is a display setting, and display settings are enums with defaults. The exception is a boolean that records an editorial decision rather than a rendering one: `show_in_footer` on a nav item or `hide_from_listing` on a post *is* the fact, and naming it around that would be a euphemism. The test: if the front end could change how it renders this and the value stays true, it is a fact — keep it.
+- **Plural for stacks and multiples, singular for one reference.** `sections`, `cards`, `features`; `author`, `parent_page`. It reads as noise until you see it in generated types, where `card.features` and `card.feature_list` sit next to each other.
+- **No abbreviation the editor would not use.** `cta` is fine because marketing says CTA; `img`, `desc`, `bg`, and `txt` are developer shorthand in an editor-facing label.
+
+### Display names and API names
+
+Every entity and field carries two names for two different readers, and they are written in different registers. Keeping them apart is mechanical once stated, and mixing them up is one of the most visible defects in a schema.
+
+- **The display name is prose.** `body` is read by everyone: spaces, ordinary sentence case — "Cards per row", "Show in footer navigation". Not Title Case, which makes a form look like a menu and drifts within a week as some fields get it and some do not; and never an identifier, because an underscore in a label means someone pasted the `api_id` into it.
+- **The API name is an identifier**, and it follows Prepr's casing conventions per entity kind — PascalCase for models, components and enums, snake_case for fields, SCREAMING_SNAKE for enum values. A display name that reaches the API, or an identifier that reaches the form, is a straightforward finding.
+- **The two names may be in different languages, and usually should be.** The label follows the editors — a Dutch team gets "Kop" and "Uitgelicht" — while the `api_id` stays English whatever the editorial language, because it appears in queries, generated types, and front-end code, is read by developers who need not share that language, and outlives the team that chose it. The shared field vocabulary is part of that layer, so it stays English even where every label is Dutch. Decide it once per project and write it down: left to itself a schema ends up half in each language, which is worse than either. This is not localization — `body` is a single string, so a schema has one set of labels; locales translate content values, never schema names.
+- **They do not have to be transliterations of each other.** The display name may be longer and clearer than the identifier allows: `show_in_footer` labelled "Show in footer navigation", `seo` labelled "Search engine settings". Match the meaning, not the characters.
+- **Set both on purpose when the field is created.** Prepr generates the ID from the display name you type first. Rename the display name later and the ID does not change, so a field first called "Title 2" keeps `title_2` for good. Choose the `api_id` explicitly rather than accepting what the first label produced.
+- **The display name is a label, not an instruction.** "Headline (max 60 characters, no full stop)" belongs in the label "Headline" plus help text. A label carrying rules gets truncated in narrow fields and in list views.
+
+### Grouping models and components: the folder key
+
+`folder` groups entities in Prepr's schema section — the workspace of the people who maintain the model, developers and the product owner. It is not the editor's content navigation (that is `visible`, per model) and not the picker an editor sees when adding a section (that is `icon`, plus which types the Stack accepts). There are no subfolders: the list is flat and gets scanned whole. Nothing about `folder` reaches the API or the published site, so unlike a name it stays cheap to change — a bad grouping costs navigability, not a migration.
+
+- **Group by owner.** By default a component lives with the model that embeds it. The model's folder holds the model plus everything only it uses, so anything inside `Article` can be changed without looking anywhere else.
+- **A shared folder appears once a second model embeds the same component,** not before. Move the component out of the first model's folder then. A folder that says `Page` while `Article` also depends on it is worse than no folder at all.
+- **Name a shared folder for what it holds**, in words the maintainers use: one for the sections a page stack offers, one for components that are only ever embedded (`Button`, `SEO`), or one shared folder while there are few. There is no fixed scheme; agree it once and keep to it.
+- **A component embedded by another component follows its owner.** Nearest owning entity wins.
+- **Models with no components of their own do not each need a folder.** Group them — `Taxonomy` for `Topic` and `Industry`, `Site` for site-wide singletons. A folder holding one file is noise.
+- **Do not group by abstraction level** — atoms, molecules, organisms. The boundary is arguable in exactly the cases you go looking for something (is a button with an icon an atom or a molecule?), so it drifts the moment more than one person files things, and Prepr already draws the line that carries structural weight: Model vs. Component *is* the "has its own identity" distinction. It is defensible in one situation — a front end whose component library is organised atomically, and a product owner fluent in that vocabulary, where mirroring the front end makes the schema-to-component mapping obvious. That trades the product owner's mental model for the developer's, so decide it deliberately rather than inheriting it from the front end.
+- **Enums belong to no folder.** `folder: null` is fine, or one group of their own — they are referenced from everywhere and owned by no model.
+
+## The editor's form
+
+### Display settings: opt-in, not default
+
+The front end owns presentation. **By default a section has no display fields at all** — spacing, background, and width come from the design system, and every knob an editor gets is a way to break the design and a promise the front end must keep forever. Add display fields per section, deliberately, when there is a stated need for per-instance variation ("this section sits on a dark background on some pages") or the site being rebuilt visibly varies it. Which sections get which knobs is a design-schema interview question — or read it off the existing site — never a house style applied to every section.
+
+Where a display choice **is** exposed, it is a shared enum, never free text or booleans-per-style: a background, a spacing, a columns or an alignment enum. Rules:
+
+- Frontend maps enum values to CSS; editors never enter pixel values or hex colors.
+- Always set `default_value` so sections look right with zero configuration.
+- Reuse the same enum across fields (`Spacing` serves both padding and gap fields).
+- Keep option lists short (2-4 values) — every option is a promise the frontend must keep.
+- A common refinement: sensible defaults, with the display fields revealed only when an editor asks for them (a Boolean or an enum that conditionally shows them), keeping the form clean for the usual case.
+
+Two breaches are spottable without knowing the project: the same display fields on every section regardless of whether any of them varies, and an enum value the front end never implemented — which renders as nothing, silently, the first time an editor picks it.
+
+### Form design conventions
+
+Schemas are UIs for editors; design the form, not just the data:
+
+- **A display title on every model and section-like component.** `title: true` marks the field the CMS lists items by, and editors need one to find anything. Name it after who reads it: `title` (or `headline`) where that text also renders on the site — detail pages, taxonomy terms; `internal_title`, described "Not shown on the website.", where the name exists only for editors — page models whose heading comes from a section, section components, wrappers, singletons. Slug templates reference whichever one it is, so pick deliberately rather than reaching for one name everywhere.
+- **Sections** (Divider fields) split a long form into named groups so editors scan it instead of reading it top to bottom. See [Sections](#sections).
+- **Help text on every field** whose purpose is not obvious from its label. See [Help text](#help-text).
+- **Field widths**: related short fields side by side. See [Field widths](#field-widths).
+
+What a breach looks like: fifteen fields and no divider, `description: null` across a whole model, or a variant enum whose irrelevant fields stay on screen for every variant.
+
+### Field order
+
+The form reads top to bottom, and the order is the editor's first guide to what matters.
+
+- **Title first**, then the fields every item needs, then optional ones, then rarely edited groups (display, taxonomy, SEO) at the bottom in their own sections.
+- **Follow the order the content is written in**, not the order the front end renders it. An editor writes the headline before the label above it.
+- **Keep pairs adjacent**: a discriminator directly above the fields it reveals, a start date next to its end date, an image next to its alt text.
+
+### Help text
+
+Every field can carry help text, and Prepr offers three placements:
+
+- **Above the field** (`help_text`): the default. Use it for rules an editor needs while typing: limits, format, where the value appears.
+- **In a tooltip** next to the label (`tooltip`): for background an experienced editor no longer needs on every visit.
+- **Inside the field as a placeholder** (`placeholder`): for a short example of the expected value, such as "e.g. Book a demo". It disappears the moment the editor types, so never put a rule there.
+
+Write help text that helps:
+
+- **Say where the value appears and what good looks like**, with examples of a good value: "Shown on cards and in search results. One sentence, about 20 words. E.g. 'A five-minute tour of the new dashboard.'"
+- **State limits the validation does not enforce**, and enforce the ones it can (maximum length, regex, min and max) instead of only describing them.
+- **Reuse one text for one recurring field** across the schema ("Main heading of this item.").
+- **Use bold or italic sparingly** for the word that matters; Prepr renders `*italic*`, `**bold**` and `***both***`.
+- **Do not narrate the type.** "Pick a date" on a date field adds nothing.
+
+A **Help text field** is different: a read-only block inside the form, with a bold title and Markdown text, styled default (grey), info (blue) or warning (yellow). It holds no data and returns nothing in the API. Use it for guidance that spans several fields or a whole section ("Images in this section must be 16:9 and under 1 MB"), or for a warning editors keep missing. Place it directly above the fields it is about. Do not use it where one field's own help text would do; a form full of boxes trains editors to skip them. A Help text field can be conditional, like any field.
+
+### Sections
+
+Group related fields under a Divider field, which Prepr calls a section. Sections hold no data and do not change the API output.
+
+- **Name each section after what the editor does there**: "Content", "Display", "Taxonomy", "SEO". Add sections from about eight fields on.
+- **Collapse the sections editors rarely touch.** A section can start collapsed (closed) when an item opens. SEO, display overrides and technical settings are good candidates; the content an editor came to write never is.
+- **Make a whole section conditional** when a group of fields belongs to one variant. A section can be shown based on another field's value, which hides the whole group in one rule.
+- **There are no tabs.** Prepr's item form is one scrolling page of sections. Where a schema plan asks for tabs, use collapsed sections, or split a large rarely edited group into a Component.
+
+### Field widths
+
+A field can take part of a row, so short related fields sit side by side instead of each using a full line. The available widths are 100, 80, 75, 67, 50, 33, 25 and 20 percent, and a field can be forced to start a new row.
+
+- **Pair short fields that are filled together**: first and last name at 50/50, start and end date at 50/50, price, currency and unit at 33/33/33.
+- **Keep long or rich fields full width.** Stack and Dynamic content fields are always full width. A text area squeezed to a third of the row is harder to edit, not tidier.
+- **Make every row add up to 100**, and start a new row where the next field begins a new thought. Rows that wrap unpredictably look broken.
+- **Widths are authoring layout, never page layout.** How wide something renders on the site is a display enum the front end reads.
+
+### Component display
+
+How a component and its picker look to the editor:
+
+- **Display fields as a group** (`framed`) is on by default: the component's fields sit in a titled, framed group. Turn it off when the component is just a set of fields that belong to the item, such as SEO settings, so they read like the item's own fields. Keep it on when the editor needs to see where the group starts and ends, such as a CTA inside a card.
+- **Give every component an icon** that says what it is; editors pick by icon in a Stack.
+- **Add a preview image** to models and components editors add to a Stack. The picker shows it, so editors choose the right section without trying them one by one. Without one, components show their icon and models a generic image.
+- **Use a tag** (`appearance_tag`) to group the picker when a Stack offers many types.
+- **Write the entity description for the picker.** It shows as a tooltip in the Stack's selection dialog, so say when to choose it: "Two columns: text and an image." A model's description is limited to 50 characters.
+
+### Required and defaults
+
+- **Required only where the item is broken without it.** Prepr checks required fields when an item reaches the validation stage the environment sets, usually Done, so a required field blocks publishing, not saving. Over-required forms push editors to type placeholder text to get past the check.
+- **Default every presentation choice** (`default_value` on display enums and booleans) so a new item looks right with no configuration.
+- **Pre-fill what can be derived.** A text field's initial value can be fixed, or taken from another field (for example a meta description from the excerpt), and editors can overwrite it.
+- **Lock what editors must not change.** A field can be read-only in the editor (set through the API only) or visible to developers only. Use this for synced IDs and technical values, rather than help text that says "do not edit".
+
+### Conditional fields
+
+The tool schemas give the syntax; the design question is which variation earns a switch. Conditional fields are the main way to keep an editor's form short without taking capability away: the form shows what applies to the thing being made and nothing else. The payoff grows with the schema — a component serving four cases with every field visible is four times more confusing than it needs to be, three-quarters of the time.
+
+What a condition can test, by the type of the field it looks at:
+
+- **Any field**: filled or empty ("show Open in new tab once URL is filled").
+- **Boolean**: one of its two values.
+- **Enum**: one or more of its values ("show Model year when Product type is Car").
+- **Text**: a regex match ("show Subject when the field holds an email address").
+
+A field, a section and a Help text field can all be conditional. Showing a whole section on one condition is cleaner than repeating the condition on each of its fields.
+
+- **Drive the switch from an enum with a default, not a Boolean.** A `Button` that can point at an internal page or an external URL gets `link_type`, defaulting to `INTERNAL`, and each value reveals exactly its own fields: a `ContentReference` for internal; a URL text plus "open in new window" for external. A Boolean holds up until the third case arrives, and for links it always arrives — `mailto:`, `tel:`, an anchor on the same page, an asset download. Adding a value to an enum is free; splitting a Boolean into three states after content exists is a migration.
+- **Default to the common case.** With `default_value` set on the discriminator, the form is already correct for most items and the editor changes nothing. A switch that defaults to the rarer branch makes every editor undo it.
+- **Hide the field, do not neutralise it.** A field that does not apply should be absent from the form, not present and ignored. The alternative that shows up in practice is two near-identical components — `InternalButton` and `ExternalButton` — which doubles the section vocabulary and splits the front end's rendering over one field's difference.
+- **Keep a field's visibility answerable from one other field.** Multiple conditions are AND-ed, which is enough to say "this belongs to that variant". A field whose visibility depends on three others is a component doing two jobs, and it should be two components.
+- **Every condition is a promise the query has to tolerate.** A conditional field is not meaningfully `required`, so generated types make both branches nullable and the discriminator is the only thing that says which half is populated. Read it in one place — a mapper that turns the variant into a single shape — rather than branching on nulls in each component.
+
+Two breaches are visible on sight: a component with a long field list where half the fields apply to one variant only, and a description that carries the condition instead of the schema — "leave empty if the link is external" is a missing `appearance_conditions`, written as help text.
+
+## Field-level choices
+
+### Slugs and URLs
+
+- Slug templates on the model: `"blog/{title}"`, `"event/{title}"`, `"{parent_page.slug}/{title}"` for hierarchical pages via a self-referencing `parent_page`.
+- `slug_postfix: true` prevents collisions.
+- Set `review_urls` with `{slug}` placeholders on page models so editors get live preview.
+- Two failures show up later: a slug template pointing at a field editors leave empty, which produces URLs nobody intended, and a routable model with no `review_urls`, which leaves editors publishing blind.
+
+### Numbers and money
+
+Prices in Integer **cents** (`price`). A price that isn't always a number ("On request") gets a separate Text field next to it. Never Float for money.
+
+## Project posture
+
+### Localization and translation
+
+AI translation is a project decision, not a default — it sends field content through OpenAI, which privacy- or compliance-sensitive projects may not accept. Ask (a design-schema posture question, alongside locales). Where it is wanted: mark human-language fields with `openai_options: { "translate": "1" }`, leave it off URLs, names, email addresses, and identifiers, and decide per field at design time. Where it is not, editors translate manually or via an external workflow.
+
+### Personalization and A/B testing
+
+- **Ask about the project's plans** (a design-schema posture question): in scope, maybe later, or no.
+- **Decide per stack** where editors will vary content. Enable `personalization` and `a_b_testing` on those stacks. For "maybe later", enabling them on the main page stacks is cheap now and painful to retrofit. For a deliberate "no", leave them off: they add variant controls a team not running tests will only find confusing.
+- **A wrapper model is one way** to vary a group of sections at once: a model with its own `sections` stack, accepted in the page's stack, so editors can wrap several sections in per-segment variants. Offer it when editors need to vary groups of sections, not by default.
+- The front end must send the visitor identifier for adapted responses, and pages with variants are not cached.
+- Half-enabled is the state to look for in a review: the flags on some stacks and not others, so editors can vary one section and not the next with nothing in the UI explaining why.

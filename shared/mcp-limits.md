@@ -54,6 +54,8 @@ Prepr's error messages often don't say what to fix. Known cases:
 | `validator.error.max.gte` on a reference field | Required reference with a maximum but no minimum | Set a minimum (1 for a required single reference) |
 | `{"success":false}` when scheduling an unpublish | The item was never published, or scheduling is off for the model | Publish first, or turn on scheduling for the model; ask the user which |
 | Enum update rejected | An option you left out is still used by content | Keep the option, or migrate the content first |
+| `Missing required fields for workflow stage Done: <component>.<field>` | A required field inside a component is empty at a stage that checks required fields (Done by default). A field hidden through a condition (a Button's `external_url` when `use_external_link` is false) is checked too, unless the environment has **Ignore required fields with conditional visibility** on (Settings → Content settings → Required field validation) | Fill the field, or create the item in a stage before the checked one. If the field is meant to stay hidden, ask an admin to turn on that setting. Ask the user which |
+| `data must NOT have additional properties` | A parameter one tool accepts is not in another tool's input schema. Usually `intent`: create tools take it, read tools such as `get_item` reject it | Read each tool's schema; pass `intent` only where it is listed and do not copy parameters between tools |
 
 Add a row whenever a new error turns up, with how it was fixed.
 

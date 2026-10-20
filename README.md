@@ -2,15 +2,20 @@
 
 Skills that let your AI agent design, build and review your Prepr content
 model, and manage content, through the Prepr MCP server
-(`https://mcp.prepr.io`).
+(`https://mcp.prepr.io`). Schema can also live in your repository as JSON
+files in `prepr/schema/`, synced with Prepr through Git.
 
 | Skill | What it does |
 |---|---|
 | connect-prepr | Adds the Prepr MCP server to your agent and walks you through authorizing it |
 | design-schema | Turns a brief into an agreed content model plan |
-| create-schema | Builds models, components, enums and fields in Prepr, after you approve the plan |
-| review-schema | Reviews a live schema and suggests fixes (read-only) |
-| manage-content | Creates, updates, schedules and uploads content |
+| create-schema | Builds models, components, enums and fields, live in Prepr or as schema files, after you approve the plan |
+| review-schema | Reviews a live schema or schema files and suggests fixes (read-only) |
+| manage-content | Creates, updates, schedules and uploads content, including personalized and A/B variants |
+| build-frontend | Queries, fetchers, types, rendering, 404s, caching and preview for a front end on Prepr, in any stack |
+| personalize-and-track | Tracking, events, personalization and A/B testing in your front end |
+| migrate-content | Plans and scripts a content migration from another CMS or an old Prepr environment into your Prepr schema |
+| sync-schema | Sets up Git sync for `prepr/schema/`, CI validation, and safe imports between environments |
 
 ## Install
 

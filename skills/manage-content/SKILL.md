@@ -6,7 +6,8 @@ description: >-
   schedule content to go offline, change workflow stages, assign items or
   add comments, upload or import images, video, audio, documents, or other
   media into Prepr, find or reuse existing assets, write content in several
-  locales, seed a fresh environment with sample content, or perform content
+  locales, add personalized or A/B test variants to a page, seed a fresh
+  environment with sample content, or perform content
   operations on up to 25 items. Also use it when the user asks
   Prepr questions that need reading or changing live content rather than
   project code.
@@ -46,7 +47,10 @@ names the environment, an explicit yes, apply, verify. Server limits are in
 6. **Locales.** `create_item` writes one locale per call; add other locales with
    updates. State which locales you are writing and what happens to the
    others. In a multi-locale environment, ask which locale when the request
-   does not say.
+   does not say. An item can hold locales the environment no longer lists
+   (check `locales` on the item); the tools cannot reach them, so
+   unpublishing one locale can leave another one live. Report what stays
+   live.
 7. **Ambiguous targets.** When several items match a request, ask which one
    before writing. "Update the blog posts" does not license touching every
    model.
@@ -57,7 +61,17 @@ names the environment, an explicit yes, apply, verify. Server limits are in
 9. **Reads can lag writes.** A GraphQL read right after a successful write can
    be stale. Do not treat it as a failed write and do not retry; see
    [mcp-limits.md](references/mcp-limits.md#read-after-write-lag).
-10. **Scale caution to what the content is worth.** Only after
+10. **Check the returned slug.** If the requested slug is taken, Prepr adds a
+    suffix (`contact` becomes `contact-1`) without an error. Compare the
+    returned slug with the requested one. Archived items keep their slugs, so
+    an archived item can block the slug a new item needs; ask before renaming
+    its slug.
+11. **Edit inside a stack with a JSON Pointer.** To change one value in a
+    stack or component (a heading, an image, an enum), target it with a
+    JSON Pointer such as `/content/items/1/items/heading`. Everything else
+    stays as it is. Sending the whole stack replaces it, see
+    [adaptive-content.md](references/adaptive-content.md).
+12. **Scale caution to what the content is worth.** Only after
     the user has said that the named environment is a Scratch environment they are
     iterating in, you may create content as published and confirm a whole
     session's work in one plan instead of per batch. Deletes and publishes of
@@ -78,6 +92,10 @@ tools from the live tool list; never work from a remembered list.
 - **Comments are for context.** When an automated edit needs explaining to
   editors, a comment on the item is the right channel. Comments can notify
   people, so include them in the plan with the edit they explain.
+- **Personalized and A/B variants** are stack entries tied together by a
+  hidden `_context`. Follow
+  [adaptive-content.md](references/adaptive-content.md): the simplified stack
+  format drops it, and a careless stack write deletes existing variants.
 
 ## Uploading assets
 
@@ -122,15 +140,23 @@ articles, not one.
    development environment, or an empty pre-launch one. Never seed an
    environment that holds content someone depends on without explicit
    agreement.
+6. **Old content still shows.** Archived and unpublished items still come
+   back from a preview token, so a front end on such a token mixes them with
+   the seed. Say so in the plan; only deleting them (by the user) clears
+   them.
 
 ## Larger imports
 
 This skill handles up to 25 items per request, the size of one bulk call.
-Imports of more than 25 items, or from another system, are out of scope. Say
-so and point the user to Prepr's migration guide:
+For a planned job of more than 25 items or a bulk asset import, such as
+seeding a demo, run it as one job through the same MCP tools: one plan, one
+yes, and a state file to resume from; see
+[batch-route.md](references/batch-route.md). Migrating content from another
+system or an old Prepr environment is a job for **migrate-content**; offer
+it. If it is not installed, point the user to Prepr's migration guide:
 https://docs.prepr.io/project-setup/migrating-content
 
 ## Typical requests
 
-For worked examples of editorial prompts and expected behaviour, see
+For examples of editorial prompts and expected behaviour, see
 https://docs.prepr.io/prepr-mcp-server/use-cases.
