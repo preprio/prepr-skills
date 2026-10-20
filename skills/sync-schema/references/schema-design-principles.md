@@ -163,6 +163,8 @@ Every entity and field carries two names for two different readers, and they are
 - **The API name is an identifier**, and it follows Prepr's casing conventions per entity kind — PascalCase for models, components and enums, snake_case for fields, SCREAMING_SNAKE for enum values. A display name that reaches the API, or an identifier that reaches the form, is a straightforward finding.
 - **The two names may be in different languages, and usually should be.** The label follows the editors — a Dutch team gets "Kop" and "Uitgelicht" — while the `api_id` stays English whatever the editorial language, because it appears in queries, generated types, and front-end code, is read by developers who need not share that language, and outlives the team that chose it. The shared field vocabulary is part of that layer, so it stays English even where every label is Dutch. Decide it once per project and write it down: left to itself a schema ends up half in each language, which is worse than either. This is not localization — `body` is a single string, so a schema has one set of labels; locales translate content values, never schema names.
 - **They do not have to be transliterations of each other.** The display name may be longer and clearer than the identifier allows: `show_in_footer` labelled "Show in footer navigation", `seo` labelled "Search engine settings". Match the meaning, not the characters.
+- **Set both on purpose when the field is created.** Prepr generates the ID from the display name you type first. Rename the display name later and the ID does not change, so a field first called "Title 2" keeps `title_2` for good. Choose the `api_id` explicitly rather than accepting what the first label produced.
+- **The display name is a label, not an instruction.** "Headline (max 60 characters, no full stop)" belongs in the label "Headline" plus help text. A label carrying rules gets truncated in narrow fields and in list views.
 
 ### Grouping models and components: the folder key
 
@@ -197,15 +199,85 @@ Two breaches are spottable without knowing the project: the same display fields 
 Schemas are UIs for editors; design the form, not just the data:
 
 - **A display title on every model and section-like component.** `title: true` marks the field the CMS lists items by, and editors need one to find anything. Name it after who reads it: `title` (or `headline`) where that text also renders on the site — detail pages, taxonomy terms; `internal_title`, described "Not shown on the website.", where the name exists only for editors — page models whose heading comes from a section, section components, wrappers, singletons. Slug templates reference whichever one it is (`"blog/{title}"` vs. `"{parent_page.slug}/{internal_title}/"`), so pick deliberately rather than reaching for one name everywhere.
-- **Dividers** split a long form into named sections so editors scan it instead of reading it top to bottom.
-- **Description on every field**, `help_text` appearance. Reuse standard texts for standard fields ("Main heading of this item.", "Supporting body text.").
-- **Field widths**: related short fields side by side at 50/50 or 33/33/33.
+- **Sections** (Divider fields) split a long form into named groups so editors scan it instead of reading it top to bottom. See [Sections](#sections).
+- **Help text on every field** whose purpose is not obvious from its label. See [Help text](#help-text).
+- **Field widths**: related short fields side by side. See [Field widths](#field-widths).
 
 What a breach looks like: fifteen fields and no divider, `description: null` across a whole model, or a variant enum whose irrelevant fields stay on screen for every variant.
+
+### Field order
+
+The form reads top to bottom, and the order is the editor's first guide to what matters.
+
+- **Title first**, then the fields every item needs, then optional ones, then rarely edited groups (display, taxonomy, SEO) at the bottom in their own sections.
+- **Follow the order the content is written in**, not the order the front end renders it. An editor writes the headline before the label above it.
+- **Keep pairs adjacent**: a discriminator directly above the fields it reveals, a start date next to its end date, an image next to its alt text.
+
+### Help text
+
+Every field can carry help text, and Prepr offers three placements:
+
+- **Above the field** (`help_text`): the default. Use it for rules an editor needs while typing: limits, format, where the value appears.
+- **In a tooltip** next to the label (`tooltip`): for background an experienced editor no longer needs on every visit.
+- **Inside the field as a placeholder** (`placeholder`): for a short example of the expected value, such as "e.g. Book a demo". It disappears the moment the editor types, so never put a rule there.
+
+Write help text that helps:
+
+- **Say where the value appears and what good looks like**, with examples of a good value: "Shown on cards and in search results. One sentence, about 20 words. E.g. 'A five-minute tour of the new dashboard.'"
+- **State limits the validation does not enforce**, and enforce the ones it can (maximum length, regex, min and max) instead of only describing them.
+- **Reuse one text for one recurring field** across the schema ("Main heading of this item.").
+- **Use bold or italic sparingly** for the word that matters; Prepr renders `*italic*`, `**bold**` and `***both***`.
+- **Do not narrate the type.** "Pick a date" on a date field adds nothing.
+
+A **Help text field** is different: a read-only block inside the form, with a bold title and Markdown text, styled default (grey), info (blue) or warning (yellow). It holds no data and returns nothing in the API. Use it for guidance that spans several fields or a whole section ("Images in this section must be 16:9 and under 1 MB"), or for a warning editors keep missing. Place it directly above the fields it is about. Do not use it where one field's own help text would do; a form full of boxes trains editors to skip them. A Help text field can be conditional, like any field.
+
+### Sections
+
+Group related fields under a Divider field, which Prepr calls a section. Sections hold no data and do not change the API output.
+
+- **Name each section after what the editor does there**: "Content", "Display", "Taxonomy", "SEO". Add sections from about eight fields on.
+- **Collapse the sections editors rarely touch.** A section can start collapsed (closed) when an item opens. SEO, display overrides and technical settings are good candidates; the content an editor came to write never is.
+- **Make a whole section conditional** when a group of fields belongs to one variant. A section can be shown based on another field's value, which hides the whole group in one rule.
+- **There are no tabs.** Prepr's item form is one scrolling page of sections. Where a schema plan asks for tabs, use collapsed sections, or split a large rarely edited group into a Component.
+
+### Field widths
+
+A field can take part of a row, so short related fields sit side by side instead of each using a full line. The available widths are 100, 80, 75, 67, 50, 33, 25 and 20 percent, and a field can be forced to start a new row.
+
+- **Pair short fields that are filled together**: first and last name at 50/50, start and end date at 50/50, price, currency and unit at 33/33/33.
+- **Keep long or rich fields full width.** Stack and Dynamic content fields are always full width. A text area squeezed to a third of the row is harder to edit, not tidier.
+- **Make every row add up to 100**, and start a new row where the next field begins a new thought. Rows that wrap unpredictably look broken.
+- **Widths are authoring layout, never page layout.** How wide something renders on the site is a display enum the front end reads.
+
+### Component display
+
+How a component and its picker look to the editor:
+
+- **Display fields as a group** (`framed`) is on by default: the component's fields sit in a titled, framed group. Turn it off when the component is just a set of fields that belong to the item, such as SEO settings, so they read like the item's own fields. Keep it on when the editor needs to see where the group starts and ends, such as a CTA inside a card.
+- **Give every component an icon** that says what it is; editors pick by icon in a Stack.
+- **Add a preview image** to models and components editors add to a Stack. The picker shows it, so editors choose the right section without trying them one by one. Without one, components show their icon and models a generic image.
+- **Use a tag** (`appearance_tag`) to group the picker when a Stack offers many types.
+- **Write the entity description for the picker.** It shows as a tooltip in the Stack's selection dialog, so say when to choose it: "Two columns: text and an image." A model's description is limited to 50 characters.
+
+### Required and defaults
+
+- **Required only where the item is broken without it.** Prepr checks required fields when an item reaches the validation stage the environment sets, usually Done, so a required field blocks publishing, not saving. Over-required forms push editors to type placeholder text to get past the check.
+- **Default every presentation choice** (`default_value` on display enums and booleans) so a new item looks right with no configuration.
+- **Pre-fill what can be derived.** A text field's initial value can be fixed, or taken from another field (for example a meta description from the excerpt), and editors can overwrite it.
+- **Lock what editors must not change.** A field can be read-only in the editor (set through the API only) or visible to developers only. Use this for synced IDs and technical values, rather than help text that says "do not edit".
 
 ### Conditional fields
 
 The tool schemas give the syntax; the design question is which variation earns a switch. Conditional fields are the main way to keep an editor's form short without taking capability away: the form shows what applies to the thing being made and nothing else. The payoff grows with the schema — a component serving four cases with every field visible is four times more confusing than it needs to be, three-quarters of the time.
+
+What a condition can test, by the type of the field it looks at:
+
+- **Any field**: filled or empty ("show Open in new tab once URL is filled").
+- **Boolean**: one of its two values.
+- **Enum**: one or more of its values ("show Model year when Product type is Car").
+- **Text**: a regex match ("show Subject when the field holds an email address").
+
+A field, a section and a Help text field can all be conditional. Showing a whole section on one condition is cleaner than repeating the condition on each of its fields.
 
 - **Drive the switch from an enum with a default, not a Boolean.** A `Button` that can point at an internal page or an external URL gets `link_type`, defaulting to `INTERNAL`, and each value reveals exactly its own fields: a `ContentReference` for internal; a URL text plus "open in new window" for external. A Boolean holds up until the third case arrives, and for links it always arrives — `mailto:`, `tel:`, an anchor on the same page, an asset download. Adding a value to an enum is free; splitting a Boolean into three states after content exists is a migration.
 - **Default to the common case.** With `default_value` set on the discriminator, the form is already correct for most items and the editor changes nothing. A switch that defaults to the rarer branch makes every editor undo it.

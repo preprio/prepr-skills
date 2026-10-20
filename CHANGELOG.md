@@ -4,6 +4,12 @@
 
 Fixes from an end-to-end review and more live MCP findings.
 
+- Editor experience: create-schema designs the editor's form (names, field
+  order, sections, help text placement, Help text fields, widths,
+  conditions, component framing and picker images, required and defaults),
+  says which of these the MCP tools cannot set, design-schema plans them and
+  review-schema flags their absence. Schema files document the exact keys.
+
 - Review fixes: skills that work on schema files no longer stop without
   MCP; drift matches entities on name the way Import does and flags renames;
   sync-schema points to Prepr's import preview and names both known causes

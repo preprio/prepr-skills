@@ -232,6 +232,9 @@ Front end, editors, locales, personalization posture, migration source.
 - **Why it exists**: <the stated need>
 - **Shape**: <fixed fields | stack (flat/nested) | rich text | mix> — <why>
 - **Fields**: name — type — notes (required, filterable, translated, default)
+- **Form**: field order, sections (and which start collapsed), help text
+  for fields whose label is not enough, side-by-side widths, and conditions
+  that hide variant-specific fields
 - **URL**: <slug template, if routable>
 - **Relationships**: <references in and out, cardinality>
 

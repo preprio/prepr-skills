@@ -262,6 +262,31 @@ RULES.push(
   { file: 'shared/mcp-limits.md', must: ['read tools'] },
 );
 
+// Editor experience: help text, sections, widths, component display, conditions
+RULES.push(
+  { file: 'shared/schema-design-principles.md',
+    must: ['### Help text', 'above the field', 'tooltip', 'placeholder', 'Help text field', '### Sections',
+           'collapsed', 'no tabs', '### Field widths', 'always full width', '### Component display',
+           'display fields as a group', 'preview image', '### Field order', '### Required and defaults',
+           'Done', 'examples', 'read-only', 'filled', 'regex', 'the ID does not change'] },
+  { file: 'shared/schema-files.md',
+    must: ['"placeholder"', '`100`, `80`, `75`, `67`, `50`, `33`, `25`, or `20`', '"filled"', '"regex"',
+           '"closed"', 'appearance_image', 'appearance_tag', '"developer_only"', '"framed": true'],
+    mustNot: ['`100`, `50`, or `33`'] },
+  { file: 'skills/create-schema/SKILL.md',
+    must: ['## Design the editor\'s form', 'references/schema-design-principles.md#the-editors-form',
+           'move_schema_field', 'Column', 'cannot be created through MCP', 'help text', 'width', 'condition'] },
+  { file: 'skills/create-schema/references/field-types.md',
+    must: ['## Settings every field has', '## Section', 'Display fields as a group', 'Stack and Dynamic content',
+           'Help text field', 'empty or not empty'] },
+  { file: 'skills/design-schema/SKILL.md',
+    must: ['**Form**', 'sections', 'help text', 'conditions'] },
+  { file: 'skills/review-schema/SKILL.md',
+    must: ['help text', 'collapsed', 'side by side', 'placeholder', 'framed'] },
+  { file: 'FRESHNESS.md',
+    must: ['Field help text', 'Field widths', 'Conditional visibility', 'Sections', 'Component display', 'Column field'] },
+);
+
 
 for (const r of RULES) {
   test(`${r.file}`, () => {

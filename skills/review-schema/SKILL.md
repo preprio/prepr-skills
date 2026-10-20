@@ -80,8 +80,14 @@ from the principles' reasoning are. Check in particular:
    item that used them. A term Model with nothing but a title is **not** a
    finding.
 5. **Editor experience.** Missing internal title on models editors must find;
-   missing field descriptions; forms without dividers past about 8 fields;
-   variant-specific fields not hidden behind conditional display;
+   missing field help text, or rules hidden in a placeholder that vanishes
+   once the editor types; forms without dividers past about 8 fields; SEO
+   and display sections not collapsed; short related fields that could sit
+   side by side each taking a full row; fields in an order that does not
+   follow how the content is written; components framed or unframed against
+   their purpose, and section components with no icon, preview image or
+   picker description; required set where the item is not broken without
+   it; variant-specific fields not hidden behind conditional display;
    presentation enums without a default; guidance crammed into a field's
    label instead of its description; models with no title field, or more than
    one. Also check translation intent: human-language text should be marked
