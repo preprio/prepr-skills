@@ -75,7 +75,7 @@ Personalization, A/B testing and tracking build on this; for those, use
 4. **Rendering:** stacks and dynamic content to components by
    `__typename`, slugs, 404s and redirects, images, see
    [rendering.md](references/rendering.md).
-5. **Caching and preview:** what to cache, revalidation by webhook,
+5. **Caching and preview:** personalized pages, revalidation by webhook,
    preview, draft mode and visual editing, see
    [caching-preview.md](references/caching-preview.md). The Prepr toolkit
    is in [toolkit.md](references/toolkit.md).

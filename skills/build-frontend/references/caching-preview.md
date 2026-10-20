@@ -6,13 +6,6 @@ Prepr serves GraphQL through a CDN, invalidated when content or schema
 changes. The `X-Prepr-Cache` response header shows `HIT` or `MISS`. Right
 after a publish, a request can still return the old version for a moment.
 
-## What your app may cache
-
-- **Pages that are not personalized:** cache them (static generation, a
-  data cache, ISR) and tag them so they can be invalidated.
-- **Pages that are personalized or A/B tested:** don't cache them at all;
-  see below. Prepr's CDN still caches the GraphQL response per variant.
-
 ## Pages that are personalized or A/B tested
 
 A cached page shows one visitor's variant to every visitor, and an A/B test
@@ -32,8 +25,8 @@ plans to personalize or A/B test later:
 
 See personalize-and-track for the visitor headers and the fallback.
 
-Prefer revalidation on publish over a timer: a time-based revalidate either
-serves stale content or refetches for nothing.
+How the rest of the site is cached is the project's decision. Follow what
+the project does, or ask.
 
 ## Revalidate on publish
 
@@ -44,10 +37,9 @@ serves stale content or refetches for nothing.
    - Verify the `Prepr-Signature` header as the webhook docs describe, or
      send a shared secret in a custom webhook header and compare it in
      constant time. Fail closed when the secret is missing.
-   - Invalidate by tag, by path, or everything. One site-wide tag is the
-     safest start: a shared item (navigation, a reused section) can appear
-     on any page. Finer tags (per model, per item id) come later, and must
-     include the pages that list or reference the item.
+   - Invalidate by tag, by path, or everything, as the project caches.
+     Whatever you invalidate must include the pages that list or reference
+     the item, such as navigation or a section reused on many pages.
 3. Answer `2xx` within 12 seconds. Prepr retries failed deliveries, so
    handling the same event twice must be harmless.
 
