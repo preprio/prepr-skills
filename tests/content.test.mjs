@@ -407,6 +407,16 @@ RULES.push(
     mustNot: ['a static\n  page with a personalized section'] },
 );
 
+// Preview access patterns
+RULES.push(
+  { file: 'skills/build-frontend/references/caching-preview.md',
+    must: ['### Preview patterns', 'Vercel Deployment Protection', 'x-vercel-protection-bypass',
+           'x-vercel-set-bypass-cookie=samesitenone', 'iframe', 'Your own authentication', 'SameSite=None; Secure',
+           'webhook', 'draft mode', '/api/draft?secret=', 'redirect=/{slug}', 'relative path', '404',
+           'not the preview token', 'rest of the browser session'] },
+  { file: 'FRESHNESS.md', must: ['Preview access'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;

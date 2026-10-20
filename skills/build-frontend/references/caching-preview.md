@@ -55,13 +55,66 @@ webhook instead.
   never cache its responses.
 - In Prepr, set a preview URL per model with `{slug}` or `{id}`, so editors
   open the page from the item.
-- Frameworks with a draft mode (Next.js) enable it through a route that
-  checks a secret and redirects to the page. Use it only where the preview
-  token is configured.
-- Protect the preview deploy (password, IP allowlist, or the host's
-  protection with a bypass for Prepr).
+- Protect the preview deploy, but let Prepr in: editors open it from Prepr,
+  and visual editing loads it in an iframe inside Prepr.
 
 Docs: https://docs.prepr.io/project-setup/setting-up-previews-and-visual-editing
+
+### Preview patterns
+
+Which one fits depends on where the preview runs. Ask the user how their
+staging or preview environment is hosted and protected.
+
+**Vercel Deployment Protection.** Preview deployments sit behind Vercel's
+login. Give Prepr a bypass with a Protection Bypass secret from Vercel, in
+the model's preview URL:
+
+```
+https://<preview-host>/{slug}?x-vercel-protection-bypass=<secret>&x-vercel-set-bypass-cookie=samesitenone
+```
+
+The bypass alone only lets the first request through; CSS and JavaScript
+then fail and the page looks broken. `x-vercel-set-bypass-cookie=samesitenone`
+sets a cookie that covers every request, also inside Prepr's iframe.
+
+**Your own authentication** on a staging environment hosted elsewhere (a
+password page, basic auth, SSO, an IP allowlist):
+
+- Let Prepr reach it: an IP allowlist that includes the editors' network,
+  or a secret in the preview URL that sets a session cookie, the same way
+  Vercel's bypass does.
+- A cookie that must work inside Prepr's iframe needs
+  `SameSite=None; Secure`, or the browser won't send it there. Browsers
+  that block third-party cookies can still refuse it, so test in the
+  browsers editors use.
+- Leave the webhook route and the draft route reachable without the login,
+  and protect them with their own secret.
+- Allow the frame: `frame-ancestors 'self' https://*.prepr.io` (see below).
+
+**Next.js draft mode with a secret.** Draft mode makes Next.js skip its
+caches and render per request, so editors see the latest content. A route
+turns it on:
+
+1. A route such as `/api/draft` reads `secret` and `redirect` from the query
+   string.
+2. With no secret configured in that environment, it answers `404`, so
+   draft mode can't be turned on in production.
+3. It compares the secret with the env var, and checks that `redirect` is a
+   relative path on the site (starting with a single `/`) so it can't send
+   editors elsewhere.
+4. It enables draft mode and redirects. Draft mode stays on for the
+   rest of the browser session.
+
+The model's preview URL in Prepr then becomes:
+
+```
+https://<preview-host>/api/draft?secret=<draft-secret>&redirect=/{slug}
+```
+
+The draft secret is a random value made for this, not the preview token.
+Other frameworks do the same with a route that sets a preview cookie and a
+loader that reads it. Docs:
+https://docs.prepr.io/connecting-a-front-end-framework/nextjs/caching-strategies
 
 ## Visual editing
 

@@ -39,7 +39,9 @@ Fixes from an end-to-end review and more live MCP findings.
   sets up a fetcher (fetch, Axios, graphql-request, urql,
   Apollo, PHP), generates types, renders stacks through a `__typename`
   registry, returns real 404s and handles redirects, and covers caching,
-  webhook revalidation, preview and visual editing.
+  webhook revalidation, preview and visual editing, with preview patterns
+  for Vercel Deployment Protection, your own staging login and Next.js
+  draft mode.
   Pages that are or will be personalized or A/B tested are never cached:
   not statically built, not in ISR or a page cache, not at the CDN.
   personalize-and-track covers the tracking pixel, meta tags, impressions
