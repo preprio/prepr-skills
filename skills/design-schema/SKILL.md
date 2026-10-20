@@ -166,8 +166,8 @@ If a stack is right, decide the **nesting** just as deliberately:
   types.
 
 Nesting everything inside a generic content section is one pattern among
-several, not a requirement — do not adopt it unless one of those two reasons
-applies. State which you picked and why in the plan.
+several, not a requirement. Offer it as an option when one of those two
+reasons applies. State which you picked and why in the plan.
 
 When the plan names field types, use the editor names (Text, Rich text,
 Content reference, Stack, Component, Enum, …). create-schema maps them to tool
@@ -232,6 +232,9 @@ Front end, editors, locales, personalization posture, migration source.
 - **Why it exists**: <the stated need>
 - **Shape**: <fixed fields | stack (flat/nested) | rich text | mix> — <why>
 - **Fields**: name — type — notes (required, filterable, translated, default)
+- **Form**: field order, sections (and which start collapsed), help text
+  for fields whose label is not enough, side-by-side widths, and conditions
+  that hide variant-specific fields
 - **URL**: <slug template, if routable>
 - **Relationships**: <references in and out, cardinality>
 

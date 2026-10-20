@@ -41,7 +41,9 @@ Every file has:
 | `ref` | UUID identifying this entity. All cross-references between files use `ref`, not names. Generate a fresh UUID (v4) for new entities and never change it afterwards. |
 | `schema_version` | Spec version string |
 | `body` | Human-readable display name shown to editors |
-| `description` | One-line explanation shown to editors — write one for every model and component |
+| `description` | One-line explanation shown to editors — write one for every model and component. It is also the tooltip in a Stack's selection dialog |
+| `appearance_image` | Model and component: URL of a preview image shown in the Stack picker (`null` when unused) |
+| `appearance_tag` | Model and component: tag that groups the entity in the picker (max 50 characters) |
 | `folder` | Grouping in the schema section, not the content navigation — see [Grouping models and components](schema-design-principles.md#grouping-models-and-components-the-folder-key) (e.g. `"Pages"`, `"Sections"`, `"Grids"`, `"Cards"`, `"Blocks"`, `"Shared"`, `"Nav"`, `"Taxonomy"`, `"Site"`) |
 
 ## Models
@@ -142,10 +144,10 @@ Fields live in a model's or component's `fields` array, in editor display order.
 | `api_id` | snake_case field name in the API (`internal_title`, `cards_per_row`) |
 | `body` | Display name for editors |
 | `type` | Field type (see below) |
-| `description` + `description_appearance` | Editor help; `"help_text"` (below the field) or `"tooltip"` |
+| `description` + `description_appearance` | Field help text (Markdown bold and italic). `"help_text"` shows it above the field, `"tooltip"` next to the label, `"placeholder"` inside the empty field |
 | `required` | Validation |
 | `default_value` | Pre-filled value (booleans, enums, numbers, text) |
-| `field_state` | `"read_write"` normally |
+| `field_state` | `"read_write"` (default), `"read_only"` (editable only through the API) or `"developer_only"` (hidden for non-developers); the spec also lists `"remote_source_hidden"` |
 | `title` | `true` marks this field as the content item's display title in the CMS |
 | `seo_title` | `true` feeds this field into the SEO score check |
 | `unique` | Enforce unique values across items |
@@ -353,7 +355,7 @@ Embeds exactly one component, rendered inline in the editor form:
 }
 ```
 
-Use for structured field groups that always occur once (SEO settings, form options). `framed: true` draws a border in the editor.
+Use for structured field groups that always occur once (SEO settings, form options). `"framed": true` (the default) shows the fields as a titled group, "Display fields as a group" in the editor; `false` shows them like the item's own fields.
 
 **Use when** the group is always present exactly once.
 **Don't use when** it repeats (`Stack`) or is shared and separately edited
@@ -447,6 +449,11 @@ Not a data field — a visual section header in the editor form:
 ```json
 { "type": "Divider", "appearance": "open", "body": "SEO", "description": null }
 ```
+
+- `appearance` (**required**): `"open"`, or `"closed"` to start the section collapsed
+- `body`: the section name; `description`: help text shown with the section
+- Takes `appearance_conditions` to show the whole section conditionally
+- No `api_id`, no `appearance_width`; sections do not change the API output
 
 ### Coordinates
 
@@ -574,15 +581,22 @@ Holds no data and returns nothing in GraphQL. **Gotcha:** this is authoring
 layout, not page layout. Front-end column count belongs in an `Enum` field the
 renderer reads.
 
+For side-by-side fields, prefer `appearance_width` on the fields themselves
+(see [Editor layout](#editor-layout)). The MCP schema tools cannot create a
+`Column` field, so a schema that relies on one can only be built through the
+files or the Prepr UI.
+
 ### HelpText
 
 Editor guidance block. Holds no data.
 
 ```json
-{ "type": "HelpText", "body": "Images must be 16:9", "appearance": "warning" }
+{ "type": "HelpText", "body": "Image format", "description": "Images must be **16:9** and under 1 MB.", "appearance": "warning" }
 ```
 
-- `appearance` (**required**): `"default"`, `"info"`, or `"warning"`
+- `appearance` (**required**): `"default"` (grey), `"info"` (blue), or `"warning"` (yellow)
+- `body` is the bold title; `description` holds the instructions in Markdown
+- Takes `appearance_conditions` like any field
 - Must **not** have an `api_id` — the spec explicitly forbids it
 
 **Use when** a field's rules cannot be enforced by validation and editors keep
@@ -776,12 +790,28 @@ Show a field only when another field has a certain value:
 ]
 ```
 
-Multiple conditions are AND-ed. Use this whenever a field only makes sense for one variant — it keeps the editor form small.
+```json
+"appearance_conditions": [
+  { "field": "url", "type": "Text", "filled": true }
+]
+```
+
+Each condition names the `field` (its `api_id`) and that field's `type`
+(not an operator), plus one test:
+
+- `"filled"`: `true` shows when the field has a value, `false` when empty; any type
+- `"eq"`: a Boolean value
+- `"in"`: a list of Enum values
+- `"regex"`: a pattern a Text value must match
+- `"value"`: a comma-separated list of environment IDs, with `"type": "Environments"`
+
+Multiple conditions are AND-ed. Use this whenever a field only makes sense for one variant — it keeps the editor form small. Dividers and HelpText fields take conditions too.
 
 ## Editor layout
 
-- `appearance_width`: `100`, `50`, or `33` (percent of the row)
-- `appearance_start_new_row`: force the field onto a new row
+- `appearance_width`: `100`, `80`, `75`, `67`, `50`, `33`, `25`, or `20` (percent of the row; default `100`). The spec types it as an integer only; use these values. `Stack` and `ElementBox` stay full width, and `Divider` and `Column` take no width
+- `appearance_start_new_row`: `true` forces the field onto a new row
+- Fields appear in the order of the `fields` array
 - `Divider` fields split the form into named sections (typical order: General/Content → Display → Taxonomy → SEO)
 
 ## AI hints
