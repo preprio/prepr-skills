@@ -236,7 +236,7 @@ Prompt: `Add Prepr tracking, show visitors their personalized sections, and meas
 - [ ] Asks about consent and loads the pixel accordingly
 - [ ] Sets `prepr:id` on the page
 - [ ] Visitor id from `__prepr_uid` (or the toolkit middleware), sent as `Prepr-Customer-Id`
-- [ ] Personalized requests aren't cached in the app; falls back to static content
+- [ ] Personalized and A/B pages render per request and aren't cached (no static build, ISR or CDN cache; `Cache-Control: private, no-store`); falls back to non-personalized content
 - [ ] `data-prepr-variant-key` from `_context.variant_key` and `data-prepr-variant-event` on the CTA
 - [ ] Verifies with `pixel.gif` in the Network tab and the visitor's events in Prepr
 

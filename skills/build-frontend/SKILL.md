@@ -43,6 +43,11 @@ Personalization, A/B testing and tracking build on this; for those, use
    (`_id`, `_slug`); a field that isn't in the schema fails the query.
 3. **Ask about anything that isn't in the code:** which environment, which
    pages, which locales, how the site is deployed. Don't pick for the user.
+4. **Ask which pages will be A/B tested or personalized,** now or later.
+   Those pages are not cached and are rendered per request, so this decides
+   how you build them. See
+   [caching-preview.md](references/caching-preview.md#pages-that-are-personalized-or-ab-tested).
+   If you plan to A/B test or personalize a page, don't build it as static.
 
 ## Tokens and environment
 

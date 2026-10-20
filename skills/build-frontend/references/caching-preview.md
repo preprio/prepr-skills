@@ -9,12 +9,29 @@ publish, a request can still return the old version for a moment.
 
 ## What your app may cache
 
-- **Not personalized** (no visitor headers): cache it in the framework
-  (static generation, a data cache, ISR) and tag it so it can be
-  invalidated.
-- **Personalized or A/B** (sent with visitor headers): never cache it in
-  the app, or one visitor's variant is served to the next. Prepr's CDN
-  still caches it per variant. See personalize-and-track.
+- **Pages that are not personalized:** cache them (static generation, a
+  data cache, ISR) and tag them so they can be invalidated.
+- **Pages that are personalized or A/B tested:** don't cache them at all;
+  see below. Prepr's CDN still caches the GraphQL response per variant.
+
+## Pages that are personalized or A/B tested
+
+A cached page shows one visitor's variant to every visitor, and an A/B test
+on it never splits. So for every page that has variants, or that the team
+plans to personalize or A/B test later:
+
+- Render the whole page per request. No static generation, no ISR, no
+  framework page or data cache for its personalized requests.
+- Make sure nothing in front caches it either: the host's CDN, a reverse
+  proxy or a service worker. Send `Cache-Control: private, no-store` on
+  those pages.
+- Decide this before you build. A page built as static now won't show the
+  variants editors add later; switching it to per-request rendering then
+  is a change to the code and the hosting.
+- Pages without variants can stay cached. Keep the list of personalized
+  pages explicit (by route or model), and agree it with the user.
+
+See personalize-and-track for the visitor headers and the fallback.
 
 Prefer revalidation on publish over a timer: a time-based revalidate either
 serves stale content or refetches for nothing.

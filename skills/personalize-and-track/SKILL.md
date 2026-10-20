@@ -60,9 +60,11 @@ action taken (conversion). A test that records only clicks never resolves.
 - **Consent first.** Load the pixel and send visitor ids only once the
   visitor allows it, where the site's consent policy requires that. Fit
   into the existing consent tool; ask the user what their policy is.
-- **Never cache a personalized response in the app,** and fall back to the
-  non-personalized content when the personalized request fails or there is
-  no visitor id.
+- **Never cache a page that is personalized or A/B tested,** or that will
+  be: not in the framework (static generation, ISR, page or data cache),
+  not at the CDN. Render it per request and send
+  `Cache-Control: private, no-store`. Fall back to the non-personalized
+  content when the personalized request fails or there is no visitor id.
 - **Use a stable id** for known visitors (the id from your identity
   provider). Never an email address or other personal data.
 - **Tokens:** the pixel's token ends up in the browser. The toolkit README

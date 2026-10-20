@@ -50,26 +50,31 @@ sections {
 - A visitor in several segments gets the first matching variant.
 - `variant_id` is the segment id, `ALL_OTHER_USERS`, or `A`/`B`.
 
-## Rendering per request (simplest)
+## Never cache the page
 
-Render personalized pages on the server per request, with the visitor
-headers:
+A page with personalized or A/B variants must not be cached anywhere: not
+by static generation or ISR, not in a framework page or data cache, not at
+the host's CDN or a proxy. A cached page serves one visitor's variant to
+everyone, and an A/B test on it never splits.
 
-- **Never cache the response in the app.** Prepr's CDN caches each variant.
-- **Fall back**: no visitor id, or a failed request, means the
-  non-personalized query (cached as usual) is used, so the page always
-  renders.
-- The response's `Vary` header names `Prepr-Segments` or `Prepr-ABTesting`
-  when the content has variants. Code can use that to decide whether a
-  page can stay static.
-- Keep the personalized part small where the framework allows it: a static
-  page with a personalized section (an island or a streamed part) instead
-  of a fully dynamic page.
+- Render it per request on the server, with the visitor headers, and send
+  `Cache-Control: private, no-store`.
+- Prepr's CDN caches each variant of the GraphQL response; that is safe and
+  stays on.
+- Do this for pages the team plans to personalize or A/B test too. When
+  personalization is added to an existing site, switch those pages to
+  per-request rendering first, and check the host's cache settings.
+- **Fall back:** no visitor id, or a failed request, means the
+  non-personalized content is used, so the page always renders.
+- The GraphQL response's `Vary` header names `Prepr-Segments` or
+  `Prepr-ABTesting` when the content has variants. Use it to catch a page
+  that has variants but is still cached.
 
 ## Static sites
 
-For a statically built site, fetch every variant at build time and pick one
-per visitor at the edge:
+Only when a page must be built statically: fetch every variant at build
+time and route each visitor to theirs at the edge, so each variant is its
+own page. The routed response must not be cached across visitors.
 
 1. Query with `personalize: false` on the stack field
    (`sections(personalize: false) { ... }`). It returns every variant with

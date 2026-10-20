@@ -386,6 +386,18 @@ RULES.push(
   { file: 'docs/scenarios.md', must: ['## 12. Build a front end', '## 13. Personalize and track'] },
 );
 
+// Pages that will be personalized or A/B tested are never cached
+RULES.push(
+  { file: 'skills/build-frontend/SKILL.md', must: ['A/B test or personalize', 'not cached'] },
+  { file: 'skills/build-frontend/references/caching-preview.md',
+    must: ['## Pages that are personalized or A/B tested', 'plans to', 'whole page', 'static generation', 'ISR',
+           'CDN', 'Cache-Control: private, no-store', 'later'] },
+  { file: 'skills/personalize-and-track/SKILL.md', must: ['Never cache a page', 'Cache-Control: private, no-store'] },
+  { file: 'skills/personalize-and-track/references/personalization.md',
+    must: ['## Never cache the page', 'Cache-Control: private, no-store', 'switch those pages'],
+    mustNot: ['a static\n  page with a personalized section'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;
