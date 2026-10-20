@@ -25,7 +25,8 @@ https://docs.prepr.io/mutation-api/content-items-create-update-and-destroy
 
 - An update replaces the item for each locale it names, so send the
   entire body: every field and the `slug`. A field you leave out is
-  emptied. Read the item first when you update one that already has content.
+  emptied. For items that already have content, read and merge first; see
+  [updates.md](updates.md).
 - Locales you leave out stay as they are.
 - `workflow_stage` can be changed alone, without `items`.
 

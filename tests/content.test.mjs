@@ -417,6 +417,17 @@ RULES.push(
   { file: 'FRESHNESS.md', must: ['Preview access'] },
 );
 
+// Updating migrated items without losing data
+RULES.push(
+  { file: 'skills/migrate-content/SKILL.md', must: ['references/updates.md'] },
+  { file: 'skills/migrate-content/references/updates.md',
+    must: ['entire body', 'emptied', 'who owns', 'read the item', 'merge', 'changed_on', 'conflict', 'backup',
+           'last written', 'dry run', 'diff', 'PATCH', 'Stack', 'goes live', 'workflow_stage', 'one locale',
+           'round trip', 'restore'],
+    mustNot: ['../', 'prepr-migrator'] },
+  { file: 'docs/scenarios.md', must: ['11e'] },
+);
+
 for (const r of RULES) {
   test(`${r.file}`, () => {
     const path = ROOT + r.file;
