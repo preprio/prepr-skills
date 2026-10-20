@@ -222,8 +222,8 @@ RULES.push(
 // Findings from live use of the MCP server
 RULES.push(
   { file: 'shared/mcp-limits.md',
-    must: ['Missing required fields for workflow stage Done', '403', 'additional properties'],
-    mustNot: ['review_urls/0/url'] },
+    must: ['Missing required fields for workflow stage Done', 'additional properties'],
+    mustNot: ['review_urls/0/url', '403'] },
   { file: 'skills/manage-content/SKILL.md',
     must: ['returned slug', 'archived', 'locales', 'query_assets'] },
   { file: 'skills/connect-prepr/SKILL.md', must: ['same environment'] },
@@ -244,24 +244,22 @@ RULES.push(
   { file: 'FRESHNESS.md', must: ['import preview', 'Ignore required fields with conditional visibility'] },
   { file: 'shared/mcp-limits.md', must: ['Ignore required fields with conditional visibility', 'Required field validation'],
     mustNot: ['The check applies even when the editor hides that field'] },
-  { file: 'shared/mcp-limits.md', must: ['check the asset permissions'] },
-  { file: 'skills/manage-content/SKILL.md', must: ['check the asset permissions'] },
+  { file: 'skills/manage-content/SKILL.md', mustNot: ['403', 'check the asset permissions'] },
 );
 
-// Lessons from a scripted demo build: batch route, remote-content fields, handle fields
+// Lessons from a scripted demo build: batch route
 RULES.push(
   { file: 'shared/batch-route.md',
-    must: ['https://mcp.prepr.io', 'PREPR_MCP_TOKEN', 'tools/call', 'text/event-stream', 'data:', 'isError',
-           'plan', 'apply', 'state file', 'stop at the first error', 'phase', 'get_initial_context', 'never print'],
-    mustNot: ['../', 'mcp.prepr.io/mcp', 'Mutation API'] },
-  { file: 'skills/manage-content/SKILL.md', must: ['references/batch-route.md'] },
-  { file: 'skills/create-schema/SKILL.md', must: ['references/batch-route.md'] },
-  { file: 'shared/mcp-limits.md',
-    must: ['## Remote content fields', 'JSON Pointer', '"items": [', '_json', '`items: []`', 'before Done',
-           'read tools'] },
-  { file: 'shared/schema-design-principles.md', must: ['_id_any', 'handle', 'filterable'] },
-  { file: 'skills/design-schema/SKILL.md', must: ['handle'] },
-  { file: 'skills/create-schema/references/field-types.md', must: ['_id_any', 'filterable'] },
+    must: ['connected MCP tools', 'one plan', 'one yes', 'state file', 'stop at the first error', 'phase',
+           'at most 25', 'more than 25 content items', 'Optional: a script', 'already set',
+           'https://mcp.prepr.io', 'tools/call', 'text/event-stream', 'isError', 'get_initial_context',
+           'never print'],
+    mustNot: ['../', 'mcp.prepr.io/mcp', 'Mutation API', 'about 50', 'ask the user to set it', 'Prepr Support'] },
+  { file: 'skills/manage-content/SKILL.md', must: ['references/batch-route.md', 'more than 25 items'],
+    mustNot: ['about 50', 'write a script'] },
+  { file: 'skills/create-schema/SKILL.md', must: ['references/batch-route.md'], mustNot: ['Write a script'] },
+  { file: 'docs/scenarios.md', must: ['## 10. Batch route', 'state file', 'without `PREPR_MCP_TOKEN`'] },
+  { file: 'shared/mcp-limits.md', must: ['read tools'] },
 );
 
 

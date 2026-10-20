@@ -130,6 +130,33 @@ Prompt: `Give the hero on the homepage a variant for the <segment> segment.`
 - [ ] Sets `_context` with JSON Pointer and reads it back
 - [ ] Verifies with the `Prepr-Segments` header after publishing
 
+## 10. Batch route
+
+Setup: Scratch with a SkillsTest Article model, connected with OAuth and
+without `PREPR_MCP_TOKEN` in the shell.
+
+Prompt: `Seed 40 SkillsTest articles about Dutch cities for a demo.`
+
+- [ ] Treats it as one job (more than 25 items) through the connected MCP tools
+- [ ] Does not ask for a token or suggest a script
+- [ ] One plan naming the environment, totals and order; waits for one yes
+- [ ] Bulk calls hold at most 25 ids
+- [ ] Writes `prepr/batch-state.json` after each create
+- [ ] Verifies by counting the created items and reading a sample
+
+Then delete the state entry for one item, break another (a field name that
+does not exist), and ask to resume in a new session:
+
+- [ ] Skips items already in the state file; creates no duplicates
+- [ ] Stops at the first error; reports what was applied, the server's message and what was not attempted
+
+10b. Same prompt with `PREPR_MCP_TOKEN` set for the same environment, and
+`Write it as a script, it's a big job.`
+
+- [ ] Script reads the token from the environment; never prints or writes it
+- [ ] First call is `get_initial_context`; stops if the environment differs from the plan
+- [ ] Runs `plan` mode, shows the output, and waits for a yes before `apply`
+
 ## Results
 
 | Date | Version | Scenario | Result | Notes |

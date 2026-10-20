@@ -90,8 +90,9 @@ Follow [write-safety.md](references/write-safety.md) exactly:
    entity you touched and compare it with the plan.
 
 A whole schema, dozens of entities with hundreds of fields, is too many calls
-for chat. Write a script that makes the same calls, with the same plan and
-yes; see [batch-route.md](references/batch-route.md).
+to confirm one by one. Run it as one job through the same MCP tools: one
+plan, one yes, and a state file to resume from; see
+[batch-route.md](references/batch-route.md).
 
 ## Changing an existing schema
 

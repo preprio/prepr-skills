@@ -37,25 +37,6 @@ applies.
   say. When several items match a request, ask which one before writing.
 - Deleting content always needs explicit confirmation.
 
-## Remote content fields
-
-A remote-content field holds items from a remote source (a product catalog,
-for example). The content tools handle it differently from other fields:
-
-- `create_item` and `update_item` reject a remote-content field in the
-  simplified format. Write it with a JSON Pointer to the field as the key
-  and the raw value:
-  `{"/content/items/9/items/products": {"items": [<remote item>]}}`.
-- Pass each remote item whole, as the remote source returns it. A value with
-  only `{"id": ...}` saves, but the GraphQL API then fails on `_json`.
-- A component whose only field is the remote field is stored as `items: []`,
-  so a pointer to the field does not resolve. Set the component's whole
-  `items` object instead: `{"/content/items/3/items": {"product": {"items":
-  [<remote item>]}}}`. Read the item with `includeRaw` to see which case
-  applies.
-- A required remote field is empty until this second write. Create the item
-  in a stage before Done, set the remote fields, then move it to Done.
-
 ## Assets
 
 - `upload_asset_from_public_url` imports from a public HTTPS URL.
@@ -74,7 +55,6 @@ Prepr's error messages often don't say what to fix. Known cases:
 | `{"success":false}` when scheduling an unpublish | The item was never published, or scheduling is off for the model | Publish first, or turn on scheduling for the model; ask the user which |
 | Enum update rejected | An option you left out is still used by content | Keep the option, or migrate the content first |
 | `Missing required fields for workflow stage Done: <component>.<field>` | A required field inside a component is empty at a stage that checks required fields (Done by default). A field hidden through a condition (a Button's `external_url` when `use_external_link` is false) is checked too, unless the environment has **Ignore required fields with conditional visibility** on (Settings → Content settings → Required field validation) | Fill the field, or create the item in a stage before the checked one. If the field is meant to stay hidden, ask an admin to turn on that setting. Ask the user which |
-| `Prepr Mutation API request failed: 403` on an asset upload | The user's role or the environment's MCP permissions do not allow asset uploads | Ask the user to check the asset permissions: their role's Assets permission, and Settings → Integrations → MCP Server. Retry once they are fixed. If they should stay off, ask the user to upload the files in Prepr, then find them with `query_assets` by name and link them |
 | `data must NOT have additional properties` | A parameter one tool accepts is not in another tool's input schema. Usually `intent`: create tools take it, read tools such as `get_item` reject it | Read each tool's schema; pass `intent` only where it is listed and do not copy parameters between tools |
 
 Add a row whenever a new error turns up, with how it was fixed.

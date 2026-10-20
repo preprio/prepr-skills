@@ -11,15 +11,15 @@ Fixes from an end-to-end review and more live MCP findings.
   unique; manage-content triggers on personalized and A/B variants.
 - Known errors: the required-field error at Done depends on the stage the
   environment validates at and on its setting for hidden conditional
-  fields; an asset upload 403 first asks the user to check permissions.
-- Batch route: a new shared `batch-route.md` for jobs too big for chat (a
-  whole schema, 50+ items, bulk asset import). A short script calls the MCP
-  server with plan and apply modes, a resumable state file, phases and a
-  stop at the first error. Linked from create-schema and manage-content.
-- Remote-content fields: how to write them with a JSON Pointer and the full
-  remote item, the `items: []` component case, and keeping the item before
-  Done until they are set. Design guidance for a required, filterable
-  handle field, since remote items filter only by Prepr id.
+  fields. The asset upload 403 guidance is removed from the known errors
+  and from manage-content.
+- Batch route: a new shared `batch-route.md` for large jobs (a whole
+  schema, more than 25 items, bulk asset import). They run through the
+  connected MCP tools as one job: one plan and one yes, phases, a state file
+  to resume from, and a stop at the first error. A script is optional, only
+  when `PREPR_MCP_TOKEN` is already set, since most users connect with
+  OAuth. Linked from create-schema and manage-content; scenario 10 covers
+  both.
 - Known errors: `intent` is the usual cause of `additional properties`.
 
 ## 0.3.0 (2026-10-13)

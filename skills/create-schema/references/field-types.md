@@ -239,7 +239,3 @@ when** a field description would do.
 
 Content mastered in another system, through a remote source. Setting up remote
 sources is outside these skills.
-
-GraphQL can filter remote items only by Prepr's id (`_id_any`), not by the
-other system's key. When the front end looks content up by that key, add a
-required, filterable Text field holding it next to the remote field.
