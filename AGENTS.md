@@ -1,9 +1,13 @@
 # Working on prepr-skills
 
-This repo ships six agent skills for Prepr CMS: connect-prepr,
-design-schema, create-schema, review-schema, manage-content and sync-schema.
-They work through the Prepr MCP server (`https://mcp.prepr.io`) and, for
-schema, also through JSON files in `prepr/schema/` with Git sync. It is installed as a Claude
+This repo ships nine agent skills for Prepr CMS: connect-prepr,
+design-schema, create-schema, review-schema, manage-content, migrate-content,
+sync-schema, build-frontend and personalize-and-track. They work through the Prepr MCP server
+(`https://mcp.prepr.io`) and, for schema, also through JSON files in
+`prepr/schema/` with Git sync. migrate-content has developers write a
+migration script against Prepr's REST Mutation API. build-frontend and
+personalize-and-track guide front-end code that reads Prepr's GraphQL API;
+they work in any stack and should not push one framework or client. It is installed as a Claude
 Code plugin (`.claude-plugin/`) and through `npx skills add
 preprio/prepr-skills`. There is no runtime code; the product is the Markdown
 in `skills/`.
@@ -45,16 +49,18 @@ in `skills/`.
   Prepr MCP tools (then the user runs Export) or in the files (then the
   user runs Import); see `shared/schema-route.md`, `shared/schema-files.md`
   and sync-schema. Content always goes through MCP. Never the Mutation API
-  directly.
+  directly, except in migrate-content: a migration script the developer
+  runs writes through the Mutation API, as Prepr's migration guides do.
 - **Never hard-code a tool list.** Name a tool only for a rule attached to it
   (`list_schema`, `get_schema_entity`, `confirmToken`) and tell the agent to
   read the live tool schemas.
 - **Every write follows plan → confirm → apply → verify** (`shared/write-safety.md`),
   naming the target environment. Don't add shortcuts that skip the user's yes.
 - **Tokens are never asked for, printed or written.** Configs reference
-  `PREPR_MCP_TOKEN` only.
+  `PREPR_MCP_TOKEN` only. A migration script reads `PREPR_TARGET_TOKEN` and
+  `PREPR_SOURCE_TOKEN` from the environment or a gitignored `.env`.
 - **The server URL is exactly `https://mcp.prepr.io`**, never `/mcp`.
-- **Only the six skills in `scripts/shared-map.mjs` ship.** Don't reference
+- **Only the nine skills in `scripts/shared-map.mjs` ship.** Don't reference
   skills that don't ship here (plan-project, setup-project, query-content,
   …).
 - **Upstream facts come from the docs, not memory.** Before changing a fact

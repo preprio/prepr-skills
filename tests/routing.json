@@ -26,5 +26,15 @@
   { "prompt": "Add a personalized variant of the homepage hero for returning visitors in Prepr.", "skill": "manage-content" },
   { "prompt": "Are our prepr/schema files still in sync with the Prepr environment?", "skill": "sync-schema" },
   { "prompt": "Add a Testimonial component with a quote, name and photo in Prepr.", "skill": "create-schema" },
-  { "prompt": "Review the schema files in prepr/schema before we import them.", "skill": "review-schema" }
+  { "prompt": "Review the schema files in prepr/schema before we import them.", "skill": "review-schema" },
+  { "prompt": "We're moving our blog from WordPress to Prepr. How do we migrate the posts?", "skill": "migrate-content" },
+  { "prompt": "Migrate the content from our old Prepr environment into the new schema.", "skill": "migrate-content" },
+  { "prompt": "Write a migration script that imports our Contentful entries into Prepr.", "skill": "migrate-content" },
+  { "prompt": "Set up GraphQL queries for our Prepr content in our Nuxt app.", "skill": "build-frontend" },
+  { "prompt": "How do I render the Prepr page stack sections as components in Astro?", "skill": "build-frontend" },
+  { "prompt": "Generate TypeScript types for our Prepr GraphQL fragments.", "skill": "build-frontend" },
+  { "prompt": "Our Prepr page returns a blank page instead of a 404 when the slug doesn't exist.", "skill": "build-frontend" },
+  { "prompt": "Add the Prepr tracking pixel and track demo requests as conversions.", "skill": "personalize-and-track" },
+  { "prompt": "Our SvelteKit site should show each visitor the Prepr personalized hero variant for their segment. How do we wire that up?", "skill": "personalize-and-track" },
+  { "prompt": "Implement the Prepr A/B test in our front end so the landing page records impressions and clicks.", "skill": "personalize-and-track" }
 ]

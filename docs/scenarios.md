@@ -130,6 +130,116 @@ Prompt: `Give the hero on the homepage a variant for the <segment> segment.`
 - [ ] Sets `_context` with JSON Pointer and reads it back
 - [ ] Verifies with the `Prepr-Segments` header after publishing
 
+## 10. Batch route
+
+Setup: Scratch with a SkillsTest Article model, connected with OAuth and
+without `PREPR_MCP_TOKEN` in the shell.
+
+Prompt: `Seed 40 SkillsTest articles about Dutch cities for a demo.`
+
+- [ ] Treats it as one job (more than 25 items) through the connected MCP tools
+- [ ] Does not ask for a token or suggest a script
+- [ ] One plan naming the environment, totals and order; waits for one yes
+- [ ] Bulk calls hold at most 25 ids
+- [ ] Writes `prepr/batch-state.json` after each create
+- [ ] Verifies by counting the created items and reading a sample
+
+Then delete the state entry for one item, break another (a field name that
+does not exist), and ask to resume in a new session:
+
+- [ ] Skips items already in the state file; creates no duplicates
+- [ ] Stops at the first error; reports what was applied, the server's message and what was not attempted
+
+10b. Same prompt with `PREPR_MCP_TOKEN` set for the same environment, and
+`Write it as a script, it's a big job.`
+
+- [ ] Script reads the token from the environment; never prints or writes it
+- [ ] First call is `get_initial_context`; stops if the environment differs from the plan
+- [ ] Runs `plan` mode, shows the output, and waits for a yes before `apply`
+
+## 11. Migrate content
+
+Setup: two Scratch environments: an old one with a SkillsTest Post model
+and five items (one references another, one has an asset), and an empty new
+one with a differently shaped SkillsTest Article model. MCP connected to the
+new one. `PREPR_SOURCE_TOKEN` and `PREPR_TARGET_TOKEN` set in the shell.
+
+11a. Prompt: `Migrate the posts from our old Prepr environment into the Article model in the new one.`
+
+- [ ] Checks the target schema exists and the target environment is empty; asks which environment is the Test one
+- [ ] Reads both schemas; asks about fields without an obvious target instead of guessing
+- [ ] Writes the mapping to files and waits for a yes before any write
+- [ ] Explains the token: Settings → Access tokens, scopes, Bound to user; never asks for or prints it; `.env` in `.gitignore`
+- [ ] Script has `create` and `fill` with `--dry-run`, an id map saved after each create, and a JSON report
+- [ ] Runs `--dry-run` first, then one model or `--limit`, then everything, after a yes naming the environment
+- [ ] Items end in Review with references resolved; verifies counts and a sample
+
+11b. Prompt: `Copy all content from our staging environment to production, the schema is the same.`
+
+- [ ] Points to Export to with the permissions and the test export; writes no script
+
+11c. Setup: a WordPress site (or its REST API export) with posts in two
+languages through WPML, categories, an author, images and a YouTube embed in
+the body, a `[caption]` shortcode and links between posts. An empty Scratch
+environment with SkillsTest Article, Category and Person models.
+
+Prompt: `Migrate our WordPress blog into the Article model in Prepr.`
+
+- [ ] Asks for a read-only WordPress credential in a `SOURCE_*` variable; never prints it
+- [ ] Extracts a snapshot to local JSON before transforming
+- [ ] Groups each WPML translation pair into one Article with two locales
+- [ ] Asks whether categories become Tags, an enum or Category items; creates Category and Person items first if models
+- [ ] Converts the body to clean HTML or dynamic content; maps or reports the shortcode
+- [ ] Uploads inline images and replaces their URLs; maps the YouTube embed to a Social element
+- [ ] Rewrites links between posts to the new slugs; writes a redirect map from old URL to new URL
+- [ ] Converts publish dates to UNIX timestamps after agreeing the timezone; proposes a content freeze for the cutover
+
+11d. Setup: an Umbraco 13 site with the Content Delivery API enabled and an
+API key, two cultures, a Block List, rich text with internal links and
+images, and a few entries in Redirect URL Management. An empty Scratch
+environment with matching SkillsTest models.
+
+Prompt: `Migrate our Umbraco 13 site into Prepr.`
+
+- [ ] Asks for the Umbraco version and picks the Content Delivery API route
+- [ ] Reads the API key from `UMBRACO_API_KEY`; never prints it
+- [ ] Pages with `skip`/`take` and a `sort`, and checks totals per content type
+- [ ] Fetches each culture with `Accept-Language` and joins them on `id`
+- [ ] Maps each Block List block type with its own mapper; asks about `settings`
+- [ ] Prepends the site host to relative media URLs before uploading
+- [ ] Rewrites internal links through the id map; adds Umbraco's redirects to the redirect map
+- [ ] Raises members, forms and dictionary items as out of scope
+
+## 12. Build a front end
+
+Setup: a fresh Nuxt or Astro project (not Next.js) with a Page model whose
+stack has two section types, a Post model, and `PREPR_GRAPHQL_URL` set to a
+Production token in `.env`.
+
+Prompt: `Show our Prepr pages and blog posts on this site.`
+
+- [ ] Reads the schema (files, MCP or introspection) instead of guessing fields
+- [ ] Reads the URL from an env var; keeps the Preview token out of client code
+- [ ] One fetcher that throws on `errors`; fits the framework's loader
+- [ ] One fragment per section type; a registry by `__typename` that warns and renders nothing for unknown types
+- [ ] A missing slug returns a real 404 (checks the item, not `data`)
+- [ ] Lists set `limit` and page with `skip`
+- [ ] Offers codegen or types where the project uses TypeScript; doesn't add a client the project doesn't need
+
+## 13. Personalize and track
+
+Setup: the site from 12, with a personalized stack (two segments) and an
+A/B test on one section, and a consent banner in the site.
+
+Prompt: `Add Prepr tracking, show visitors their personalized sections, and measure the A/B test.`
+
+- [ ] Asks about consent and loads the pixel accordingly
+- [ ] Sets `prepr:id` on the page
+- [ ] Visitor id from `__prepr_uid` (or the toolkit middleware), sent as `Prepr-Customer-Id`
+- [ ] Personalized and A/B pages render per request and aren't cached (no static build, ISR or CDN cache; `Cache-Control: private, no-store`); falls back to non-personalized content
+- [ ] `data-prepr-variant-key` from `_context.variant_key` and `data-prepr-variant-event` on the CTA
+- [ ] Verifies with `pixel.gif` in the Network tab and the visitor's events in Prepr
+
 ## Results
 
 | Date | Version | Scenario | Result | Notes |
@@ -158,3 +268,5 @@ Prompt: `Give the hero on the homepage a variant for the <segment> segment.`
 | 2026-10-13 | 0.3.0 + review fixes | sync-schema: set up Git sync with GitHub | Pass | Pinned workflow `@v1.0.15`, token scope, sync methods, import impact warning, "a commit is not a sync", asked for environment and direction. Called the exporting environment "the source of truth" in passing |
 | 2026-10-13 | 0.3.0 + review fixes | Cleanup re-run, 9 to completion, A/B variant, review-schema drift, 2–5 | Not run | Skipped by the maintainer: the Prepr MCP server was not authorized for headless runs |
 | 2026-10-13 | 0.3.0 + review fixes | Routing (`scripts/eval-routing.mjs`) | Pass | 28/28, including 5 new prompts: A/B and personalized variants, drift check, component create, review of schema files |
+| 2026-10-20 | 0.3.0 + batch route, migrate-content | Routing (`scripts/eval-routing.mjs`) | Pass | 31/31, including 3 new migrate-content prompts (WordPress, old Prepr environment, Contentful script); no regressions |
+| 2026-10-20 | 0.3.0 + front-end skills | Routing (`scripts/eval-routing.mjs`) | Pass | 38/38, including 7 new prompts for build-frontend and personalize-and-track; no regressions |

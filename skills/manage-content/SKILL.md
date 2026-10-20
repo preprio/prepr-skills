@@ -117,12 +117,6 @@ Rules:
   call.
 - Uploads are writes. Confirm bulk uploads, and report exactly which files
   landed and which did not.
-- If an upload is refused (for example a 403), the user's role or the
-  environment's MCP permissions may not allow asset uploads. Ask the user to
-  check the asset permissions (their role, and Settings → Integrations → MCP
-  Server) and retry once they are fixed. If they should stay off, ask the
-  user to upload the files in Prepr, then find them with `query_assets` by
-  name and link them.
 
 ## Seeding a fresh environment
 
@@ -154,11 +148,15 @@ articles, not one.
 ## Larger imports
 
 This skill handles up to 25 items per request, the size of one bulk call.
-Imports of more than 25 items, or from another system, are out of scope. Say
-so and point the user to Prepr's migration guide:
+For a planned job of more than 25 items or a bulk asset import, such as
+seeding a demo, run it as one job through the same MCP tools: one plan, one
+yes, and a state file to resume from; see
+[batch-route.md](references/batch-route.md). Migrating content from another
+system or an old Prepr environment is a job for **migrate-content**; offer
+it. If it is not installed, point the user to Prepr's migration guide:
 https://docs.prepr.io/project-setup/migrating-content
 
 ## Typical requests
 
-For worked examples of editorial prompts and expected behaviour, see
+For examples of editorial prompts and expected behaviour, see
 https://docs.prepr.io/prepr-mcp-server/use-cases.

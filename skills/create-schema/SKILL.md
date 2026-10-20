@@ -76,18 +76,61 @@ Write an AI description for every model (`ai_goal`) and every text field
 appears, and its limits. Include them in the plan so the user can correct
 them. Prepr's AI features and every MCP client read them.
 
+### Design the editor's form
+
+A schema is also the editor's form. Design it with
+[The editor's form](references/schema-design-principles.md#the-editors-form)
+and settle these per entity before you plan:
+
+- **Names:** a display name in sentence case and an explicit `api_id` for
+  every field. Prepr derives the ID from the first display name and never
+  updates it.
+- **Order:** title first, then required content, then optional fields, then
+  display, taxonomy and SEO. Create fields in that order; reorder later with
+  `move_schema_field`.
+- **Sections:** a Divider field per group from about eight fields on. Start
+  rarely edited sections (SEO, display) collapsed. Prepr has no tabs.
+- **Help text:** on every field whose label is not self-explanatory, placed
+  above the field, in a tooltip, or as a placeholder for an example value.
+  Add a Help text field only for guidance that spans several fields.
+- **Width:** pair short related fields side by side (50/50, 33/33/33).
+  Stack and Dynamic content fields stay full width.
+- **Conditions:** hide fields that apply to one variant behind a condition
+  on the field that picks the variant. Condition a whole section where you
+  can.
+- **Components:** decide per Component field whether its fields show as a
+  framed group. Give each component an icon, and each section-level
+  component or model a picker description.
+- **Required and defaults:** required only where the item is broken
+  without it; a default on every display enum and boolean.
+
+The MCP schema tools accept help text placement, field state, width, new
+row, conditions, framing, icon, preview image and tag; read the input
+schemas for the exact names and values. Some settings cannot be set this
+way. A Column field cannot be created through MCP; use widths instead. A
+condition on the environment ID exists only in the schema files. If the
+plan needs one of these, say so and use [the file route](#the-file-route)
+or ask the user to set it in the Prepr UI.
+
 ## Step 3: Plan, confirm, apply, verify
 
 Follow [write-safety.md](references/write-safety.md) exactly:
 
 1. [Plan](references/write-safety.md#plan): name the environment, then list
    entities in dependency order (enums and components before the models that
-   use them), each with its fields.
+   use them), each with its fields in form order: display name, `api_id`,
+   type, required, default, help text, width and any condition.
 2. [Confirm](references/write-safety.md#confirm): wait for an explicit yes.
 3. [Apply](references/write-safety.md#apply): create each entity, then its
    fields one call each. Stop at the first error.
 4. [Verify](references/write-safety.md#verify): `get_schema_entity` on each
-   entity you touched and compare it with the plan.
+   entity you touched and compare it with the plan, including field order
+   and the form settings.
+
+A whole schema, dozens of entities with hundreds of fields, is too many calls
+to confirm one by one. Run it as one job through the same MCP tools: one
+plan, one yes, and a state file to resume from; see
+[batch-route.md](references/batch-route.md).
 
 ## Changing an existing schema
 
