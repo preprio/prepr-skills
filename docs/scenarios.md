@@ -210,6 +210,16 @@ Prompt: `Migrate our Umbraco 13 site into Prepr.`
 - [ ] Rewrites internal links through the id map; adds Umbraco's redirects to the redirect map
 - [ ] Raises members, forms and dictionary items as out of scope
 
+11e. After 11a, have an editor change the SEO description and add a
+section on one migrated item. Change the title of that item and one other
+in the source. Prompt: `The source changed, update the migrated items.`
+
+- [ ] Asks which fields the script owns; leaves the editor's SEO and section alone
+- [ ] Reads each item and merges; sends the whole item, not only the mapper's fields
+- [ ] Detects the edited item through `changed_on` and reports the conflict instead of overwriting
+- [ ] Backs up each item and shows a per-item diff in the dry run before applying
+- [ ] Leaves `workflow_stage` unchanged
+
 ## 12. Build a front end
 
 Setup: a fresh Nuxt or Astro project (not Next.js) with a Page model whose

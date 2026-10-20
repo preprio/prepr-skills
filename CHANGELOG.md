@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.4.1 (2026-10-20)
+
+Safer reruns in migrate-content.
+
+- migrate-content: a new `updates.md` on rerunning `fill` without losing
+  data. Decide who owns each field, read and merge before every write
+  (Prepr replaces the whole locale), catch editor changes with
+  `changed_on` and the last written version, back up and diff before
+  applying, and when `PATCH` fits.
+
 ## 0.4.0 (2026-10-20)
 
 Three new skills (migrate-content, build-frontend, personalize-and-track),

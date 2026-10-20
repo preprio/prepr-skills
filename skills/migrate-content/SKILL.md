@@ -162,7 +162,9 @@ at an item that does not exist yet.
    what it would do.
 2. Start small: one model with `--model`, or a few items with `--limit`.
 3. Read the report together with the user and fix the mapping or the
-   script. Rerun only what failed with `--id` or `--slug`.
+   script. Rerun only what failed with `--id` or `--slug`. A rerun writes
+   to items that already have content; follow
+   [updates.md](references/updates.md) so nothing is lost.
 4. Then run the whole migration.
 
 Each first real run in an environment is a write: name the environment and
@@ -186,11 +188,10 @@ wait for a yes. The script never writes to the source.
   should treat it before you run.
 - Items stay in Review. Publishing is a separate step the user approves;
   set `publish_on` from the source if original dates matter.
-- If editors already work in the target, do not rerun `fill`: an update
-  replaces the whole item and overwrites their edits. Sync only items that
-  changed in the source since the migration and are unchanged in the
-  target, back up each item before writing, and report the rest as
-  conflicts for the user.
+- If editors already work in the target, never rerun `fill` as it is: an
+  update replaces the whole item and would overwrite their edits. Sync
+  only items that changed in the source, read and merge each one, back it
+  up, and report conflicts, as in [updates.md](references/updates.md).
 - Deleting migrated items is the user's call. Production blocks bulk
   deletes and deletes of referenced items, so clean up failed runs in the
   Test environment.
