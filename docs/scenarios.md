@@ -210,6 +210,36 @@ Prompt: `Migrate our Umbraco 13 site into Prepr.`
 - [ ] Rewrites internal links through the id map; adds Umbraco's redirects to the redirect map
 - [ ] Raises members, forms and dictionary items as out of scope
 
+## 12. Build a front end
+
+Setup: a fresh Nuxt or Astro project (not Next.js) with a Page model whose
+stack has two section types, a Post model, and `PREPR_GRAPHQL_URL` set to a
+Production token in `.env`.
+
+Prompt: `Show our Prepr pages and blog posts on this site.`
+
+- [ ] Reads the schema (files, MCP or introspection) instead of guessing fields
+- [ ] Reads the URL from an env var; keeps the Preview token out of client code
+- [ ] One fetcher that throws on `errors`; fits the framework's loader
+- [ ] One fragment per section type; a registry by `__typename` that warns and renders nothing for unknown types
+- [ ] A missing slug returns a real 404 (checks the item, not `data`)
+- [ ] Lists set `limit` and page with `skip`
+- [ ] Offers codegen or types where the project uses TypeScript; doesn't add a client the project doesn't need
+
+## 13. Personalize and track
+
+Setup: the site from 12, with a personalized stack (two segments) and an
+A/B test on one section, and a consent banner in the site.
+
+Prompt: `Add Prepr tracking, show visitors their personalized sections, and measure the A/B test.`
+
+- [ ] Asks about consent and loads the pixel accordingly
+- [ ] Sets `prepr:id` on the page
+- [ ] Visitor id from `__prepr_uid` (or the toolkit middleware), sent as `Prepr-Customer-Id`
+- [ ] Personalized requests aren't cached in the app; falls back to static content
+- [ ] `data-prepr-variant-key` from `_context.variant_key` and `data-prepr-variant-event` on the CTA
+- [ ] Verifies with `pixel.gif` in the Network tab and the visitor's events in Prepr
+
 ## Results
 
 | Date | Version | Scenario | Result | Notes |

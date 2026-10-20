@@ -12,7 +12,7 @@
     {
       "name": "prepr",
       "source": "./",
-      "description": "Prepr CMS skills for AI agents: connect to the Prepr MCP server, design and build your content model, review it, and manage and migrate content.",
+      "description": "Prepr CMS skills for AI agents: connect to the Prepr MCP server, design and build your content model, review it, manage and migrate content, and build personalized front ends.",
       "category": "cms"
     }
   ]

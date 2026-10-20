@@ -28,6 +28,17 @@ Fixes from an end-to-end review and more live MCP findings.
   OAuth. Linked from create-schema and manage-content; scenario 10 covers
   both.
 - Known errors: `intent` is the usual cause of `additional properties`.
+- New skills build-frontend and personalize-and-track, for any stack.
+  build-frontend reads the schema, builds GraphQL queries and fragments,
+  sets up a fetcher (fetch, Axios, graphql-request, urql,
+  Apollo, PHP), generates types, renders stacks through a `__typename`
+  registry, returns real 404s and handles redirects, and covers caching,
+  webhook revalidation, preview and visual editing.
+  personalize-and-track covers the tracking pixel, meta tags, impressions
+  and conversions, events, consent, the visitor id and headers,
+  per-request and static personalization, A/B bucketing and
+  recommendations. A shared toolkit reference describes the stable
+  `@preprio/toolkit` 0.4 entry points.
 - New skill migrate-content: plans and scripts a migration from another
   CMS or an old Prepr environment into a Prepr schema, following Prepr's
   migration guides. A plain Node script writes through the REST Mutation
